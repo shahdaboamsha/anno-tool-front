@@ -97,7 +97,7 @@ export default function SignupForm() {
         } catch (error) {
             if (error.code == "ERR_NETWORK") {
                 setResponse({
-                     message: "Server connection error"
+                    message: "Server connection error"
                 })
             }
         }

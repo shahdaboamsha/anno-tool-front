@@ -10,7 +10,7 @@ export default function SignupPage() {
         <Fade in timeout={700}>
             <div className={signupPageStyles.pageContainer}>
                 <div className={signupPageStyles.shadowedRounded}>
-                    <Grid container width={{ lg: 900, sm: 380, xs: 380 }} columns={12} >
+                    <Grid container width={{ lg: 800, sm: 380, xs: 380 }} columns={12} >
                         {/** Title Grid */}
                         <Grid
                             size={{ lg: 6, md: 12, xl: 6 }}

@@ -17,7 +17,13 @@ import { useTheme, useMediaQuery } from '@mui/material';
 
 const pages = ['Home', 'About us', 'create task']
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout']
-
+const menuItemProps = {
+    sx: {
+        width: '100%',
+        borderBottom: 'solid 1px lightgray',
+        fontWeight: 500
+    }
+}
 function NavigationBar() {
 
     const theme = useTheme()
@@ -43,6 +49,7 @@ function NavigationBar() {
         setAnchorElUser(null);
     };
 
+    const isLoggedIn = localStorage.getItem('userId') != null
     return (
         <AppBar position="static" color='default' sx={{ bgcolor: 'var(--dark-bg)' }}>
             <Container maxWidth="xl"  >
@@ -87,21 +94,30 @@ function NavigationBar() {
                                     }
                                 }}
                             >
-                                {pages.map((page) => (
-                                    <MenuItem key={page} onClick={handleCloseNavMenu} sx={{ width: '100%' }}>
-                                        <a href="" className='nav-link-menu-items'>{page}</a>
-                                    </MenuItem>
-                                ))}
-                            </Menu>
 
-                        </div>
-                        <div className='logo'>
-                            <h2 >
-                                <a href="/" className='nav-link'>
-                                    <img src='src\assets\icons\humanoid.png' width='40px' alt="" />
+                                <a href="/" className='nav-link-menu-items'>
+                                    <MenuItem key='home' {...menuItemProps}>
+                                        Home
+                                    </MenuItem>
                                 </a>
-                            </h2>
+                                <a href="/#" className='nav-link-menu-items'>
+                                    <MenuItem key='home' {...menuItemProps} >
+                                        About us
+                                    </MenuItem>
+                                </a>
+                                <a href="/signin" className='nav-link-menu-items'>
+                                    <MenuItem key='home' {...menuItemProps}>
+                                        Sign in
+                                    </MenuItem>
+                                </a>
+                                <a href="/signup" className='nav-link-menu-items'>
+                                    <MenuItem key='home' {...menuItemProps}>
+                                        Sign up
+                                    </MenuItem>
+                                </a>
+                            </Menu>
                         </div>
+
                     </>
                     }
                     {/** for wide screens */}
@@ -116,38 +132,61 @@ function NavigationBar() {
                     </>
                     }
 
-                    <Box sx={{ flexGrow: 0 }}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu>
-                    </Box>
+                    {
+                        isLoggedIn ? (
+                            <Box sx={{ flexGrow: 0 }}>
+                                <Tooltip title="Open settings">
+                                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                        <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                    </IconButton>
+                                </Tooltip>
+                                <Menu
+                                    sx={{ mt: '45px' }}
+                                    id="menu-appbar"
+                                    anchorEl={anchorElUser}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    open={Boolean(anchorElUser)}
+                                    onClose={handleCloseUserMenu}
+                                >
+                                    {settings.map((setting) => (
+                                        <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                            <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                            </Box>
+                        ) :
+                            (
+                                !isSmallScreen ?
+                                    <div>
+                                        <a href="/signin" className='sign-link'>
+                                            Sign in
+                                        </a>
+                                        <a href="/signup" className='sign-link'>
+                                            Sign up
+                                        </a>
+                                    </div>
+                                    :
+                                    <div>
+                                        <a href="/" className='nav-link logo-link'>
+                                            <img src='src\assets\icons\humanoid.png' width='40px' alt="" />
+                                        </a>
+                                    </div>
+
+                            )
+                    }
+
                 </Toolbar>
             </Container>
-        </AppBar>
+        </AppBar >
     );
 }
 export default NavigationBar;

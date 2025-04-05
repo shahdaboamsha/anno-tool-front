@@ -28,10 +28,11 @@ function InputText({ required, type, title = null, placeholder, name, id, value,
     }
     return (
         <>
-            <div className={`${styles.inputText}`}>
+            <div className={`${styles.inputText}`} style={{width: '100%'}}>
                 <Tooltip title={`Enter ${title || id}`}>
                     <TextField
                         required={required}
+                        fullWidth
                         size='small'
                         id={id}
                         placeholder={placeholder || title}

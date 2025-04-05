@@ -35,7 +35,7 @@ export default function UploadAnnotationDialog({ dialogOpenState, setDialogOpenS
                 onClose={handleClose}
                 sx={{ backdropFilter: 'blur(10px)' }}
             >
-                <DialogContent style={{ backgroundColor: '#f1faee', position: 'relative' }}>
+                <DialogContent style={{ /*backgroundColor: '#f1faee', */position: 'relative' }}>
                     <IconButton
                         onClick={handleClose}
                     >

@@ -5,6 +5,8 @@ import UploadAnnotationDialog from "./pages/Upload Annotaion/UploadAnnotationDia
 import NavigationBar from "./components/NavigationBar"
 import HomePage from "./pages/Home/HomePage"
 import UploadFileStepper from "./components/UploadFileFormStepper"
+import ForgotPasswordPage from "./pages/Forgot/ForgotPasswordPage"
+
 import './App.css'
 
 // App function
@@ -19,6 +21,7 @@ function App() {
         <Route path="/upload" element={<UploadAnnotationDialog />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/stepper" element={<UploadFileStepper />} />
+        <Route path="/recover" element={<ForgotPasswordPage/>}/>
       </Routes>
     </Router>
   )
