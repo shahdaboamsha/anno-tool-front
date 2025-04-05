@@ -34,11 +34,7 @@ export default function SignupForm() {
 
     const [loading, setLoading] = useState(false)
 
-    const [signupResponse, setResponse] = useState({
-        message: "This user is already registerd",
-        errorFields: null,
-        status: 409 
-    })
+    const [signupResponse, setResponse] = useState(null)
 
     // handle the change of the inputs
     const handleChange = (event) => {
@@ -74,7 +70,6 @@ export default function SignupForm() {
 
         for (const key in formData) {
             dataToSubmit[key] = formData[key]['value']
-            console.log(formData[key]['value'], key)
         }
 
         return dataToSubmit
@@ -97,10 +92,15 @@ export default function SignupForm() {
         axios.defaults.withCredentials = true.valueOf
 
         try {
-            const signupResponse = await axios.post('http://localhost:3000/auth/register', userData)
+            const signupResponse = await axios.post('http://localhost:3000/auth/register', { userData })
             console.log(signupResponse)
         } catch (error) {
-            console.log('ERROR: ', error)
+            console.log(error)
+            if (error.code == "ERR_NETWORK") {
+                setResponse({
+                     message: "Server connection error"
+                })
+            }
         }
 
         // stop button loading 
@@ -110,7 +110,7 @@ export default function SignupForm() {
     return (
         <div>
             {signupResponse && <Alert severity="error" variant='outlined'>{signupResponse.message}</Alert>}
-            
+
             <InputText
                 required
                 type="text"
