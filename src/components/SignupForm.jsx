@@ -67,6 +67,7 @@ export default function SignupForm() {
     }
     // new new new new new new 
     // This method is for preparing the data as key/value to transfer to the server over POST HTTP method request
+    // hahahahahahahaha
     const prepareDataToSubmit = () => {
 
         const dataToSubmit = {}
