@@ -1,0 +1,157 @@
+:root {
+    --pink-bg: #ff8fab;
+}
+
+.flex {
+    display: flex;
+}
+
+.flex-centered-items {
+    justify-content: center;
+    align-items: center;
+}
+.hidden {
+    display: none;
+}
+.flex-spacearound {
+    justify-content: space-between;
+}
+
+.flex-center-align {
+    align-items: center;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-column-items {
+    flex-direction: column;
+}
+
+.center-justified {
+    justify-content: center;
+}
+
+.center-aligned {
+    align-items: center;
+}
+
+.white-text {
+    color: white;
+}
+
+.padding-8px {
+    padding: 8px;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.margin-6px {
+    margin: 6px;
+}
+
+.gray-color {
+    color: gray;
+}
+
+.margin-30px-top {
+    margin-top: 20px;
+}
+
+.bg-white {
+    background-color: white;
+}
+
+
+
+.nav-link-menu-items {
+    color: black;
+    text-decoration: none;
+    position: relative;
+    font-size: large;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+   opacity: .7;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+    font-size: large;
+    font-weight: 500;
+    margin-left: 30px;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+}
+
+.nav-link:not(.logo-link)::after{
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 0;
+    width: 100%;
+    margin-top: 20px;
+    height: 3px;
+    background-color: white;
+    transform: scaleX(0);
+    transform-origin: bottom left;
+    transition: transform 0.2s ease-in;
+}
+
+.nav-link:not(.logo-link):hover::after{
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+.logo {
+    display: inline-block;
+    color: rgb(55, 55, 146);
+}
+
+.logo * {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.full-width {
+    width: 100vw;
+}
+
+.home-welcome-logo {
+    border: solid 1px;
+    height: 80vh;
+    background-image: url('https://cdn.govexec.com/media/featured/gai-accelerated_ai/gaiacceleratedaiparallax.jpg');
+}
+
+.home-img-container {
+    background-image: url('../../assets/wallpaper.gif');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-blend-mode: multiply;   
+}
+
+#quick-action-button{
+    border-radius: 25px;
+    /*transition: 500ms ease-in-out;*/
+    animation-name: rotate;
+    animation-duration: 1000ms;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes rotate {
+    from {
+        transform: scale(1)
+    }
+    to {
+        
+        transform: scale(1.05)
+    }
+}
