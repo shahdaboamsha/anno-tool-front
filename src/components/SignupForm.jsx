@@ -33,10 +33,11 @@ export default function SignupForm() {
     })
 
     const [loading, setLoading] = useState(false)
+
     const [signupResponse, setResponse] = useState({
         message: "This user is already registerd",
         errorFields: null,
-        status: 409
+        status: 409 
     })
 
     // handle the change of the inputs
@@ -64,7 +65,7 @@ export default function SignupForm() {
             setFormData({ ...formData, [name]: { value: value, error: validationResult } })
         }
     }
-
+    // new new new new new new 
     // This method is for preparing the data as key/value to transfer to the server over POST HTTP method request
     const prepareDataToSubmit = () => {
 
