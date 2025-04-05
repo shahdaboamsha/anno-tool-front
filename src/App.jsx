@@ -1,5 +1,4 @@
 import SigninPage from "./pages/Signin/SigninPage"
-import QRScanner from "./components/QRScanner"
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import SignupPage from "./pages/Signup/SignupPage"
 import UploadAnnotationDialog from "./pages/Upload Annotaion/UploadAnnotationDialog"
@@ -16,7 +15,6 @@ function App() {
       <Routes>
         <Route path="/signin" element={<SigninPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/QRtest" element={<QRScanner />} />
         <Route path="/upload" element={<UploadAnnotationDialog />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/stepper" element={<UploadFileStepper />} />
