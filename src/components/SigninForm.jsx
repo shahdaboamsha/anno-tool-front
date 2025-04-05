@@ -109,7 +109,7 @@ function SigninForm() {
                         loading={loading}
                         fullWidth
                         variant="contained"
-                        sx={{ backgroundColor: "#ff8fab", textTransform: 'none', fontWeight: '400' }}
+                        sx={{ backgroundColor: "var(--dark-bg)", textTransform: 'none', fontWeight: '400' }}
                         onClick={signin}
                     >
                         Sign in
