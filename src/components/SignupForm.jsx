@@ -95,7 +95,6 @@ export default function SignupForm() {
             const signupResponse = await axios.post('http://localhost:3000/auth/register', { userData })
             console.log(signupResponse)
         } catch (error) {
-            console.log(error)
             if (error.code == "ERR_NETWORK") {
                 setResponse({
                      message: "Server connection error"
