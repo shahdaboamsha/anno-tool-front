@@ -7,6 +7,7 @@ import HomePage from "./pages/Home/HomePage"
 import UploadFileStepper from "./components/UploadFileFormStepper"
 import './App.css'
 
+// App function
 function App() {
   document.title = "Annotator tool"
   return (
