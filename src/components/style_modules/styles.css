@@ -71,12 +71,13 @@
     font-weight: 500;
     text-align: center;
 }
+
 .form-header-desc {
     color: gray;
     text-align: center;
 }
 
-.page-container{
+.page-container {
     display: flex;
     height: 100vh;
     width: 100vw;
@@ -100,10 +101,6 @@
     font-weight: 500;
 }
 
-.nav-link:hover {
-    opacity: .7;
-}
-
 .nav-link {
     color: white;
     text-decoration: none;
@@ -121,9 +118,9 @@
     top: 0px;
     left: 0;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 25px;
     height: 3px;
-    background-color: white;
+    background-color: rgb(160, 189, 56);
     transform: scaleX(0);
     transform-origin: bottom left;
     transition: transform 0.2s ease-in;
@@ -155,20 +152,52 @@
 }
 
 .home-img-container {
-    background-image: url('../../assets/wallpaper.gif');
+    background-image: url('https://images.hdqwalls.com/wallpapers/abstract-constellation-4f.jpg');
     background-size: cover;
     background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-blend-mode: multiply;
+    color: white;
+    filter: brightness(10px);
+    backdrop-filter: filter;
 }
 
 #quick-action-button {
-    border-radius: 25px;
-    animation-name: rotate;
-    animation-duration: 1000ms;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
+    border-radius: 30px;
+    background-color: inherit;
+    border: solid 2px rgb(160, 189, 56);
+    backdrop-filter: blur(10px);
+    color: rgb(160, 189, 56);
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    text-shadow: none;
+    box-shadow: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
+#quick-action-button:hover {
+    color: rgb(160, 189, 56);
+    box-shadow:
+        0 0 10px rgb(160, 189, 56),
+        0 0 30px rgb(160, 189, 56),
+        0 0 60px rgb(160, 189, 56),
+        0 0 100px rgb(160, 189, 56);
+}
+
+.arrow-icon {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#quick-action-button:hover .arrow-icon {
+    opacity: 1;
+    transform: translateX(20px);
+}
+
+
 
 @keyframes rotate {
     from {
@@ -187,4 +216,43 @@
     font-size: large;
     font-weight: 500;
     text-decoration: none;
+    transition: 0.3s ease-in-out;
+}
+
+
+.sign-link:hover {
+    color: rgb(160, 189, 56);
+    font-weight: bolder;
+    text-shadow:
+        0 0 10px rgb(160, 189, 56),
+        0 0 20px rgb(160, 189, 56),
+        0 0 40px rgb(160, 189, 56),
+        0 0 80px rgb(160, 189, 56),
+        0 0 120px rgb(160, 189, 56);
+    font-size: 20px;
+}
+
+
+
+.signin-form-help p {
+    display: block;
+    font-size: 14px;
+}
+
+.signin-form-help {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    line-height: 10px;
+}
+
+.signin-form-help a {
+    text-decoration: none;
+}
+
+.signin-form-help p a:hover {
+    color: rgb(136, 136, 214);
+    text-decoration: underline;
 }

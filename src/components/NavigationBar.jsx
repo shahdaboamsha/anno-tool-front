@@ -51,7 +51,11 @@ function NavigationBar() {
 
     const isLoggedIn = localStorage.getItem('userId') != null
     return (
-        <AppBar position="static" color='default' sx={{ bgcolor: 'var(--dark-bg)' }}>
+        <AppBar position="static" color='default'
+            sx={{
+                bgcolor: 'inherit',
+                backdropFilter: 'blur(5px)'
+            }}>
             <Container maxWidth="xl"  >
                 <Toolbar disableGutters style={{ height: '80px' }} className='flex flex-spacearound flex-row flex-center-align'>
                     {/** for small devices */}
