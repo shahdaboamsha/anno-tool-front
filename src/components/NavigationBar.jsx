@@ -169,21 +169,27 @@ function NavigationBar() {
                             </Box>
                         ) :
                             (
-                                !isSmallScreen ?
-                                    <div>
-                                        <a href="/signin" className='sign-link'>
-                                            Sign in
-                                        </a>
-                                        <a href="/signup" className='sign-link'>
-                                            Sign up
-                                        </a>
-                                    </div>
-                                    :
-                                    <div>
-                                        <a href="/" className='nav-link logo-link'>
-                                            <img src='src\assets\icons\humanoid.png' width='40px' alt="" />
-                                        </a>
-                                    </div>
+                                !localStorage.getItem('ACCESS_TOKEN') ?
+                                    (
+                                        <>{!isSmallScreen ?
+
+                                            <div>
+                                                <a href="/signin" className='sign-link'>
+                                                    Sign in
+                                                </a>
+                                                <a href="/signup" className='sign-link'>
+                                                    Sign up
+                                                </a>
+                                            </div>
+                                            :
+                                            <div>
+                                                <a href="/" className='nav-link logo-link'>
+                                                    <img src='src\assets\icons\humanoid.png' width='40px' alt="" />
+                                                </a>
+                                            </div>}
+                                        </>
+                                    ) :
+                                    ""
 
                             )
                     }

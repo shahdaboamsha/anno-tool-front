@@ -7,6 +7,7 @@ import HomePage from "./pages/Home/HomePage"
 import UploadFileStepper from "./components/UploadFileFormStepper"
 import ForgotPasswordPage from "./pages/Forgot/ForgotPasswordPage"
 import Dashboard from './pages/User Dashboard/Dashboard'
+import Loader from "./components/Loader"
 import './App.css'
 
 // App function
@@ -22,6 +23,7 @@ function App() {
         <Route path="/stepper" element={<UploadFileStepper />} />
         <Route path="/recover" element={<ForgotPasswordPage/>}/>
         <Route path="/user/my/*" element={<Dashboard/>}/>
+        <Route path="/loader" element={<Loader/>}/>
       </Routes>
     </Router>
   )

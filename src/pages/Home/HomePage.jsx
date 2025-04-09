@@ -2,11 +2,11 @@ import { Grid2 as Grid, Typography, Button } from "@mui/material"
 import { useMediaQuery, useTheme } from '@mui/material';
 import SigninForm from "../../components/SigninForm";
 import { useNavigate } from "react-router-dom";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import QuickDialog from "../../components/Dialog";
 import NavigationBar from "../../components/NavigationBar";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Slide from '@mui/material/Slide';
+import Loader from "../../components/Loader";
 
 const quickActionButtonProps = {
     margin: 2,
@@ -28,14 +28,15 @@ export default function HomePage() {
 
     // handle Get Started button -> open the form of the task creation
     const getStarted = () => {
-        if (!localStorage.getItem('userId')) {
-            setComponent(<SigninForm />)
-            setDialogOpenState(true)
-            return
+        if (localStorage.getItem('ACCESS_TOKEN')) {
+            navigate('/user/my/overview')
         }
-        navigate('/user/my/dashboard')
+        else {
+            setDialogOpenState(true)
 
+        }
     }
+
     return (
         <div ref={ref}>
 

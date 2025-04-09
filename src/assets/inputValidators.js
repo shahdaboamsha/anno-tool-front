@@ -110,6 +110,82 @@ const validateSignupDataBeforeSubmit = (formData, setFormData) => {
     return isReadyForSubmit
 }
 
+const validataTaskName = (input) => {
+    if (input.trim() === "") {
+        return "Please provide task name"
+    }
+    return "VALID"
+}
+
+const validataAnnotationType = (input) => {
+    if (input.trim() === "") {
+        return "Please select annotation type"
+    }
+    return "VALID"
+}
+
+const validataLables = (input) => {
+    if (input.trim() === "") {
+        return "Please provide labels"
+    }
+    return "VALID"
+}
+
+const validateFile = (file) => {
+    if (file.fileData === "") {
+        return "Please upload a file"
+    }
+    return "VALID"
+}
+
+
+const validateTaskDescription = (input) => {
+    return "VALID"
+}
+
+const validateTaskFormBeforeSubmit = (fileFormData, setFileFormData) => {
+
+    const data = {}
+
+    const getKeyValue = () => {
+
+        Object.keys(fileFormData).forEach(key => {
+            if (key === "file") {
+                data[key] = fileFormData[key].values
+            } else {
+                data[key] = fileFormData[key].value
+            }
+        })
+    }
+
+    getKeyValue()
+
+
+    let newFormData = { ...fileFormData };
+
+    let isReadyForSubmit = true
+
+    // update the formData, this loop checks if there is any value not entered and the user submit, then an error
+    // messages will appeared to user.
+
+    for (const key in data) {
+        const value = data[key];
+
+        let validationResult = null
+
+        validationResult = validate(key, value)
+
+        if (validationResult != "VALID") {
+            isReadyForSubmit = false
+            newFormData[key] = { ...fileFormData[key], errorMsg: validationResult };
+        }
+    }
+
+    setFileFormData(newFormData)
+
+    return isReadyForSubmit
+
+}
 const validate = (fieldName, value, config) => {
     if (fieldName == "userName") {
         return validateName(value)
@@ -126,6 +202,25 @@ const validate = (fieldName, value, config) => {
     else if (fieldName == "confirmPassword") {
         return validateConfirmPassword(value, config)
     }
+    else if (fieldName === 'task_name') {
+        return validataTaskName(value)
+    }
+    else if (fieldName === 'annotation_type') {
+        return validataAnnotationType(value)
+    }
+    else if (fieldName === 'labels') {
+        return validataLables(value)
+    }
+    else if (fieldName === 'file') {
+        return validateFile(value)
+    }
+    else if (fieldName === "task_description"){
+        return "VALID"
+    }
 }
 
-export default {validate: validate, validateSignupDataBeforeSubmit: validateSignupDataBeforeSubmit};
+export default {
+    validate: validate,
+    validateSignupDataBeforeSubmit: validateSignupDataBeforeSubmit,
+    validateTaskFormBeforeSubmit: validateTaskFormBeforeSubmit
+};

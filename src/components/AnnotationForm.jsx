@@ -4,19 +4,25 @@ import InputText from './InputText';
 import InputSelect from './InputSelect';
 import InputFile from './InputFile';
 import { useTheme } from '@mui/material';
+import inputValidators from '../assets/inputValidators';
+import axios from 'axios';
+import { useNotifications } from '@toolpad/core/useNotifications';
+import { useNavigate } from 'react-router-dom';
+import { createTheme, styled } from '@mui/material/styles';
 
-export default function CreateTaskForm() {
+export default function AnnotationForm() {
 
     const theme = useTheme()
     const isWideScreen = useMediaQuery(theme.breakpoints.up('lg'))
-
+    const notification = useNotifications()
+    const navigate = useNavigate()
     // form data here .. 
     const [fileFormData, setFileFormData] = useState({
-        taskName: {
+        task_name: {
             value: "",
             errorMsg: ""
         },
-        annotationType: {
+        annotation_type: {
             value: "",
             errorMsg: ""
         },
@@ -24,7 +30,7 @@ export default function CreateTaskForm() {
             value: "",
             errorMsg: ""
         },
-        description: {
+        task_description: {
             value: "",
             errorMsg: ""
         },
@@ -37,6 +43,8 @@ export default function CreateTaskForm() {
             errorMsg: ""
         }
     })
+
+    const [loading, setLoading] = useState(false)
 
     // on each change on the input fields, update the value of its corresponding object in the form data
     const changeHandler = (event) => {
@@ -60,7 +68,22 @@ export default function CreateTaskForm() {
     }
 
     // uploaded file handler
-    const fileSelectionHandler = (event) => {
+    const fileSelectionHandler = (event, isDeleted = false) => {
+
+        if (isDeleted) {
+            setFileFormData({
+                ...fileFormData, file:
+                {
+                    values: {
+                        fileName: "",
+                        fileSize: "",
+                        fileData: ""
+                    },
+                    errorMsg: ''
+                }
+            })
+            return
+        }
         event.preventDefault()
 
 
@@ -79,11 +102,11 @@ export default function CreateTaskForm() {
                 ...fileFormData, file:
                 {
                     values: {
-                        fileName: "No file uploaded, try again",
-                        fileSize: "None",
+                        fileName: "",
+                        fileSize: "",
                         fileData: ""
                     },
-                    errorMsg: 'No file uploaded, try again'
+                    errorMsg: ''
                 }
             })
             return
@@ -114,13 +137,66 @@ export default function CreateTaskForm() {
         })
     }
 
+    const validateBeforeSubmit = () => {
+        return inputValidators.validateTaskFormBeforeSubmit(fileFormData, setFileFormData)
+    }
+
+    const prepareDataBeforeSubmit = () => {
+        const data = { ...fileFormData }
+        delete data.file
+        data.dataSetFile = fileFormData['file'].values.fileData
+
+        const formData = new FormData()
+
+        for (let field in data) {
+            if (field !== "dataSetFile")
+                formData.append(field, data[field].value)
+            else
+                formData.append(field, data[field])
+        }
+        console.log('FORM DATA: ', formData)
+        return formData
+    }
+    const uploadFile = async () => {
+
+        if (!validateBeforeSubmit()) {
+            return
+        }
+
+        setLoading(true)
+        axios.defaults.withCredentials = true
+        const formData = prepareDataBeforeSubmit()
+        try {
+            const uploadTaskResponse = await axios.post(
+                'http://localhost:3000/file/upload',
+                prepareDataBeforeSubmit(),
+                {
+                    headers: {
+                        // 'Content-Type': 'multipart/form-data',
+                        'Authorization': `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
+                    }
+                }
+            )
+            navigate('/user/my/overview')
+            notification.show('Annotation uploaded successfully', {
+                severity: 'success',
+                autoHideDuration: 5000
+            })
+        } catch (error) {
+            console.log(error)
+        }
+        setLoading(false)
+    }
+
+
     return (
         <div
-            style={{ width: isWideScreen ? '70%' : '100%' , margin: 'auto'}}
+            style={{ width: isWideScreen ? '70%' : '100%', margin: 'auto' }}
         >
             <h1 className='formHeader'>Create a new annotation</h1>
             <div
                 className="flex flex-column-items padding-8px bg-white"
+                style={{ backgroundColor: 'inherit' }}
 
             >
                 <h3>Task Metadata</h3>
@@ -128,19 +204,19 @@ export default function CreateTaskForm() {
                     type='text'
                     required
                     title="Task name"
-                    name="taskName"
+                    name="task_name"
                     id="task name"
-                    value={fileFormData.taskName.value}
-                    validation_error={fileFormData.taskName.errorMsg}
+                    value={fileFormData.task_name.value}
+                    validation_error={fileFormData.task_name.errorMsg}
                     changeHandler={changeHandler}
                     blurHandler={blurHandler}
                 />
 
                 <InputSelect
                     required
-                    name='annotationType'
-                    value={fileFormData.annotationType.value}
-                    validation_error={fileFormData.annotationType.errorMsg}
+                    name='annotation_type'
+                    value={fileFormData.annotation_type.value}
+                    validation_error={fileFormData.annotation_type.errorMsg}
                     title="Annotation type"
                     menuItems={["Sentiment", "Sarcasm", "Stennce"]}
                     changeHandler={changeHandler}
@@ -162,21 +238,22 @@ export default function CreateTaskForm() {
                 <InputText
                     type='text'
                     title="Description"
-                    name="description"
+                    name="task_description"
                     id="description"
                     placeholder='Description (optional)'
-                    value={fileFormData.description.value}
-                    validation_error={fileFormData.description.errorMsg}
+                    value={fileFormData.task_description.value}
+                    validation_error={fileFormData.task_description.errorMsg}
                     changeHandler={changeHandler}
                     blurHandler={blurHandler}
                 />
             </div>
 
-            <div className="flex flex-column-items padding-8px bg-white">
+            <div className="flex flex-column-items padding-8px bg-white" style={{ backgroundColor: 'inherit' }}>
                 <h3>Upload a dataset file</h3>
                 <h5 className='margin-6px gray-color'>Please upload a file in CSV or XLSX format</h5>
                 <InputFile
                     fileSelectionHandler={fileSelectionHandler}
+                    validation_error={fileFormData.file.errorMsg}
                 />
                 {
                     fileFormData.file.values.fileName != "" && <div className="flex flex-column-items padding-8px">
@@ -189,12 +266,15 @@ export default function CreateTaskForm() {
             <div className="margin-30px-top flex flex-centered-items">
                 <Button
                     variant='contained'
-                    size='large'
+                    size='small'
                     fullWidth
+                    loading={loading}
+                    onClick={uploadFile}
                     sx={{
                         textTransform: 'none',
                         width: { lg: '50%', sm: '100%', xs: '100%', xl: '40%' },
-                        bgcolor: 'var(--dark-bg)'
+                        bgcolor: 'var(--dark-bg)',
+                        color: 'white'
                     }}
                 >
                     Save Task

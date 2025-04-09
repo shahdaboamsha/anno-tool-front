@@ -61,9 +61,7 @@ export default function SignupForm() {
             setFormData({ ...formData, [name]: { value: value, error: validationResult } })
         }
     }
-    // new new new new new new 
     // This method is for preparing the data as key/value to transfer to the server over POST HTTP method request
-    // hahahahahahahaha
     const prepareDataToSubmit = () => {
 
         const dataToSubmit = {}
@@ -89,26 +87,51 @@ export default function SignupForm() {
         const userData = prepareDataToSubmit()
 
         // 2. make a request (send to api...)
-        axios.defaults.withCredentials = true.valueOf
+        axios.defaults.withCredentials = true
 
         try {
-            const signupResponse = await axios.post('http://localhost:3000/auth/register', { userData })
-            console.log(signupResponse)
+            await axios.post('http://localhost:3000/auth/register', userData)
+
+            setResponse({
+                message: "User Registered successfully",
+                isSuccess: true
+            })
+            setLoading(false)
         } catch (error) {
+            setLoading(false)
             if (error.code == "ERR_NETWORK") {
                 setResponse({
-                    message: "Server connection error"
+                    message: "Oops! Could not connect to the server. Please try again later.",
+                    isSuccess: false
                 })
+            }
+            else {
+                const { data } = error.response
+                setResponse({ message: data.ErrorMsg, isSuccess: false })
+
+                if (error.status === 409 || error.status === 422) {
+                    for (let ErrorField in data.ErrorFields) {
+                        setFormData({
+                            ...formData,
+                            [ErrorField]: {
+                                value: formData[ErrorField].value,
+                                error: data.ErrorFields[ErrorField]
+                            }
+                        })
+                    }
+                }
             }
         }
 
         // stop button loading 
-        setLoading(false)
+
     }
 
     return (
         <div>
-            {signupResponse && <Alert severity="error" variant='outlined'>{signupResponse.message}</Alert>}
+            {signupResponse &&
+                <Alert sx={{mb: 2}} severity={signupResponse && !signupResponse.isSuccess ? "error" : "success"} >{signupResponse.message}</Alert>
+            }
 
             <InputText
                 required

@@ -17,7 +17,7 @@ const borderFocusStyleProps = {
     '& .MuiInputLabel-root.Mui-focused': {
         color: 'gray',
     },
-    backgroundColor: 'white'
+    backgroundColor: 'inherit'
 }
 function InputSelect({ required, type, title = null, name, id, value, validation_error, changeHandler, blurHandler = null, menuItems }) {
 

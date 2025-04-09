@@ -14,11 +14,11 @@ export default function UploadFileForm() {
 
     // form data here .. 
     const [fileFormData, setFileFormData] = React.useState({
-        taskName: {
+        task_name: {
             value: "",
             errorMsg: ""
         },
-        annotationType: {
+        annotation_type: {
             value: "",
             errorMsg: ""
         },
@@ -26,7 +26,7 @@ export default function UploadFileForm() {
             value: "",
             errorMsg: ""
         },
-        description: {
+        task_description: {
             value: "",
             errorMsg: ""
         },
@@ -90,6 +90,43 @@ export default function UploadFileForm() {
         })
     }
 
+    const validateBeforeSubmit = () => {
+
+        const validationResult = "VALID"
+
+        if (fileFormData.annotation_type.value.trim() === ""){
+            validationResult = "INVALID"
+            const value = fileFormData.annotation_type.value
+            setFileFormData({...fileFormData, annotation_type: {value: value, errorMsg: "Please provide annotation type"}})
+        }
+        else if (fileFormData.task_name.value.trim() === ""){
+            validationResult = "INVALID"
+            const value = fileFormData.task_name.value
+            setFileFormData({...fileFormData, task_name: {value: value, errorMsg: "Please provide task name"}})
+        }
+        else if (fileFormData.labels.value.trim() === ""){
+            validationResult = "INVALID"
+            const value = fileFormData.labels.value
+            setFileFormData({...fileFormData, labels: {value: value, errorMsg: "Please provide the labels"}})
+        }
+        else if (fileFormData.file.values.fileData === ""){
+            validationResult = "INVALID"
+            const { values } = fileFormData.file
+            setFileFormData({...fileFormData, file: {values: values, errorMsg: "Please upload a file"}})
+        }
+
+        return validationResult
+    }
+    const uploadFile = async (e) => {
+        alert("HOHO")
+        e.preventDefault()
+
+        if (validateBeforeSubmit() === "INVALID") {
+            alert("INVALID")
+            return
+        }
+        alert("VALID")
+    }
 
     return (
         <div className="flex flex-column-items padding-8px bg-white">
@@ -101,7 +138,7 @@ export default function UploadFileForm() {
                     title="Task name"
                     name="taskName"
                     id="task name"
-                    value={fileFormData.taskName.value}
+                    value={fileFormData.task_name.value}
                     validation_error={fileFormData.taskName.errorMsg}
                     changeHandler={changeHandler}
                     blurHandler={blurHandler}
@@ -110,7 +147,7 @@ export default function UploadFileForm() {
                 <InputSelect
                     required
                     name='annotationType'
-                    value={fileFormData.annotationType.value}
+                    value={fileFormData.annotation_type.value}
                     validation_error={fileFormData.annotationType.errorMsg}
                     title="Annotation type"
                     menuItems={["SCI", "CSI", "ISO"]}
@@ -136,7 +173,7 @@ export default function UploadFileForm() {
                     name="description"
                     id="description"
                     placeholder='Description (optional)'
-                    value={fileFormData.description.value}
+                    value={fileFormData.task_description.value}
                     validation_error={fileFormData.description.errorMsg}
                     changeHandler={changeHandler}
                     blurHandler={blurHandler}
@@ -148,6 +185,7 @@ export default function UploadFileForm() {
                 <h5 className='margin-6px gray-color'>Please upload a file in CSV or XLSX format</h5>
                 <InputFile
                     fileSelectionHandler={fileSelectionHandler}
+                    validation_error={fileFormData.file.errorMsg}
                 />
                 {
                     fileFormData.file.values.fileName != "" && <div className="flex flex-column-items padding-8px">
@@ -160,6 +198,7 @@ export default function UploadFileForm() {
             <div className="margin-30px-top flex flex-centered-items">
                 <Button
                     variant='contained'
+                    onClick={uploadFile}
                     size='large'
                     fullWidth
                     sx={{

@@ -1,11 +1,14 @@
 import InputText from './InputText'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from "@mui/material"
 import styles from './style_modules/InputText.module.css'
 import './style_modules/styles.css'
-import Fade from '@mui/material/Fade';
+import { Alert } from '@mui/material'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 function SigninForm() {
+
     const [formData, setFormData] = useState({
         email: {
             value: "",
@@ -17,8 +20,10 @@ function SigninForm() {
         }
     })
 
-    const [loading, setLoading] = useState(false)
 
+    const [signinResponse, setSigninResponse] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const navigate = useNavigate()
 
     // 
     const handleChange = (event) => {
@@ -69,64 +74,109 @@ function SigninForm() {
     }
 
 
-    const signin = (event) => {
+    const signin = async (event) => {
         event.preventDefault()
 
         if (!validateBeforeSubmit()) {
             return
         }
 
+        axios.defaults.withCredentials = true
         setLoading(true)
+        try {
+
+            const signinResponse = await axios.post('http://localhost:3000/auth/login', {
+                email: formData.email.value,
+                password: formData.password.value
+            })
+            setSigninResponse({
+                message: 'User signed in successfully',
+                isSuccess: true
+            })
+            localStorage.setItem('ACCESS_TOKEN', signinResponse.data.token)
+            navigate('/user/my/dashboard')
+
+        } catch (error) {
+            if (error.code == "ERR_NETWORK") {
+                setResponse({
+                    message: "Oops! Could not connect to the server. Please try again later.",
+                    isSuccess: false
+                })
+            }
+            else {
+                const { data } = error.response
+                console.log(data)
+
+                if (error.status === 401) {
+                    setSigninResponse({
+                        message: data.ErrorMsg,
+                        isSuccess: false
+                    })
+                }
+                else if (error.status === 500) {
+                    setSigninResponse({
+                        message: "Oh Sorry! The operation could not be completed due to a server error. Please try again later",
+                        isSuccess: false
+                    })
+                }
+            }
+        }
+
+        setLoading(false)
 
     }
+
     return (
+        <>
+                <div style={{ width: '100%' }}>
+                    <div>
+                        <h1 className='form-header'>Sign in</h1>
+                        <p className='form-header-desc'>Type your email and password to sign in to your account</p>
+                    </div>
+                    {signinResponse && <Alert severity={!signinResponse.isSuccess ? 'error' : 'success'}>{signinResponse.message}</Alert>}
+                    <InputText
+                        required
+                        id="email"
+                        type="email"
+                        title="Email address"
+                        name="email"
+                        value={formData.email.value}
+                        validation_error={formData.email.error}
+                        changeHandler={handleChange}
+                        blurHandler={handleBlur}
+                    />
+                    <InputText
+                        required
+                        id="password"
+                        type="password"
+                        title="Password"
+                        name="password"
+                        value={formData.password.value}
+                        validation_error={formData.password.error}
+                        changeHandler={handleChange}
+                        blurHandler={handleBlur}
+                    />
+                    <div className={styles.inputText}>
+                        <Button
+                            size='large'
+                            loading={loading}
+                            fullWidth
+                            variant="contained"
+                            sx={{ backgroundColor: "var(--dark-bg)", textTransform: 'none', fontWeight: '400' }}
+                            onClick={signin}
+                        >
+                            Sign in
+                        </Button>
+                    </div>
+                    <div className="signin-form-help">
+                        <p>Don't have account? <a href='/signup'>Sign up</a></p>
+                        <p>Forgot your password? <a href="/recover">Recover your account</a></p>
+                    </div>
 
-        <div style={{ width: '100%' }}>
-            <div>
-                <h1 className='form-header'>Sign in</h1>
-                <p className='form-header-desc'>Type your email and password to sign in to your account</p>
-            </div>
-            <InputText
-                required
-                id="email"
-                type="email"
-                title="Email address"
-                name="email"
-                value={formData.email.value}
-                validation_error={formData.email.error}
-                changeHandler={handleChange}
-                blurHandler={handleBlur}
-            />
-            <InputText
-                required
-                id="password"
-                type="password"
-                title="Password"
-                name="password"
-                value={formData.password.value}
-                validation_error={formData.password.error}
-                changeHandler={handleChange}
-                blurHandler={handleBlur}
-            />
-            <div className={styles.inputText}>
-                <Button
-                    size='large'
-                    loading={loading}
-                    fullWidth
-                    variant="contained"
-                    sx={{ backgroundColor: "var(--dark-bg)", textTransform: 'none', fontWeight: '400' }}
-                    onClick={signin}
-                >
-                    Sign in
-                </Button>
-            </div>
-            <div className="signin-form-help">
-                <p>Don't have account? <a href='/signup'>Sign up</a></p>
-                <p>Forgot your password? <a href="/recover">Recover your account</a></p>
-            </div>
+                </div>
+            
 
-        </div>
-
+        </>
     )
 }
 

@@ -14,7 +14,7 @@ const borderFocusStyleProps = {
     '& .MuiInputLabel-root.Mui-focused': {
         color: 'gray',
     },
-    backgroundColor: 'white'
+    backgroundColor: 'inherit'
 }
 
 function InputText({ required, type, title = null, placeholder, name, id, value, validation_error, changeHandler, blurHandler = null }) {
@@ -29,7 +29,7 @@ function InputText({ required, type, title = null, placeholder, name, id, value,
     return (
         <>
             <div className={`${styles.inputText}`} style={{width: '100%'}}>
-                <Tooltip title={`Enter ${title || id}`}>
+                <Tooltip title={`Enter ${title}`}>
                     <TextField
                         required={required}
                         fullWidth
