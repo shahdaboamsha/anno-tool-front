@@ -11,9 +11,9 @@ export default function DashboardLayout({ mode, toggleMode }) {
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
-        setIsSidebarOpen(true); 
+        setIsSidebarOpen(true);
       } else {
-        setIsSidebarOpen(false); 
+        setIsSidebarOpen(false);
       }
     };
 
@@ -28,11 +28,11 @@ export default function DashboardLayout({ mode, toggleMode }) {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-x-auto">
       <Sidebar isOpen={isSidebarOpen} mode={mode} />
       <div className="flex flex-col flex-1">
         <Topbar toggleSidebar={toggleSidebar} mode={mode} toggleMode={toggleMode} />
-        <main className={clsx("p-4 overflow-auto flex-1 transition-all duration-300 ease-in-out", mode === 'light' ? 'bg-white' : 'bg-black')}>
+        <main className={clsx("p-0 pb-5 overflow-x-auto flex-1 transition-all duration-300 ease-in-out", mode === 'light' ? 'bg-white' : 'bg-black')}>
           <Outlet />
         </main>
       </div>

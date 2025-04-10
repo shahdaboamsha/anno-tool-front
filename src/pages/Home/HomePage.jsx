@@ -41,7 +41,7 @@ export default function HomePage() {
         <div ref={ref}>
 
             <div
-                className='flex flex-centered-items flex-column-items white-text center-text home-img-container'
+                className='text-white flex flex-centered-items flex-column-items white-text center-text home-img-container'
                 size={12}
                 style={{
                     height: `${isWideScreen ? '90vh' : '70vh'}`,
@@ -58,6 +58,7 @@ export default function HomePage() {
 
                 <Typography fontWeight={700}
                     variant={isWideScreen ? 'h2' : 'h4'}
+                    sx={{color: 'white'}}
                 >
                     Streamline Your Data with Our Text Annotation Tool
                 </Typography>
@@ -65,11 +66,13 @@ export default function HomePage() {
                 <Typography
                     variant={isWideScreen ? 'h6' : 'body2'}
                     marginTop={1}
+                    sx={{color: 'white'}}
                 >
                     Easily upload your files and classify words with precision
                 </Typography>
                 <Typography
                     variant={isWideScreen ? 'h6' : 'body2'}
+                    sx={{color: 'white'}}
                 >
                     Our intuitive tool simplifies annotation, helping you organize and analyze text effortlessly. Start streamlining your data today!
                 </Typography>

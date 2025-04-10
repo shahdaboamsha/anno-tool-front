@@ -16,7 +16,6 @@ const ButtonStyleProps = {
 
 export default function InputFile({ fileSelectionHandler, loadingState, validation_error }) {
 
-
     return (
         <div className={`${styles.inputText}`}>
             <Tooltip title='Upload dataset' placement='bottom'>
@@ -28,7 +27,6 @@ export default function InputFile({ fileSelectionHandler, loadingState, validati
                     hidden
                     accept=".csv, .xlsx" />
                 <Button
-                    className="dark:border-gray-600"
                     size="small"
                     fullWidth
                     variant="outlined"
@@ -39,7 +37,7 @@ export default function InputFile({ fileSelectionHandler, loadingState, validati
                             borderColor: (theme) =>
                                 theme.palette.mode === 'dark'
                                     ? theme.palette.grey[600]
-                                    : 'inherit',
+                                    : (validation_error === "" ? 'inherit' : 'red'),
                         },
                     }}
                     onClick={() => document.getElementById('dataInput')?.click()}

@@ -15,6 +15,7 @@ import { Button } from "@mui/material"
 import { createTheme, ThemeProvider } from '@mui/material';
 import React, { useEffect, useState } from "react"
 import InnerLoader from "./components/style_modules/InnerLoader"
+import UserTasks from "./components/UserTasks"
 
 const lightTheme = createTheme({
   palette: {
@@ -87,10 +88,10 @@ function App() {
           <Route path="/recover" element={<ForgotPasswordPage />} />
 
           <Route path="/dashboard" element={<Dashboard mode={mode} toggleMode={toggleMode} />} >
-
             <Route path="overview" element={<h1>Over view</h1>} />
             <Route path="new" element={<AnnotationForm mode={mode} toggleMode={toggleMode} />} />
             <Route path="loader" element={<InnerLoader />} />
+            <Route path="mytasks" element={<UserTasks/>}/>
           </Route>
 
           <Route path="/loader" element={<InnerLoader />} />

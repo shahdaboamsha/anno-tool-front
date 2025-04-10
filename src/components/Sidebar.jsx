@@ -11,7 +11,8 @@ import AddIcon from '@mui/icons-material/Add';
 const navItems = [
   { icon: <DashboardIcon />, label: 'Overview', link: 'overview' },
   { icon: <AddIcon />, label: 'New Task', link: 'new' },
-  { icon: '', label: 'Loader Test', link: 'loader' }
+  { icon: '', label: 'Loader Test', link: 'loader' },
+  { icon: <AssignmentIcon/>, label: 'My Tasks', link: 'mytasks' }
 ];
 
 export default function Sidebar({ isOpen, mode }) {
@@ -22,7 +23,7 @@ export default function Sidebar({ isOpen, mode }) {
         "border-r h-full transition-all duration-300 ease-in-out",
         // Sidebar should be expanded on large screens (w-64) and collapsed on smaller screens (w-16)
         isOpen ? "w-64" : "w-16", // Dynamically set the width based on isOpen
-        mode === 'light' ? "bg-white border-gray-200" : "bg-black border-gray-800"
+        mode === 'light' ? "bg-gray-100 border-gray-200" : "bg-black border-gray-800"
       )}
     >
       <div className={clsx("p-4 text-lg font-bold", mode === 'light' ? "text-black" : "text-white")}>ANNO TOOL</div>
@@ -31,7 +32,7 @@ export default function Sidebar({ isOpen, mode }) {
           <div
             onClick={() => navigate(item.link)}
             key={i}
-            className="flex items-center gap-4 px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
+            className="flex items-center gap-4 px-4 py-2 text-gray-700 hover:bg-white cursor-pointer"
           >
             <span>{item.icon}</span>
             {isOpen && <span className="text-sm">{item.label}</span>}

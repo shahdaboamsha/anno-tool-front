@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import InputText from './InputText';
 import InputSelect from './InputSelect';
 import InputFile from './InputFile';
-import { useTheme } from '@mui/material';
+import { useTheme, IconButton, Tooltip, Divider } from '@mui/material';
 import inputValidators from '../assets/inputValidators';
 import axios from 'axios';
 import { useNotifications } from '@toolpad/core/useNotifications';
@@ -11,6 +11,9 @@ import { useNavigate } from 'react-router-dom';
 import { createTheme, styled } from '@mui/material/styles';
 import FormHeader from './style_modules/FormHeader';
 import { Typography } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import fileLineCounter from '../assets/fileLinesCounter';
 export default function AnnotationForm() {
 
     const theme = useTheme()
@@ -39,14 +42,16 @@ export default function AnnotationForm() {
             values: {
                 fileName: "",
                 fileSize: "",
-                fileData: ""
+                fileData: "",
+                lines: null
             },
             errorMsg: ""
         }
     })
 
-    const [loading, setLoading] = useState(false)
 
+    const [loading, setLoading] = useState(false)
+    const [fileChangedAtLeastOnce, setFileChangedAtLeastOnce] = useState(false)
     // on each change on the input fields, update the value of its corresponding object in the form data
     const changeHandler = (event) => {
         const { name, value } = event.target
@@ -69,16 +74,20 @@ export default function AnnotationForm() {
     }
 
     // uploaded file handler
-    const fileSelectionHandler = (event, isDeleted = false) => {
+    const fileSelectionHandler = async(event, isDeleted = false) => {
+
+        setFileChangedAtLeastOnce(true)
 
         if (isDeleted) {
+            setFileChangedAtLeastOnce(false)
             setFileFormData({
                 ...fileFormData, file:
                 {
                     values: {
                         fileName: "",
                         fileSize: "",
-                        fileData: ""
+                        fileData: "",
+                        lines: null
                     },
                     errorMsg: ''
                 }
@@ -95,7 +104,7 @@ export default function AnnotationForm() {
         }
 
         else if (event.target.files) {
-            file = event.target.files[0];
+            file = event.target.files[0]
         }
 
         if (!file) {
@@ -105,16 +114,19 @@ export default function AnnotationForm() {
                     values: {
                         fileName: "",
                         fileSize: "",
-                        fileData: ""
+                        fileData: "",
+                        lines: null
                     },
-                    errorMsg: ''
+                    errorMsg: 'No file uploaded'
                 }
             })
+            setFileChangedAtLeastOnce(false)
             return
         }
 
         const fileName = file.name
         let fileSizeAsString = ''
+        const lines = await fileLineCounter(file,fileName)
 
         // this if statement for create a string to render to the user about file name and size
         if (file.size >= 1024) {
@@ -131,7 +143,8 @@ export default function AnnotationForm() {
                 values: {
                     fileName: fileName,
                     fileSize: fileSizeAsString,
-                    fileData: file
+                    fileData: file,
+                    lines: lines
                 },
                 errorMsg: ''
             }
@@ -198,7 +211,7 @@ export default function AnnotationForm() {
         >
             <FormHeader title='Create a new task' />
             <div className="flex flex-column-items padding-8px" >
-                <Typography className='text-[20px] dark:text-white'  variant='p'>Task Metadata</Typography>
+                <Typography className='text-[20px] dark:text-white' variant='p'>Task Metadata</Typography>
                 <InputText
                     type='text'
                     required
@@ -249,15 +262,60 @@ export default function AnnotationForm() {
 
             <div style={{ backgroundColor: 'inherit' }}>
                 <Typography className='text-[20px] dark:text-white' variant='p'>Task Metadata</Typography>
-                <h5 className='margin-6px gray-color'>Please upload a file in CSV or XLSX format</h5>
-                <InputFile
-                    fileSelectionHandler={fileSelectionHandler}
-                    validation_error={fileFormData.file.errorMsg}
-                />
+                <div style={{ display: fileChangedAtLeastOnce ? 'none' : 'block' }}>
+                    <h5 className='margin-6px gray-color'>Please upload a file in CSV or XLSX format</h5>
+                    <InputFile
+                        fileSelectionHandler={fileSelectionHandler}
+                        validation_error={fileFormData.file.errorMsg}
+                    />
+                </div>
+
                 {
                     fileFormData.file.values.fileName != "" && <div className="flex flex-column-items padding-8px">
-                        <h5 className='center-text margin-6px gray-color'>{fileFormData.file.values.fileName}</h5>
-                        <h5 className='center-text margin-6px gray-color'>Size: {fileFormData.file.values.fileSize}</h5>
+                        <table class="w-full text-sm text-left rtl:text-right">
+                            <thead class="text-xs text-white bg-black" style={{ backgroundColor: 'var(--dark-bg)' }}>
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">
+                                        File name
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        File size
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Number of lines
+                                    </th>
+                                    <th scope="col" class="px-6 py-3">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <td scope="row" class="px-6 py-4">
+                                        {fileFormData.file.values.fileName}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {fileFormData.file.values.fileSize}
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        {fileFormData.file.values.lines}
+                                    </td>
+
+                                    <td class="px-6 py-4">
+                                        <Tooltip title='Delete file'>
+                                            <IconButton onClick={(e) => fileSelectionHandler(null, true)}>
+                                                <DeleteIcon color='error' />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title='Choose another file'>
+                                            <IconButton onClick={(e) => document.getElementById('dataInput')?.click()}>
+                                                <EditIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 }
             </div>
