@@ -6,6 +6,7 @@ import './style_modules/styles.css'
 import { Alert } from '@mui/material'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
+import FormHeader from './style_modules/FormHeader'
 
 function SigninForm() {
 
@@ -94,7 +95,7 @@ function SigninForm() {
                 isSuccess: true
             })
             localStorage.setItem('ACCESS_TOKEN', signinResponse.data.token)
-            navigate('/user/my/dashboard')
+            navigate('/dashboard')
 
         } catch (error) {
             if (error.code == "ERR_NETWORK") {
@@ -128,53 +129,52 @@ function SigninForm() {
 
     return (
         <>
-                <div style={{ width: '100%' }}>
-                    <div>
-                        <h1 className='form-header'>Sign in</h1>
-                        <p className='form-header-desc'>Type your email and password to sign in to your account</p>
-                    </div>
-                    {signinResponse && <Alert severity={!signinResponse.isSuccess ? 'error' : 'success'}>{signinResponse.message}</Alert>}
-                    <InputText
-                        required
-                        id="email"
-                        type="email"
-                        title="Email address"
-                        name="email"
-                        value={formData.email.value}
-                        validation_error={formData.email.error}
-                        changeHandler={handleChange}
-                        blurHandler={handleBlur}
-                    />
-                    <InputText
-                        required
-                        id="password"
-                        type="password"
-                        title="Password"
-                        name="password"
-                        value={formData.password.value}
-                        validation_error={formData.password.error}
-                        changeHandler={handleChange}
-                        blurHandler={handleBlur}
-                    />
-                    <div className={styles.inputText}>
-                        <Button
-                            size='large'
-                            loading={loading}
-                            fullWidth
-                            variant="contained"
-                            sx={{ backgroundColor: "var(--dark-bg)", textTransform: 'none', fontWeight: '400' }}
-                            onClick={signin}
-                        >
-                            Sign in
-                        </Button>
-                    </div>
-                    <div className="signin-form-help">
-                        <p>Don't have account? <a href='/signup'>Sign up</a></p>
-                        <p>Forgot your password? <a href="/recover">Recover your account</a></p>
-                    </div>
-
+            <div style={{ width: '100%' }}>
+                <FormHeader title='Sign in' text='Type your email and password to sign in to your account' />
+                {signinResponse && <Alert severity={!signinResponse.isSuccess ? 'error' : 'success'}>{signinResponse.message}</Alert>}
+                <InputText
+                    required
+                    id="email"
+                    type="email"
+                    title="Email address"
+                    name="email"
+                    value={formData.email.value}
+                    validation_error={formData.email.error}
+                    changeHandler={handleChange}
+                    blurHandler={handleBlur}
+                />
+                <InputText
+                    required
+                    id="password"
+                    type="password"
+                    title="Password"
+                    name="password"
+                    value={formData.password.value}
+                    validation_error={formData.password.error}
+                    changeHandler={handleChange}
+                    blurHandler={handleBlur}
+                />
+                <div className={styles.inputText}>
+                    <Button
+                        size='large'
+                        loading={loading}
+                        fullWidth
+                        variant="contained"
+                        sx={{ backgroundColor: "var(--dark-bg)", textTransform: 'none', fontWeight: '400' }}
+                        onClick={signin}
+                    >
+                        Sign in
+                    </Button>
                 </div>
-            
+                
+                <div className='font-4px mt-8 flex flex-col justify-center items-center text-center'>
+                    <p>Don't have an account? <a href='/signup' className="text-[14px] text-blue-400 hover:text-blue-800">Sign up</a></p>
+                    <p>Forgot your password? <a href="/recover" className="text-[14px] text-blue-400 hover:text-blue-800">Recover your account</a></p>
+                </div>
+
+
+            </div>
+
 
         </>
     )

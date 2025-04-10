@@ -233,7 +233,6 @@
 }
 
 
-
 .signin-form-help p {
     display: block;
     font-size: 14px;
@@ -256,3 +255,9 @@
     color: rgb(136, 136, 214);
     text-decoration: underline;
 }
+/*
+.card-profile-image {
+    height: 200px;
+    width: auto;
+    border-radius: 100%;
+}*/

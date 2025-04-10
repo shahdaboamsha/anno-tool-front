@@ -1,5 +1,5 @@
 import { Button, useMediaQuery } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import InputText from './InputText';
 import InputSelect from './InputSelect';
 import InputFile from './InputFile';
@@ -9,7 +9,8 @@ import axios from 'axios';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { useNavigate } from 'react-router-dom';
 import { createTheme, styled } from '@mui/material/styles';
-
+import FormHeader from './style_modules/FormHeader';
+import { Typography } from '@mui/material';
 export default function AnnotationForm() {
 
     const theme = useTheme()
@@ -177,7 +178,7 @@ export default function AnnotationForm() {
                     }
                 }
             )
-            navigate('/user/my/overview')
+            navigate('/dashboard')
             notification.show('Annotation uploaded successfully', {
                 severity: 'success',
                 autoHideDuration: 5000
@@ -188,18 +189,16 @@ export default function AnnotationForm() {
         setLoading(false)
     }
 
-
     return (
         <div
-            style={{ width: isWideScreen ? '70%' : '100%', margin: 'auto' }}
+            style={{
+                width: isWideScreen ? '70%' : '100%',
+                margin: 'auto',
+            }}
         >
-            <h1 className='formHeader'>Create a new annotation</h1>
-            <div
-                className="flex flex-column-items padding-8px bg-white"
-                style={{ backgroundColor: 'inherit' }}
-
-            >
-                <h3>Task Metadata</h3>
+            <FormHeader title='Create a new task' />
+            <div className="flex flex-column-items padding-8px" >
+                <Typography className='text-[20px] dark:text-white'  variant='p'>Task Metadata</Typography>
                 <InputText
                     type='text'
                     required
@@ -248,8 +247,8 @@ export default function AnnotationForm() {
                 />
             </div>
 
-            <div className="flex flex-column-items padding-8px bg-white" style={{ backgroundColor: 'inherit' }}>
-                <h3>Upload a dataset file</h3>
+            <div style={{ backgroundColor: 'inherit' }}>
+                <Typography className='text-[20px] dark:text-white' variant='p'>Task Metadata</Typography>
                 <h5 className='margin-6px gray-color'>Please upload a file in CSV or XLSX format</h5>
                 <InputFile
                     fileSelectionHandler={fileSelectionHandler}

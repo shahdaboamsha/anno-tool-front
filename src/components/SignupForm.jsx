@@ -4,6 +4,7 @@ import validator from "../assets/inputValidators"
 import { Button } from "@mui/material"
 import styles from '../components/style_modules/InputText.module.css'
 import Alert from '@mui/material/Alert';
+import FormHeader from "./style_modules/FormHeader"
 
 import axios from "axios"
 
@@ -130,9 +131,10 @@ export default function SignupForm() {
     return (
         <div>
             {signupResponse &&
-                <Alert sx={{mb: 2}} severity={signupResponse && !signupResponse.isSuccess ? "error" : "success"} >{signupResponse.message}</Alert>
+                <Alert sx={{ mb: 2 }} severity={signupResponse && !signupResponse.isSuccess ? "error" : "success"} >{signupResponse.message}</Alert>
             }
 
+            <FormHeader title='Sign up' text='Please fill out the fields to create a new account. * fields are required' />
             <InputText
                 required
                 type="text"
@@ -188,6 +190,7 @@ export default function SignupForm() {
                 changeHandler={handleChange}
                 blurHandler={handleBlur}
             />
+
             <div className={`${styles.inputText}`}>
                 <Button
                     size='large'
@@ -198,6 +201,9 @@ export default function SignupForm() {
                     onClick={signUp}
                 >Sign up
                 </Button>
+            </div>
+            <div className='font-4px mt-5 flex flex-col justify-center items-center text-center'>
+                <p>have an account? <a href='/signin' className="text-[14px] text-blue-400 hover:text-blue-800">Sign in</a></p>
             </div>
         </div>
     )

@@ -16,7 +16,7 @@ export default function SignupPage() {
         const isLoggedIn = () => {
             return localStorage.getItem('ACCESS_TOKEN') != null
         }
-        isLoggedIn() ? navigate('/user/my/overview') : setPageLoading(false)
+        isLoggedIn() ? navigate('/dashboard') : setPageLoading(false)
     }, [])
 
 
@@ -50,15 +50,7 @@ export default function SignupPage() {
                                         size={{ lg: 6, md: 12, xs: 12, xl: 6, sm: 12 }}
                                         sx={{ padding: 2 }}
                                     >
-                                        <div className={signupPageStyles.signupHeader}>
-                                            <h1 className={signupPageStyles.boldHeader}>Sign up</h1>
-                                            <p className={signupPageStyles.signupFormHeader}>Please fill out the fields to create a new account. * fields are required</p>
-
-                                        </div>
                                         <SignupForm />
-                                        <div className={signupPageStyles.signupHelp}>
-                                            <p>Already have an account? <a href='/signin'>Sign in</a></p>
-                                        </div>
                                     </Grid>
                                 </Grid>
                             </div>

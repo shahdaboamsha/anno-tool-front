@@ -4,6 +4,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import './style_modules/styles.css'
 import { Tooltip } from '@mui/material';
 import { useState } from 'react';
+import { Typography } from '@mui/material';
 
 const ButtonStyleProps = {
     textTransform: 'none',
@@ -11,7 +12,6 @@ const ButtonStyleProps = {
     display: 'flex',
     flexDirection: 'column',
     color: 'inherit',
-    border: 'solid 2px dashed'
 }
 
 export default function InputFile({ fileSelectionHandler, loadingState, validation_error }) {
@@ -28,25 +28,31 @@ export default function InputFile({ fileSelectionHandler, loadingState, validati
                     hidden
                     accept=".csv, .xlsx" />
                 <Button
-                    size='small'
+                    className="dark:border-gray-600"
+                    size="small"
                     fullWidth
-                    color='inherit'
-                    variant='outlined'
+                    variant="outlined"
                     sx={{
                         ...ButtonStyleProps,
-                        borderColor: validation_error == "" ? 'inherit' : 'red',
+                        borderColor: validation_error === "" ? 'inherit' : 'red',
+                        '&.MuiButton-outlined': {
+                            borderColor: (theme) =>
+                                theme.palette.mode === 'dark'
+                                    ? theme.palette.grey[600]
+                                    : 'inherit',
+                        },
                     }}
-                    onClick={() => document.getElementById('dataInput').click()}
+                    onClick={() => document.getElementById('dataInput')?.click()}
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={fileSelectionHandler}
-                    loading={loadingState == "loading"}
+                    loading={loadingState === "loading"}
                 >
-                    <CloudUploadIcon fontSize='large' color='action' />
-                    <h3 style={{ color: 'inherit' }}>
-                       Upload a file by browsing or dragging and dropping
-
-                    </h3>
+                    <CloudUploadIcon fontSize="large" color="action" />
+                    <Typography className="text-[20px] dark:text-white" variant="body1">
+                        Upload a file by browsing or dragging and dropping
+                    </Typography>
                 </Button>
+
                 <span style={{
                     whiteSpace: 'pre-line',
                     marginLeft: '10px',

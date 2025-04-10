@@ -2,8 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 * {
    font-family: "42dot Sans", sans-serif !important;
-    font-weight: 400;
-    font-style: normal;
+   font-weight: 400;
 }
 
 body {
