@@ -17,7 +17,7 @@ const borderFocusStyleProps = {
     backgroundColor: 'inherit'
 }
 
-function InputText({ required, type, title = null, placeholder, name, id, value, validation_error, changeHandler, blurHandler = null }) {
+function InputText({size = "small", mutiline = false, required, type, title = null, placeholder, name, id, value, validation_error, changeHandler, blurHandler = null }) {
 
     const handeBlur = (event) => {
         const { value } = event.target
@@ -33,7 +33,8 @@ function InputText({ required, type, title = null, placeholder, name, id, value,
                     <TextField
                         required={required}
                         fullWidth
-                        size='small'
+                        multiline={mutiline}
+                        size={size}
                         id={id}
                         placeholder={placeholder || title}
                         label={title}

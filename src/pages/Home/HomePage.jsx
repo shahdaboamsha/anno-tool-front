@@ -29,7 +29,7 @@ export default function HomePage() {
     // handle Get Started button -> open the form of the task creation
     const getStarted = () => {
         if (localStorage.getItem('ACCESS_TOKEN')) {
-            navigate('/user/my/overview')
+            navigate('/dashboard/overview')
         }
         else {
             setDialogOpenState(true)
@@ -39,7 +39,6 @@ export default function HomePage() {
 
     return (
         <div ref={ref}>
-
             <div
                 className='text-white flex flex-centered-items flex-column-items white-text center-text home-img-container'
                 size={12}

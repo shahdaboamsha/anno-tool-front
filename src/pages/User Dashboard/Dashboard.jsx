@@ -23,7 +23,7 @@ export default function Dashboard({ mode, toggleMode }) {
   return (
     <>
       {pageLoading ? <InnerLoader /> : <>
-        <div class={clsx("transition-all duration-300 ease-in-out border-b", mode === 'dark' ? 'bg-black border-gray-800' : 'bg-white border-gray-300')}>
+        <div className={clsx("transition-all duration-300 ease-in-out border-b", mode === 'dark' ? 'bg-black border-gray-800' : 'bg-white border-gray-300')}>
           <IconButton onClick={toggleMode} size='large'>
             {mode === 'light' ? <LightModeIcon fontSize='large' sx={{ color: 'yellow' }} /> : <DarkModeIcon fontSize='large' sx={{ color: 'blueviolet' }} />}
           </IconButton>
