@@ -9,7 +9,7 @@ import BlockIcon from '@mui/icons-material/Block';
 import { IconButton } from '@mui/material';
 
 
-export default function SharedUsersList({sharedUsers}) {
+export default function SharedUsersList({ sharedUsers }) {
 
     const removeUserFromAccess = (email) => {
         alert(email);
@@ -18,13 +18,13 @@ export default function SharedUsersList({sharedUsers}) {
     return (
         <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
             {sharedUsers.map((user, index) => (
-                <React.Fragment key={user.email}>
+                <React.Fragment key={user.email + index}>
                     <ListItem alignItems="flex-start">
                         <ListItemAvatar>
-                            <Avatar alt={user.userName} src="/static/images/avatar/2.jpg" />
+                            <Avatar alt={user.name} src="/static/images/avatar/2.jpg" />
                         </ListItemAvatar>
                         <ListItemText
-                            primary={user.userName}
+                            primary={`${user.name} ${user.role === 'owner'? ' (You)' : ''}`}
                             secondary={user.email}
                         />
                         <IconButton onClick={() => removeUserFromAccess(user.email)}>

@@ -12,7 +12,7 @@ const navItems = [
   { icon: <DashboardIcon />, label: 'Overview', link: 'overview' },
   { icon: <AddIcon />, label: 'New Task', link: 'new' },
   { icon: '', label: 'Loader Test', link: 'loader' },
-  { icon: <AssignmentIcon/>, label: 'My Tasks', link: 'mytasks' }
+  { icon: <AssignmentIcon />, label: 'My Tasks', link: 'mytasks' }
 ];
 
 export default function Sidebar({ isOpen, mode }) {
@@ -26,7 +26,12 @@ export default function Sidebar({ isOpen, mode }) {
         mode === 'light' ? "bg-gray-100 border-gray-200" : "bg-black border-gray-800"
       )}
     >
-      <div className={clsx("p-4 text-lg font-bold", mode === 'light' ? "text-black" : "text-white")}>ANNO TOOL</div>
+      <div className={clsx("p-4 text-lg font-bold text-black")}>
+        <a href="/">
+          <img src='https://png.pngtree.com/png-clipart/20190628/original/pngtree-artificial-intelligence-blue-technology-mechanical-gear-ai-brain-commercial-material-png-image_4030085.jpg' width='40px' alt="IMAGE" loading='lazy' />
+        </a>
+      </div>
+
       <nav className="flex flex-col space-y-1 mt-4">
         {navItems.map((item, i, link) => (
           <div

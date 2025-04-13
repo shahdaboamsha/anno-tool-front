@@ -7,9 +7,11 @@ import { Alert } from '@mui/material'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
 import FormHeader from './style_modules/FormHeader'
+import { useLocation } from 'react-router-dom'
 
 function SigninForm() {
 
+    const location = useLocation()
     const [formData, setFormData] = useState({
         email: {
             value: "",
@@ -131,6 +133,7 @@ function SigninForm() {
         <>
             <div style={{ width: '100%' }}>
                 <FormHeader title='Sign in' text='Type your email and password to sign in to your account' />
+                {location.state != null && <Alert severity='error'>{location.state.message}: You are not signed in</Alert>}
                 {signinResponse && <Alert severity={!signinResponse.isSuccess ? 'error' : 'success'}>{signinResponse.message}</Alert>}
                 <InputText
                     required

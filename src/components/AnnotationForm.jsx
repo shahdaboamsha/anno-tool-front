@@ -49,9 +49,13 @@ export default function AnnotationForm() {
         }
     })
 
-
     const [loading, setLoading] = useState(false)
     const [fileChangedAtLeastOnce, setFileChangedAtLeastOnce] = useState(false)
+
+    const [uploadTaskRespone, setUploadTaskResponse] = useState({
+        message: null
+    })
+
     // on each change on the input fields, update the value of its corresponding object in the form data
     const changeHandler = (event) => {
         const { name, value } = event.target
@@ -74,7 +78,7 @@ export default function AnnotationForm() {
     }
 
     // uploaded file handler
-    const fileSelectionHandler = async(event, isDeleted = false) => {
+    const fileSelectionHandler = async (event, isDeleted = false) => {
 
         setFileChangedAtLeastOnce(true)
 
@@ -126,7 +130,7 @@ export default function AnnotationForm() {
 
         const fileName = file.name
         let fileSizeAsString = ''
-        const lines = await fileLineCounter(file,fileName)
+        const lines = await fileLineCounter(file, fileName)
 
         // this if statement for create a string to render to the user about file name and size
         if (file.size >= 1024) {
@@ -181,7 +185,7 @@ export default function AnnotationForm() {
         axios.defaults.withCredentials = true
         const formData = prepareDataBeforeSubmit()
         try {
-            const uploadTaskResponse = await axios.post(
+            await axios.post(
                 'http://localhost:3000/file/upload',
                 prepareDataBeforeSubmit(),
                 {
@@ -191,13 +195,19 @@ export default function AnnotationForm() {
                     }
                 }
             )
-            navigate('/dashboard')
-            notification.show('Annotation uploaded successfully', {
-                severity: 'success',
-                autoHideDuration: 5000
-            })
+            navigate('/dashboard/mytasks', { state: { message: `Your task "${fileFormData.task_name.value}" uploaded successfully` } })
+
         } catch (error) {
-            console.log(error)
+            if (error.code == "ERR_NETWORK") {
+                setUploadTaskResponse({ message: 'Unable to connect to server' })
+            }
+            else if (error.status === 401) {
+                navigate('/signin', { state: { message: "Access Denied" } })
+            }
+            else {
+                setUploadTaskResponse({ message: 'Oops, an error occured during the process, please try again' })
+
+            }
         }
         setLoading(false)
     }
@@ -210,6 +220,9 @@ export default function AnnotationForm() {
             }}
         >
             <FormHeader title='Create a new task' />
+
+            {loading ? <Alert severity="success" sx={{ mt: 2, mb: 2 }}>{location.state.message}</Alert> : ""}
+
             <div className="flex flex-column-items padding-8px" >
                 <Typography className='text-[20px] dark:text-white' variant='p'>Task Metadata</Typography>
                 <InputText

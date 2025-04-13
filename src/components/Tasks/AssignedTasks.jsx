@@ -2,12 +2,14 @@ import { useState } from "react";
 import { IconButton, Menu, MenuItem } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import DeleteIcon from '@mui/icons-material/Delete'
 import clsx from "clsx";
 import QuickDialog from "../Dialog";
 import ShareTaskForm from "./ShareTaskForm"; // assuming you have it
-import {Tooltip} from "@mui/material";
+import { Tooltip, Alert } from "@mui/material";
 
-export default function AssignedTasks({ assignedTasks }) {
+export default function AssignedTasks({ assignedTasks, state }) {
+
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
@@ -55,16 +57,16 @@ export default function AssignedTasks({ assignedTasks }) {
                                 )}>
                                     <td className="px-6 py-4">{task.task_id}</td>
                                     <td className="px-6 py-4">{task.task_name}</td>
-                                    <td className="px-6 py-3">{task.task_type}</td>
-                                    <td className="px-6 py-3">{task.progress[0]}/{task.progress[1]}</td>
-                                    <td className="px-6 py-3">$2999</td>
+                                    <td className="px-6 py-3">{task.annotation_type}</td>
+                                    <td className="px-6 py-3">None</td>
+                                    <td className="px-6 py-3"> <a className="text-[14px] text-blue-500 hover:text-blue-700" href="#" >Annotate</a> </td>
                                     <td className="px-6 py-3">
                                         <Tooltip title='Options'>
                                             <IconButton
                                                 aria-label="more"
                                                 onClick={(e) => handleClick(e, task)}
                                             >
-                                                <MoreVertIcon />
+                                                <MoreVertIcon fontSize='small' />
                                             </IconButton>
                                         </Tooltip>
                                     </td>
@@ -74,6 +76,14 @@ export default function AssignedTasks({ assignedTasks }) {
                     </tbody>
                 }
             </table>
+            
+            {assignedTasks.length == 0 && state == null ? <div className='mt-2 p-2 flex shadow flex-row justify-start align-center items-start text-center'>
+                <h1 className="text text-[14px] mt-1">No tasks assigned yet. <a className="text-[14px] text-blue-500 hover:text-blue-700" href="new" >Create new task</a></h1>
+            </div> : ""}
+
+            {state ? <div className='mt-2 p-2 flex shadow flex-row justify-start align-center items-start text-center'>
+               <Alert severity="error" sx={{ mt: 2, mb: 2 }}>{state}</Alert>
+            </div> : ""}
 
             {/* Menu outside the loop */}
             <Menu
@@ -91,7 +101,10 @@ export default function AssignedTasks({ assignedTasks }) {
                 }}
             >
                 <MenuItem onClick={openShareDialogForm}>
-                    <PersonAddAltIcon sx={{ mr: 2 }} /> Share {selectedTask?.task_name}
+                    <PersonAddAltIcon sx={{ mr: 1 }} fontSize='small' /> <h1 className="text text-[14px] mt-1">Share</h1>
+                </MenuItem>
+                <MenuItem>
+                    <DeleteIcon sx={{ mr: 1 }} fontSize='small' /> <h1 className="text text-[14px] mt-1">Delete</h1>
                 </MenuItem>
             </Menu>
 
