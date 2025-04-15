@@ -1,7 +1,7 @@
 import axios from "axios"
-import InnerLoader from "../style_modules/InnerLoader"
+import InnerLoader from "../InnerLoader"
 import { useState, useEffect } from "react"
-import FormHeader from "../style_modules/FormHeader"
+import FormHeader from "./../FormHeader"
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import { Alert, Button } from "@mui/material";
@@ -15,9 +15,9 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
     const [searchResult, setSearchResult] = useState([])
     const [selectedUsers, setSelectedUsers] = useState([])
     const [usersWithAccess, setUsersWithAccess] = useState([])
-    const [message, setMessage] = useState("")
-    const [invitationResult, setInvitationResult] = useState(null)
 
+    const [alertMsg, setAlertMsg] = useState("")
+    const [inviteMessage, setInviteMessage] = useState("")
     const [invitationLoading, setInvitationLoading] = useState(false)
     const [searchLoading, setSearchLoading] = useState(false)
     const [sharedUsersLoading, setSharedUsersLoading] = useState(true)
@@ -34,15 +34,17 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
 
                 const result = (await axios.get(url, { headers: headers })).data
                 setUsersWithAccess(result.people_with_access)
+
             } catch (error) {
+                console.log(error)
                 if (error.code == "ERR_NETWORK") {
-                    setMessage({ message: 'Unable to connect to server' })
+                    setAlertMsg('Unable to connect to server')
                 }
                 else if (error.status === 401) {
                     navigate('/signin', { state: { message: "Access Denied" } })
                 }
                 else {
-                    setMessage({ message: 'Oops, an error occured during the process, please try again' })
+                    setAlertMsg('Oops! An error occurred while displaying shared users. Try again')
                 }
             }
             setSharedUsersLoading(false)
@@ -59,26 +61,32 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
         axios.defaults.withCredentials = true
         try {
             setSearchLoading(true)
-            const query = `query=${e.target.value}`
+            const query = `query=${e.target.value}&&task_id=${taskId}`
             const url = `http://localhost:3000/tasks/search?${query}`
-
-            const result = (await axios.get(url)).data
+            const token = localStorage.getItem('ACCESS_TOKEN')
+            const headers = {
+                'Authorization' : `Bearer ${token}`
+            }
+            const result = (await axios.get(url, { headers: headers})).data
 
             // Filter out users who are already selected
             const filteredResult = result.filter(
                 (user) => !selectedUsers.some(selected => selected.email === user.email)
             )
+
             setSearchResult(filteredResult)
 
         } catch (error) {
+            
             if (error.code == "ERR_NETWORK") {
-                setMessage({ message: 'Unable to connect to server' })
+                setAlertMsg('Unable to connect to server')
             }
-            else if (error.status === 401) {
+            else if (error.response.status === 401) {
                 navigate('/signin', { state: { message: "Access Denied" } })
             }
+            else if (error.response.status === 400 ) return 
             else {
-                setMessage({ message: 'Oops, an error occured during the process, please try again' })
+                setAlertMsg('Oops, an error occured during the process, please try again')
             }
         }
         setSearchLoading(false)
@@ -98,22 +106,34 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
                 'Authorization': `Bearer ${token}`
             }
 
+            const getSelectedUsersEmails = () => {
+                // in selectedUsers hook, users stored as array of objects {user_id, email, name}, this function make a array of just users email
+                const emails = []
+                for (let user of selectedUsers){
+                    emails.push(user.email)
+                }
+                return emails
+            }
 
-            const result = (await axios.post(url, { selectedUsers, message }, { headers })).data
-            setInvitationResult(result.message)
+            const emails = getSelectedUsersEmails()
+            const message = inviteMessage || "" // rename inviteMessage into message for front-back end implementaion variable names
+
+            const result = (await axios.post(url, { selectedUsers: emails, message }, { headers })).data
+            setAlertMsg(result.message)
 
         } catch (error) {
 
             if (error.code == "ERR_NETWORK") {
-                setInvitationResult("Unable to connect to server")
+                setAlertMsg("Unable to connect to server")
             }
             else if (error.status === 401) {
                 localStorage.removeItem('ACCESS_TOKEN')
                 navigate('/signin', { state: { message: "Access Denied" } })
             }
             else if (error.status === 500) {
-                setInvitationResult("Oops, an error occured during the process, try again")
+                setAlertMsg("Oops! An error occurred while submitting the sharing request. Try again")
             }
+            console.log(error)
         }
         setInvitationLoading(false)
     }
@@ -122,7 +142,7 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
     return (
         <div className="lg:w-[500px]">
             <FormHeader title={`Share ${taskName}`} start text="Invite users to collaborate on your task by sending them access requests" />
-            {invitationResult ? <Alert severity='error'>{invitationResult}</Alert> : ""}
+            {alertMsg? <Alert severity={alertMsg!= "Invitations sent successfully"? 'error' : 'success'}>{alertMsg}</Alert> : ""}
 
             <Autocomplete
                 multiple
@@ -151,17 +171,17 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
                 )}
             />
             <InputText
-                name='shareRequest'
+                name='inviteMessage'
                 variant='outlined'
                 title="Message"
                 placeholder='Write a invite message (Optional)'
                 mutiline
                 fullWidth
                 size="large"
-                value={message}
+                value={inviteMessage}
                 validation_error={null}
                 blurHandler={(event, target, value) => { }}
-                changeHandler={(e) => setMessage(e.target.value)}
+                changeHandler={(e) => setInviteMessage(e.target.value)}
             />
             <Button
                 variant='contained'

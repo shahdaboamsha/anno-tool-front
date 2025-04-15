@@ -1,4 +1,4 @@
-import '../style_modules/InnerLoaderStyle.css'
+import './style_modules/InnerLoaderStyle.css'
 export default function InnerLoader() {
     return (
         <div

@@ -2,9 +2,9 @@ import AssignedTasks from "./Tasks/AssignedTasks"
 import { Typography, Alert } from "@mui/material"
 import axios from "axios"
 import { useEffect, useState } from "react"
-import InnerLoader from "./style_modules/InnerLoader"
+import InnerLoader from "./InnerLoader"
 import { useLocation } from "react-router-dom";
-
+import { useNavigate } from "react-router-dom"
 
 export default function UserTasks() {
 
@@ -12,6 +12,7 @@ export default function UserTasks() {
     const [assignedTasks, setAssignedTasks] = useState([])
     const [loading, setLoading] = useState(true)
     const [errorMsg, setErrorMsg] = useState({message: null})
+    const navigate = useNavigate()
 
     useEffect(() => {
         const getAssignedTasks = async () => {
@@ -26,13 +27,12 @@ export default function UserTasks() {
                 }
 
                 const assignedTasks = (await axios.get(url, { headers: headers })).data
-                console.log(assignedTasks.tasks)
                 setAssignedTasks(assignedTasks.tasks)
             } catch (error) {
                 if (error.code == "ERR_NETWORK") {
                     setErrorMsg({ message: 'Unable to connect to server' })
                 }
-                else if (error.status === 401) {
+                else if (error.response.status === 401) {
                     navigate('/signin', { state: { message: "Access Denied" } })
                 }
                 else {
@@ -46,7 +46,7 @@ export default function UserTasks() {
 
     return (
         <div className="p-1 ml-5">
-            {location.state ? <Alert severity="info" sx={{ mt: 2, mb: 2 }}>{location.state.message}</Alert> : ""}
+            {location.state ? <Alert severity="info" sx={{ mt: 2, mb: 2 }}>{location.state.message? location.state.message : ""}</Alert> : ""}
 
             {loading ? <InnerLoader /> : <>
                 <h1 className="text text-[18px] mt-5">My Tasks</h1>

@@ -6,17 +6,15 @@ import HomePage from "./pages/Home/HomePage"
 import UploadFileStepper from "./components/UploadFileFormStepper"
 import ForgotPasswordPage from "./pages/Forgot/ForgotPasswordPage"
 import Dashboard from "./pages/User Dashboard/Dashboard"
-import Loader from "./components/Loader"
 import './App.css'
 import './index.css'
-import FormHeader from "./components/style_modules/FormHeader"
 import AnnotationForm from "./components/AnnotationForm"
 import { Button } from "@mui/material"
 import { createTheme, ThemeProvider } from '@mui/material';
 import React, { useEffect, useState } from "react"
-import InnerLoader from "./components/style_modules/InnerLoader"
+import InnerLoader from './components/InnerLoader'
 import UserTasks from "./components/UserTasks"
-
+import ViewTask from "./components/Tasks/ViewTask"
 const lightTheme = createTheme({
   palette: {
     mode: 'light',
@@ -91,7 +89,12 @@ function App() {
             <Route path="overview" element={<h1>Over view</h1>} />
             <Route path="new" element={<AnnotationForm mode={mode} toggleMode={toggleMode} />} />
             <Route path="loader" element={<InnerLoader />} />
-            <Route path="mytasks" element={<UserTasks/>}/>
+            <Route path="taskslist" element={<UserTasks />} />
+
+            <Route path="viewtask" element={<ViewTask />}>
+              <Route path="details" element={<h1>HI hi hi</h1>} />
+            </Route>
+
           </Route>
 
           <Route path="/loader" element={<InnerLoader />} />

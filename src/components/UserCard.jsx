@@ -12,6 +12,12 @@ export default function UserCard({ setOpen }) {
     localStorage.setItem('USER_PROFILE_IMAGE', 'https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-800x525.jpg')
     localStorage.setItem('USER_NAME', 'Jhon Mark')
 
+    const signout = () => {
+        localStorage.removeItem('ACCESS_TOKEN')
+        localStorage.removeItem('USER_PROFILE_IMAGE')
+        localStorage.removeItem('USER_NAME')
+        navigate('/signin')
+    }
     return (
         <div className={`p-10 bg-gray-200 flex flex-column-items flex-centered-items }`}>
                 <div onClick={() => { navigate('overview'); setOpen(false) }}>
@@ -39,6 +45,7 @@ export default function UserCard({ setOpen }) {
                 variant="outlined"
                 color='error'
                 endIcon={<LogoutIcon color='inherit' />}
+                onClick={signout}
                 sx={{ textTransform: 'none', color: 'red', m: 2 }}>Sign out</Button>
 
         </div>

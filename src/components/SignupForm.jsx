@@ -4,7 +4,7 @@ import validator from "../assets/inputValidators"
 import { Button } from "@mui/material"
 import styles from '../components/style_modules/InputText.module.css'
 import Alert from '@mui/material/Alert';
-import FormHeader from "./style_modules/FormHeader"
+import FormHeader from "./FormHeader"
 
 import axios from "axios"
 

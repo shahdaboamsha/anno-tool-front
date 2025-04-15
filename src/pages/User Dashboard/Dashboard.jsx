@@ -1,13 +1,13 @@
 // src/pages/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
-import DashboardLayout from '../../components/style_modules/DashboardLayout';
-import AnnotationForm from '../../components/AnnotationForm'
+import DashbordLayout from './../../components/DashboardLayout'
 import { Button, IconButton } from '@mui/material';
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import clsx from 'clsx';
 import { useNavigate } from 'react-router-dom';
-import InnerLoader from '../../components/style_modules/InnerLoader';
+import InnerLoader from './../../components/InnerLoader';
+import DashboardLayout from './../../components/DashboardLayout';
 export default function Dashboard({ mode, toggleMode }) {
 
   const navigate = useNavigate()
@@ -17,7 +17,7 @@ export default function Dashboard({ mode, toggleMode }) {
     const isLoggedIn = () => {
       return localStorage.getItem('ACCESS_TOKEN') != null
     }
-    !isLoggedIn() ? navigate('/signin') : setPageLoading(false)
+    !isLoggedIn() ? navigate('/signin', {state: {message: 'Access Denied: You must sign in'}}) : setPageLoading(false)
   }, [])
 
   return (

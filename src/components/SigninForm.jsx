@@ -6,7 +6,7 @@ import './style_modules/styles.css'
 import { Alert } from '@mui/material'
 import axios from 'axios'
 import { useNavigate } from 'react-router-dom'
-import FormHeader from './style_modules/FormHeader'
+import FormHeader from './FormHeader'
 import { useLocation } from 'react-router-dom'
 
 function SigninForm() {

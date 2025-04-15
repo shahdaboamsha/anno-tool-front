@@ -59,7 +59,11 @@ export default function AssignedTasks({ assignedTasks, state }) {
                                     <td className="px-6 py-4">{task.task_name}</td>
                                     <td className="px-6 py-3">{task.annotation_type}</td>
                                     <td className="px-6 py-3">None</td>
-                                    <td className="px-6 py-3"> <a className="text-[14px] text-blue-500 hover:text-blue-700" href="#" >Annotate</a> </td>
+                                    <td className="px-6 py-3">
+                                        <Tooltip title="View task">  <a className="text-[14px] text-blue-500 hover:text-blue-700 mr-1" href="#" >View</a></Tooltip>
+                                         |
+                                        <Tooltip title="Annotate"><a className="text-[14px] text-blue-500 hover:text-blue-700 ml-1" href="#" >Annotate</a></Tooltip>
+                                    </td>
                                     <td className="px-6 py-3">
                                         <Tooltip title='Options'>
                                             <IconButton
@@ -76,13 +80,13 @@ export default function AssignedTasks({ assignedTasks, state }) {
                     </tbody>
                 }
             </table>
-            
+
             {assignedTasks.length == 0 && state == null ? <div className='mt-2 p-2 flex shadow flex-row justify-start align-center items-start text-center'>
                 <h1 className="text text-[14px] mt-1">No tasks assigned yet. <a className="text-[14px] text-blue-500 hover:text-blue-700" href="new" >Create new task</a></h1>
             </div> : ""}
 
             {state ? <div className='mt-2 p-2 flex shadow flex-row justify-start align-center items-start text-center'>
-               <Alert severity="error" sx={{ mt: 2, mb: 2 }}>{state}</Alert>
+                <Alert severity="error" sx={{ mt: 2, mb: 2 }}>{state}</Alert>
             </div> : ""}
 
             {/* Menu outside the loop */}

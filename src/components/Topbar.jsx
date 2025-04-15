@@ -6,7 +6,7 @@ import clsx from 'clsx';
 import { IconButton } from '@mui/material';
 import { Popover } from '@mui/material';
 import { useState } from 'react';
-import UserCard from '../UserCard';
+import UserCard from './UserCard';
 
 export default function Topbar({ toggleSidebar, mode }) {
 

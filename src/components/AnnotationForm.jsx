@@ -1,6 +1,6 @@
 import { Button, useMediaQuery } from '@mui/material';
 import { useEffect, useState } from 'react';
-import InputText from './InputText';
+import InputText from './InputText'; 
 import InputSelect from './InputSelect';
 import InputFile from './InputFile';
 import { useTheme, IconButton, Tooltip, Divider } from '@mui/material';
@@ -9,11 +9,12 @@ import axios from 'axios';
 import { useNotifications } from '@toolpad/core/useNotifications';
 import { useNavigate } from 'react-router-dom';
 import { createTheme, styled } from '@mui/material/styles';
-import FormHeader from './style_modules/FormHeader';
+import FormHeader from './FormHeader';
 import { Typography } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import fileLineCounter from '../assets/fileLinesCounter';
+import { Alert } from '@mui/material';
 export default function AnnotationForm() {
 
     const theme = useTheme()
@@ -195,7 +196,7 @@ export default function AnnotationForm() {
                     }
                 }
             )
-            navigate('/dashboard/mytasks', { state: { message: `Your task "${fileFormData.task_name.value}" uploaded successfully` } })
+            navigate('/dashboard/taskslist', { state: { message: `Your task ${fileFormData.task_name.value} uploaded successfully` } })
 
         } catch (error) {
             if (error.code == "ERR_NETWORK") {
@@ -220,8 +221,6 @@ export default function AnnotationForm() {
             }}
         >
             <FormHeader title='Create a new task' />
-
-            {loading ? <Alert severity="success" sx={{ mt: 2, mb: 2 }}>{location.state.message}</Alert> : ""}
 
             <div className="flex flex-column-items padding-8px" >
                 <Typography className='text-[20px] dark:text-white' variant='p'>Task Metadata</Typography>
