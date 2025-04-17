@@ -1,6 +1,6 @@
 import { Button, useMediaQuery } from '@mui/material';
 import { useEffect, useState } from 'react';
-import InputText from './InputText'; 
+import InputText from './InputText';
 import InputSelect from './InputSelect';
 import InputFile from './InputFile';
 import { useTheme, IconButton, Tooltip, Divider } from '@mui/material';
@@ -173,9 +173,9 @@ export default function AnnotationForm() {
             else
                 formData.append(field, data[field])
         }
-        console.log('FORM DATA: ', formData)
         return formData
     }
+
     const uploadFile = async () => {
 
         if (!validateBeforeSubmit()) {
@@ -184,7 +184,6 @@ export default function AnnotationForm() {
 
         setLoading(true)
         axios.defaults.withCredentials = true
-        const formData = prepareDataBeforeSubmit()
         try {
             await axios.post(
                 'http://localhost:3000/file/upload',
@@ -197,7 +196,6 @@ export default function AnnotationForm() {
                 }
             )
             navigate('/dashboard/taskslist', { state: { message: `Your task ${fileFormData.task_name.value} uploaded successfully` } })
-
         } catch (error) {
             if (error.code == "ERR_NETWORK") {
                 setUploadTaskResponse({ message: 'Unable to connect to server' })
@@ -205,10 +203,14 @@ export default function AnnotationForm() {
             else if (error.status === 401) {
                 navigate('/signin', { state: { message: "Access Denied" } })
             }
+            else if (error.status === 400) {
+                setUploadTaskResponse({ message: `${error.response.data.message}` })
+            }
             else {
-                setUploadTaskResponse({ message: 'Oops, an error occured during the process, please try again' })
+                setUploadTaskResponse({ message: `Oops, an error occured during the process. Try again` })
 
             }
+            document.getElementById('alert').scrollIntoView({ behavior: 'smooth', block: 'center' })
         }
         setLoading(false)
     }
@@ -219,11 +221,14 @@ export default function AnnotationForm() {
                 width: isWideScreen ? '70%' : '100%',
                 margin: 'auto',
             }}
+            className={!isWideScreen ? 'p-3' : ''}
         >
-            <FormHeader title='Create a new task' />
+            <h1 className='text-[24px] text-center mt-5'>Create a new task</h1>
 
-            <div className="flex flex-column-items padding-8px" >
-                <Typography className='text-[20px] dark:text-white' variant='p'>Task Metadata</Typography>
+            {uploadTaskRespone.message ? <Alert severity='error' id='alert'>{uploadTaskRespone.message}</Alert> : ''}
+            <div className="flex flex-column-items" >
+                <h1 className='text-[18px]'>Task metadata</h1>
+
                 <InputText
                     type='text'
                     required
@@ -272,10 +277,11 @@ export default function AnnotationForm() {
                 />
             </div>
 
+            <h1 className='text-[18px]'>Task dataset</h1>
+
             <div style={{ backgroundColor: 'inherit' }}>
-                <Typography className='text-[20px] dark:text-white' variant='p'>Task Metadata</Typography>
                 <div style={{ display: fileChangedAtLeastOnce ? 'none' : 'block' }}>
-                    <h5 className='margin-6px gray-color'>Please upload a file in CSV or XLSX format</h5>
+                    <h5 className='gray-color'>Please upload a file in CSV or XLSX format</h5>
                     <InputFile
                         fileSelectionHandler={fileSelectionHandler}
                         validation_error={fileFormData.file.errorMsg}
@@ -284,36 +290,36 @@ export default function AnnotationForm() {
 
                 {
                     fileFormData.file.values.fileName != "" && <div className="flex flex-column-items padding-8px">
-                        <table class="w-full text-sm text-left rtl:text-right">
-                            <thead class="text-xs text-white bg-black" style={{ backgroundColor: 'var(--dark-bg)' }}>
+                        <table className="w-full text-sm text-left rtl:text-right">
+                            <thead className="text-xs text-white bg-black" style={{ backgroundColor: 'var(--dark-bg)' }}>
                                 <tr>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" className="px-6 py-3">
                                         File name
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" className="px-6 py-3">
                                         File size
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" className="px-6 py-3">
                                         Number of lines
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" className="px-6 py-3">
                                         Actions
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                    <td scope="row" class="px-6 py-4">
+                                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <td scope="row" className="px-6 py-4">
                                         {fileFormData.file.values.fileName}
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td className="px-6 py-4">
                                         {fileFormData.file.values.fileSize}
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td className="px-6 py-4">
                                         {fileFormData.file.values.lines}
                                     </td>
 
-                                    <td class="px-6 py-4">
+                                    <td className="px-6 py-4">
                                         <Tooltip title='Delete file'>
                                             <IconButton onClick={(e) => fileSelectionHandler(null, true)}>
                                                 <DeleteIcon color='error' />

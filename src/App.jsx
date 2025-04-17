@@ -27,23 +27,7 @@ const lightTheme = createTheme({
     background: {
       default: '#ffffff',
     },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          color: '#000000', // Set the text color of the buttons to black or any other color
-        },
-      },
-    },
-    MuiTypography: {
-      styleOverrides: {
-        root: {
-          color: '#000000', // Set the text color of the buttons to black or any other color
-        },
-      },
-    }
-  },
+  }
 });
 
 
@@ -75,7 +59,7 @@ function App() {
 
   document.title = "Annotator tool"
   return (
-    <ThemeProvider theme={mode === 'dark' ? darkTheme : lightTheme}>
+    <ThemeProvider theme={lightTheme}>
       <Router>
         <Routes>
           <Route path="/signin" element={<SigninPage />} />

@@ -17,7 +17,7 @@ export default function Dashboard({ mode, toggleMode }) {
     const isLoggedIn = () => {
       return localStorage.getItem('ACCESS_TOKEN') != null
     }
-    !isLoggedIn() ? navigate('/signin', {state: {message: 'Access Denied: You must sign in'}}) : setPageLoading(false)
+    !isLoggedIn() ? navigate('/signin', {state: {message: "Session expired, Sign in to continue"}}) : setPageLoading(false)
   }, [])
 
   return (

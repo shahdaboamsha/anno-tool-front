@@ -7,10 +7,11 @@ import clsx from "clsx";
 import QuickDialog from "../Dialog";
 import ShareTaskForm from "./ShareTaskForm"; // assuming you have it
 import { Tooltip, Alert } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export default function AssignedTasks({ assignedTasks, state }) {
 
-
+    const navigate = useNavigate()
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedTask, setSelectedTask] = useState(null);
     const [showShareForm, setShowShareForm] = useState(false);
@@ -60,9 +61,13 @@ export default function AssignedTasks({ assignedTasks, state }) {
                                     <td className="px-6 py-3">{task.annotation_type}</td>
                                     <td className="px-6 py-3">None</td>
                                     <td className="px-6 py-3">
-                                        <Tooltip title="View task">  <a className="text-[14px] text-blue-500 hover:text-blue-700 mr-1" href="#" >View</a></Tooltip>
-                                         |
-                                        <Tooltip title="Annotate"><a className="text-[14px] text-blue-500 hover:text-blue-700 ml-1" href="#" >Annotate</a></Tooltip>
+                                        <Tooltip title="View task">
+                                            <button className="text-[14px] text-blue-500 hover:text-blue-700 mr-1 cursor-pointer" onClick={() => navigate(`../viewtask?task_id=${task.task_id}`)} >View</button>
+                                        </Tooltip>
+                                        |
+                                        <Tooltip title="Annotate">
+                                            <button className="text-[14px] text-blue-500 hover:text-blue-700 ml-1 cursor-pointer" onClick={() => navigate(`../viewtask?task_id=${task.task_id}`, {state: {openDialog: true}})} >Annotate</button>
+                                        </Tooltip>
                                     </td>
                                     <td className="px-6 py-3">
                                         <Tooltip title='Options'>

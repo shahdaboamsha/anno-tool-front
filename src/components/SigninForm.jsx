@@ -133,7 +133,7 @@ function SigninForm() {
         <>
             <div style={{ width: '100%' }}>
                 <FormHeader title='Sign in' text='Type your email and password to sign in to your account' />
-                {location.state != null && <Alert severity='error'>{location.state.message}: You are not signed in</Alert>}
+                {location.state != null && <Alert severity='error'>{location.state.message}</Alert>}
                 {signinResponse && <Alert severity={!signinResponse.isSuccess ? 'error' : 'success'}>{signinResponse.message}</Alert>}
                 <InputText
                     required
@@ -163,7 +163,7 @@ function SigninForm() {
                         loading={loading}
                         fullWidth
                         variant="contained"
-                        sx={{ backgroundColor: "var(--dark-bg)", textTransform: 'none', fontWeight: '400' }}
+                        sx={{ backgroundColor: "var(--dark-bg)", textTransform: 'none', fontWeight: '400', color: 'white' }}
                         onClick={signin}
                     >
                         Sign in
