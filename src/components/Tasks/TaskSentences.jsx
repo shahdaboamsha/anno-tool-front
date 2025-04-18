@@ -4,7 +4,7 @@ import axios from "axios";
 import { Alert } from "@mui/material";
 import SentencesAsTable from "./SentencesAsTable";
 
-export default function TaskSentences({ api, setNumberOfSentences }) {
+export default function TaskSentences({ api }) {
 
     const [sentences, setSentences] = useState([])
     const [loading, setLoading] = useState(true)
@@ -22,7 +22,6 @@ export default function TaskSentences({ api, setNumberOfSentences }) {
                 }
 
                 const sentences = (await axios.get(api, { headers: headers })).data
-                setNumberOfSentences(sentences.length)
                 setSentences(sentences)
             } catch (error) {
                 console.log(error)

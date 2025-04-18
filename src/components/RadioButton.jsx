@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import clsx from "clsx";
 
 export default function RadioButtonGroup({ labels = [], handleLabelSelection }) {
 
@@ -6,13 +6,12 @@ export default function RadioButtonGroup({ labels = [], handleLabelSelection }) 
     const capitalizeFirstLetter = (str) => {
         return str.charAt(0).toUpperCase() + str.slice(1)
     }
-
     return (
-        <div className="w-full mt-5">
-            <h1 className="text-[16px]">Select label:</h1>
+        <div className="w-full flex flex-row justify-items-center flex-wrap gap-2">
+
             {
                 labels.map((label, index) => (
-                    <div key={index + 10} className="flex items-center ps-4 border border-gray-200 rounded-sm mt-2">
+                    <div key={index + 10} className={clsx("grow flex items-center pl-2 border border-gray-200 rounded-sm")}>
                         <input
                             key={index + 1}
                             id={index}
@@ -20,11 +19,11 @@ export default function RadioButtonGroup({ labels = [], handleLabelSelection }) 
                             value=""
                             onChange={() => handleLabelSelection(label)}
                             name='label'
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300"
+                            className="w-4 text-blue-600 bg-gray-100 border-gray-300"
                         />
                         <label
                             htmlFor="bordered-radio-1"
-                            className="w-full py-4 ms-2 text-sm"
+                            className="w-full p-2 text-sm"
                             key={index + 6}
                             id={index + 2}
                         >
@@ -33,6 +32,7 @@ export default function RadioButtonGroup({ labels = [], handleLabelSelection }) 
                     </div>
                 ))
             }
+
         </div>
     );
 }

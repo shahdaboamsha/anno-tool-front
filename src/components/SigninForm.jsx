@@ -97,7 +97,7 @@ function SigninForm() {
                 isSuccess: true
             })
             localStorage.setItem('ACCESS_TOKEN', signinResponse.data.token)
-            navigate('/dashboard')
+            location.state && location.state.nextUrl ? navigate(`/dashboard/${location.state.nextUrl}`) : navigate(`/dashboard`)
 
         } catch (error) {
             if (error.code == "ERR_NETWORK") {
@@ -169,7 +169,7 @@ function SigninForm() {
                         Sign in
                     </Button>
                 </div>
-                
+
                 <div className='font-4px mt-8 flex flex-col justify-center items-center text-center'>
                     <p>Don't have an account? <a href='/signup' className="text-[14px] text-blue-400 hover:text-blue-800">Sign up</a></p>
                     <p>Forgot your password? <a href="/recover" className="text-[14px] text-blue-400 hover:text-blue-800">Recover your account</a></p>

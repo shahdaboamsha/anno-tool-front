@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@alptugidin/react-circular-progress-bar": "^1.1.4",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.4.11",
@@ -27,6 +28,7 @@
     "mkcert": "^3.2.0",
     "os": "^0.1.2",
     "react": "^19.0.0",
+    "react-circular-progressbar": "^2.2.0",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.1.5",
     "webrtc-adapter": "^9.0.1",
