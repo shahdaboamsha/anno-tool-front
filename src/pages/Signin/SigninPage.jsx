@@ -5,6 +5,7 @@ import { Fade } from '@mui/material'
 import Loader from "../../components/Loader"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
+import NavigationBar from '../../components/NavigationBar'
 
 function SigninPage() {
 
@@ -26,9 +27,18 @@ function SigninPage() {
             {pageLoading ? <Loader />
                 :
                 <Fade in timeout={700}>
-                    <div className='page-container'>
-                        <div className='shadowed'>
-                            <Grid container width={{ lg: 400, sm: 390, xs: 350 }} columns={12}>
+
+                    <div className='page-container text-[14px]'>
+                        <div style={{
+                            position: 'absolute',
+                            top: '0px',
+                            width: '100%',
+                            backgroundColor: 'var(--dark-bg)'
+                        }}>
+                            <NavigationBar />
+                        </div>
+                        <div className='shadowed text-[14px] mt-5'>
+                            <Grid container width={{ lg: 350, sm: 390, xs: 350 }} columns={12}>
                                 <SigninForm />
                             </Grid>
                         </div>

@@ -36,7 +36,8 @@ export default function AnnotateForm({ task }) {
                 }
 
                 const sentenceToAnnotate = (await axios.get(url, { headers: headers })).data
-                setSentenceToAnnotate(sentenceToAnnotate.nextSentence)
+                setSentenceToAnnotate(sentenceToAnnotate.sentence)
+                console.log(sentenceToAnnotate.sentence)
                 
             } catch (error) {
                 if (error.code == "ERR_NETWORK") {

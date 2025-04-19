@@ -5,6 +5,12 @@ import InnerLoader from "../InnerLoader"
 import { Loader } from "lucide-react"
 import { TablePagination } from "@mui/material";
 
+function formatDateToLong(dateString) {
+    const date = new Date(dateString);
+    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    return new Intl.DateTimeFormat('en-GB', options).format(date);
+}
+
 export default function AnnotatedSentences({ taskId }) {
 
     const navigate = useNavigate()
@@ -32,11 +38,11 @@ export default function AnnotatedSentences({ taskId }) {
             setLoading(true)
             const url = `http://localhost:3000/annotation/${taskId}/viewannotatedsentences`
             const headers = {
-                Authorization: `Beared ${localStorage.getItem('ACCESS_TOKEN')}`
+                Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
             }
             try {
                 const annotations = await axios.get(url, { headers: headers })
-                console.log(annotations.data[0])
+                console.log(annotations.data)
                 setAnnos(annotations.data)
             } catch (error) {
                 console.log(error)
@@ -68,9 +74,9 @@ export default function AnnotatedSentences({ taskId }) {
                             <tbody>
                                 {visibleSentences.map((sentence) => (
                                     <tr key={sentence.sentence_id} className="border-b border-gray-300 text-[14px]">
-                                        <td className="text-center px-2 py-1 border-r border-gray-300">{sentence.annotator_id}</td>
+                                        <td className="text-center px-2 py-1 border-r border-gray-300 w-40">{sentence.annotated_by.name}</td>
                                         <td className="text-center px-2 py-1">{sentence.text}</td>
-                                        <td className="text-center px-2 py-1 border-l border-gray-300">{sentence.createdAt}</td>
+                                        <td className="text-center px-2 py-1 border-l border-gray-300 w-30">{formatDateToLong(sentence.created_at)}</td>
                                         <td className="text-center px-2 py-1 border-l border-gray-300 w-30">{sentence.label}</td>
                                     </tr>
                                 ))}

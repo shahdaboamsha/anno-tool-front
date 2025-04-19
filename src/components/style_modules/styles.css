@@ -261,3 +261,10 @@
     width: auto;
     border-radius: 100%;
 }*/
+
+.acceptedReq {
+    background-color: #95d5b2;
+}
+.rejectedReq {
+    background-color: #fcb9b2;
+}

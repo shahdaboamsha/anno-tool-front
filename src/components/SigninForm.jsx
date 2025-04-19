@@ -131,10 +131,10 @@ function SigninForm() {
 
     return (
         <>
-            <div style={{ width: '100%' }}>
+            <div style={{ width: '100%' }} className='text-center'>
                 <FormHeader title='Sign in' text='Type your email and password to sign in to your account' />
                 {location.state != null && <Alert severity='error'>{location.state.message}</Alert>}
-                {signinResponse && <Alert severity={!signinResponse.isSuccess ? 'error' : 'success'}>{signinResponse.message}</Alert>}
+                {signinResponse && <Alert sx={{mb: 2}} severity={!signinResponse.isSuccess ? 'error' : 'success'}>{signinResponse.message}</Alert>}
                 <InputText
                     required
                     id="email"
@@ -157,6 +157,8 @@ function SigninForm() {
                     changeHandler={handleChange}
                     blurHandler={handleBlur}
                 />
+                <p>Forgot your password? <a href="/recover" className="text-[14px] text-center text-blue-400 hover:text-blue-800">Recover your account</a></p>
+
                 <div className={styles.inputText}>
                     <Button
                         size='large'
@@ -172,7 +174,6 @@ function SigninForm() {
 
                 <div className='font-4px mt-8 flex flex-col justify-center items-center text-center'>
                     <p>Don't have an account? <a href='/signup' className="text-[14px] text-blue-400 hover:text-blue-800">Sign up</a></p>
-                    <p>Forgot your password? <a href="/recover" className="text-[14px] text-blue-400 hover:text-blue-800">Recover your account</a></p>
                 </div>
 
 

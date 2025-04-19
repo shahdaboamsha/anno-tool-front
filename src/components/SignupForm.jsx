@@ -197,7 +197,7 @@ export default function SignupForm() {
                     loading={loading}
                     fullWidth
                     variant="contained"
-                    sx={{ backgroundColor: "var(--dark-bg)", textTransform: 'none', fontWeight: '400' }}
+                    sx={{ backgroundColor: "var(--dark-bg)", textTransform: 'none',color: 'white', fontWeight: '400' }}
                     onClick={signUp}
                 >Sign up
                 </Button>

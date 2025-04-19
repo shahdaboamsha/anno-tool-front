@@ -15,6 +15,7 @@ import React, { useEffect, useState } from "react"
 import InnerLoader from './components/InnerLoader'
 import UserTasks from "./components/UserTasks"
 import ViewTask from "./components/Tasks/ViewTask"
+import ShareRequestCard from "./components/Tasks/ShareRequestCards"
 const lightTheme = createTheme({
   palette: {
     mode: 'light',
@@ -68,6 +69,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/stepper" element={<UploadFileStepper />} />
           <Route path="/recover" element={<ForgotPasswordPage />} />
+          <Route path="/card" element={<ShareRequestCard />} />
 
           <Route path="/dashboard" element={<Dashboard mode={mode} toggleMode={toggleMode} />} >
             <Route path="overview" element={<h1>Over view</h1>} />
