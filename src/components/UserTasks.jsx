@@ -1,17 +1,21 @@
 import AssignedTasks from "./Tasks/AssignedTasks"
-import { Typography, Alert } from "@mui/material"
 import axios from "axios"
 import { useEffect, useState } from "react"
 import InnerLoader from "./InnerLoader"
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom"
+import { ToggleButtonGroup, ToggleButton, Tooltip, Alert, Button } from "@mui/material";
 
 export default function UserTasks() {
 
     const location = useLocation()
     const [assignedTasks, setAssignedTasks] = useState([])
+    const [sharedTasks, setSharedTasks] = useState([])
+    const [tasksToRender, setTasksToRender] = useState([])
+
     const [loading, setLoading] = useState(true)
-    const [errorMsg, setErrorMsg] = useState({message: null})
+    const [errorMsg, setErrorMsg] = useState({ message: null })
+
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -20,14 +24,17 @@ export default function UserTasks() {
                 const token = localStorage.getItem('ACCESS_TOKEN')
 
                 const url = `http://localhost:3000/users/owned-tasks`
-                // url must be : http://localhost:3000/users/owned-tasks 
-                // there is no need for send task id as parameter in url, the token contatins it 
                 const headers = {
                     'Authorization': `Bearer ${token}`
                 }
 
-                const assignedTasks = (await axios.get(url, { headers: headers })).data
-                setAssignedTasks(assignedTasks.tasks)
+                const allTasks = (await axios.get(url, { headers: headers })).data
+                setAssignedTasks(allTasks.ownedTasks)
+                setSharedTasks(allTasks.sharedTasks)
+                console.log(allTasks)
+                setTasksToRender(allTasks.ownedTasks)
+
+
             } catch (error) {
                 if (error.code == "ERR_NETWORK") {
                     setErrorMsg({ message: 'Unable to connect to server' })
@@ -44,13 +51,45 @@ export default function UserTasks() {
         setLoading(false)
     }, [])
 
+
+    const [alignment, setAlignment] = useState('My Tasks')
+
+    const handleChange = (event, newAlignment) => {
+        if (newAlignment !== null) {
+          setAlignment(newAlignment)
+      
+          if (newAlignment === 'My Tasks') {
+            setTasksToRender(assignedTasks)
+          } else {
+            setTasksToRender(sharedTasks)
+          }
+        }
+      };
+      
+
     return (
         <div className="p-1 ml-5">
-            {location.state ? <Alert severity="info" sx={{ mt: 2, mb: 2 }}>{location.state.message? location.state.message : ""}</Alert> : ""}
+            {location.state && <Alert severity="info" sx={{ mt: 2, mb: 2 }}>{location.state.message}</Alert>}
 
             {loading ? <InnerLoader /> : <>
-                <h1 className="text text-[18px] mt-5">My Tasks</h1>
-                <AssignedTasks assignedTasks={assignedTasks} state={errorMsg.message} />
+                <div className="flex justify-between items-end mt-3">
+                    <h1 className="text text-[18px] text-center">{alignment}</h1>
+
+                    <ToggleButtonGroup
+                        color='success'
+                        value={alignment}
+                        exclusive
+                        onChange={handleChange}
+                        aria-label="Platform"
+                        onDoubleClick={() => null}
+
+                    >
+                        <ToggleButton sx={{ textTransform: 'none' }} value="My Tasks">Owned Tasks</ToggleButton>
+                        <ToggleButton sx={{ textTransform: 'none' }} value="Tasks Shared With me">Tasks Shared with me</ToggleButton>
+                    </ToggleButtonGroup>
+                </div>
+
+                <AssignedTasks assignedTasks={tasksToRender} state={errorMsg.message} />
             </>}
 
         </div>

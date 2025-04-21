@@ -32,6 +32,7 @@ export default function InputFile({ fileSelectionHandler, loadingState, validati
                     variant="outlined"
                     sx={{
                         ...ButtonStyleProps,
+                        color: 'black',
                         borderColor: validation_error === "" ? 'inherit' : 'red',
                         '&.MuiButton-outlined': {
                             borderColor: (theme) =>
@@ -46,7 +47,7 @@ export default function InputFile({ fileSelectionHandler, loadingState, validati
                     loading={loadingState === "loading"}
                 >
                     <CloudUploadIcon fontSize="large" color="action" />
-                    <Typography className="text-[20px] dark:text-white" variant="body1">
+                    <Typography className="text-[20px]" variant="body1">
                         Upload a file by browsing or dragging and dropping
                     </Typography>
                 </Button>

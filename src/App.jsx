@@ -9,58 +9,18 @@ import Dashboard from "./pages/User Dashboard/Dashboard"
 import './App.css'
 import './index.css'
 import AnnotationForm from "./components/AnnotationForm"
-import { Button } from "@mui/material"
-import { createTheme, ThemeProvider } from '@mui/material';
-import React, { useEffect, useState } from "react"
 import InnerLoader from './components/InnerLoader'
 import UserTasks from "./components/UserTasks"
 import ViewTask from "./components/Tasks/ViewTask"
 import ShareRequestCard from "./components/Tasks/ShareRequestCards"
-const lightTheme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#ffffff',
-    },
-    text: {
-      primary: '#000000',
-    },
-    background: {
-      default: '#ffffff',
-    },
-  }
-});
-
-
-const darkTheme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#0b132b'
-    },
-    text: {
-      primary: '#0000000',
-    },
-    background: {
-      default: '#0b132b',
-      paper: '#1f1f1f',
-    }
-  },
-
-})
+import UserAccountSettings from "./components/UserAccountSettings"
+import UserAccountSecurity from "./components/UserAccountSecurity"
 
 // App function
 function App() {
 
-  const [mode, setMode] = useState('light')
-
-  const toggleMode = () => {
-    setMode(mode === 'dark' ? 'light' : 'dark')
-  }
-
   document.title = "Annotator tool"
   return (
-    <ThemeProvider theme={lightTheme}>
       <Router>
         <Routes>
           <Route path="/signin" element={<SigninPage />} />
@@ -71,12 +31,13 @@ function App() {
           <Route path="/recover" element={<ForgotPasswordPage />} />
           <Route path="/card" element={<ShareRequestCard />} />
 
-          <Route path="/dashboard" element={<Dashboard mode={mode} toggleMode={toggleMode} />} >
+          <Route path="/dashboard" element={<Dashboard   />} >
             <Route path="overview" element={<h1>Over view</h1>} />
-            <Route path="new" element={<AnnotationForm mode={mode} toggleMode={toggleMode} />} />
+            <Route path="new" element={<AnnotationForm />} />
             <Route path="loader" element={<InnerLoader />} />
             <Route path="taskslist" element={<UserTasks />} />
-
+            <Route path="account" element={<UserAccountSettings />}/>
+            <Route path="security" element={<UserAccountSecurity />}/>
             <Route path="viewtask" element={<ViewTask />}>
               <Route path="details" element={<h1>HI hi hi</h1>} />
             </Route>
@@ -86,7 +47,6 @@ function App() {
           <Route path="/loader" element={<InnerLoader />} />
         </Routes>
       </Router >
-    </ThemeProvider>
   )
 }
 /*  

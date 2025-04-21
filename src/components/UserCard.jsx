@@ -5,16 +5,14 @@ import Avatar from '@mui/material/Avatar';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useNavigate } from "react-router-dom";
 
-export default function UserCard({ setOpen }) {
+export default function UserCard({ userName, setOpen, closeUserPopover }) {
     const navigate = useNavigate()
     const isSmallScreen = useMediaQuery(useTheme().breakpoints.down('sm'))
 
-    localStorage.setItem('USER_PROFILE_IMAGE', 'https://gratisography.com/wp-content/uploads/2024/11/gratisography-augmented-reality-800x525.jpg')
     localStorage.setItem('USER_NAME', 'Jhon Mark')
 
     const signout = () => {
         localStorage.removeItem('ACCESS_TOKEN')
-        localStorage.removeItem('USER_PROFILE_IMAGE')
         localStorage.removeItem('USER_NAME')
         navigate('/signin')
     }
@@ -37,6 +35,7 @@ export default function UserCard({ setOpen }) {
                 size='medium'
                 variant="contained"
                 color='success'
+                onClick={() => {closeUserPopover(); navigate('account')}}
                 endIcon={<SettingsIcon color='inherit' />}
                 sx={{ textTransform: 'none', color: 'white'}}>Manage your account</Button>
 

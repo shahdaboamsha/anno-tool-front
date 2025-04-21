@@ -20,7 +20,6 @@ export default function ViewTask() {
 
     const [loading, setLoading] = useState(true)
     const taskIdAsParam = new URLSearchParams(document.location.search).get('task_id')
-    taskIdAsParam ? "" : navigate('/dashboard/taskslist', { state: { message: "" } })
 
     const [AnnotationDialogState, setAnnotationDialogState] = useState(location.state ? location.state.openDialog : false)
     const [AnnotatedDialogState, setAnnotatedDialogState] = useState(false)
@@ -30,6 +29,7 @@ export default function ViewTask() {
 
 
     useEffect(() => {
+        taskIdAsParam ? "" : navigate('/dashboard/taskslist', { state: { message: "Task does not exist" } })
 
         const fetchTaskDetails = async () => {
             try {
@@ -40,16 +40,18 @@ export default function ViewTask() {
                 const taskDetails = (await axios.get(url, { headers: headers })).data
                 setTaskDetails(taskDetails)
             } catch (error) {
+
                 if (error.code == "ERR_NETWORK") {
-                    navigate('/dashboard/taskslist', { state: { message: `Oops! An error occured while view the ${taskIdAsParam || ""}, unable to connect with server. Please try again` } })
+                    navigate('/dashboard/taskslist', { state: { message: `Task does not exist` } })
                 }
                 else if (error.status == 401) {
                     localStorage.removeItem('ACCESS_TOKEN')
                     navigate('/signin', { state: { message: "Session expired, Sign in to continue" } })
                 }
                 else {
-                    navigate('/dashboard/taskslist', { state: { message: `Oops! An error occured while view the ${taskIdAsParam || ""}. Please try again` } })
+                    navigate('/dashboard/taskslist', { state: { message: `Task does not exist` } })
                 }
+
                 console.log(error)
             }
             setLoading(false)

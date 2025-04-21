@@ -1,11 +1,13 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, SectionIcon } from "lucide-react";
 import clsx from "clsx";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddIcon from "@mui/icons-material/Add";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import axios from "axios";
+import PersonIcon from '@mui/icons-material/Person';
+import ShieldIcon from '@mui/icons-material/Shield';
 
 export default function Sidebar({ isOpen, mode }) {
   const navigate = useNavigate();
@@ -18,10 +20,7 @@ export default function Sidebar({ isOpen, mode }) {
   const [assignedTasks, setAssignedTasks] = useState([])
   const [selectedTask, setSelectedTask] = useState(0)
 
-  const selectTask = (taskId) => {
-    setSelectedTask(taskId)
-    navigate('viewtask?task_id='+selectedTask)
-  }
+
   useEffect(() => {
     const getAssignedTasks = async () => {
       try {
@@ -35,7 +34,7 @@ export default function Sidebar({ isOpen, mode }) {
         }
 
         const assignedTasks = (await axios.get(url, { headers: headers })).data
-        setAssignedTasks(assignedTasks.tasks)
+        setAssignedTasks(assignedTasks.ownedTasks)
       } catch (error) {
         if (error.status == 401) {
           localStorage.removeItem('ACCESS_TOKEN')
@@ -51,16 +50,15 @@ export default function Sidebar({ isOpen, mode }) {
   return (
     <aside
       className={clsx(
-        "border-r h-full transition-all duration-300 ease-in-out",
+        "border-r border-gray-300 h-full transition-all duration-300 ease-in-out",
         isOpen ? "w-64" : "w-16",
-        mode === "light" ? "bg-gray-100 border-gray-200" : "bg-black border-gray-800"
       )}
     >
-      <div className="p-4 text-lg font-bold text-black">
+      <div className="p-2 text-lg font-bold text-black border-b border-gray-300">
         <a href="/">
           <img
             src="https://png.pngtree.com/png-clipart/20190628/original/pngtree-artificial-intelligence-blue-technology-mechanical-gear-ai-brain-commercial-material-png-image_4030085.jpg"
-            width="40px"
+            width="50px"
             alt="IMAGE"
             loading="lazy"
           />
@@ -91,18 +89,6 @@ export default function Sidebar({ isOpen, mode }) {
         >
           <AddIcon />
           {isOpen && <span className="text-sm">New Task</span>}
-        </div>
-
-        {/* Loader Test */}
-        <div
-          onClick={() => navigate("loader")}
-          className={clsx(
-            "flex items-center px-4 py-2 text-gray-700 hover:bg-white cursor-pointer",
-            isOpen ? "gap-4" : "justify-center"
-          )}
-        >
-          <span></span>
-          {isOpen && <span className="text-sm">Loader Test</span>}
         </div>
 
         {/* Tasks Dropdown */}
@@ -149,6 +135,27 @@ export default function Sidebar({ isOpen, mode }) {
 
             </div>
           )}
+        </div>
+        {/* Overview */}
+        <div
+          onClick={() => navigate("account")}
+          className={clsx(
+            "flex items-center px-4 py-2 text-gray-700 hover:bg-white cursor-pointer",
+            isOpen ? "gap-4" : "justify-center"
+          )}
+        >
+          <PersonIcon />
+          {isOpen && <span className="text-sm">My Account</span>}
+        </div>
+        <div
+          onClick={() => navigate("security")}
+          className={clsx(
+            "flex items-center px-4 py-2 text-gray-700 hover:bg-white cursor-pointer",
+            isOpen ? "gap-4" : "justify-center"
+          )}
+        >
+          <ShieldIcon />
+          {isOpen && <span className="text-sm">Security</span>}
         </div>
 
       </nav>

@@ -6,7 +6,8 @@ import React, { useEffect, useState } from "react";
 import ShareIcon from '@mui/icons-material/Share';
 import axios from "axios";
 import InnerLoader from "../InnerLoader";
-import { useRef } from "react";
+import { Badge, Tooltip } from "@mui/material";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function formatDateToLong(dateString) {
     const date = new Date(dateString);
@@ -18,8 +19,11 @@ function formatDateToLong(dateString) {
 export default function ShareRequestCards({ shareRequests, loading, setShareRequests }) {
 
     const [processLoading, setLoading] = useState(false)
+    const [selectedMsg, setSelectedMsg] = useState(null)
 
-    const boxRef = useRef(null)
+    const showMsg = (message) => {
+        setSelectedMsg(message)
+    }
 
     const handleRequest = async (request, action) => {
 
@@ -50,9 +54,9 @@ export default function ShareRequestCards({ shareRequests, loading, setShareRequ
                     <h1 className="text-[18px] mb-2"> <ShareIcon color="action" /> Sharing Requests</h1>
                     <Divider />
 
-                    {shareRequests.length != 0 ? shareRequests.map((req, index) => (
+                    {shareRequests.length != 0 && !selectedMsg ? shareRequests.map((req, index) => (
                         <React.Fragment key={index}>
-                            <div className="m-2 border-gray-600 flex" id={req.invitation_id} ref={boxRef}>
+                            <div className="m-2 border-gray-600 flex" id={req.invitation_id}>
 
                                 <div className="flex items-center">
                                     <Avatar sx={{ height: 40, width: 40 }} />
@@ -64,7 +68,14 @@ export default function ShareRequestCards({ shareRequests, loading, setShareRequ
                                 </div>
 
                                 <div className="flex justify-end items-center gap-3  grow">
-                                    <IconButton><MessageIcon color="action" fontSize="small" /></IconButton>
+                                    <IconButton onClick={() => showMsg(req.message)}>
+                                        <Tooltip title={req.message != "" ? req.message : 'No message'}>
+
+                                            <Badge color={req.message != "" ? 'secondary' : ''} variant='dot'>
+                                                <MessageIcon color="action" fontSize="small" />
+                                            </Badge>
+                                        </Tooltip>
+                                    </IconButton>
                                     <Button
                                         endIcon={<CheckIcon />}
                                         color="success"
@@ -91,7 +102,21 @@ export default function ShareRequestCards({ shareRequests, loading, setShareRequ
                             </div>
                             <Divider />
                         </React.Fragment>
-                    )) : <h1 className="p-3">No sharing requests</h1>
+                    )) : (
+                        <>
+                            <Tooltip title='Back to requests menu' hidden={shareRequests.length == 0}>
+                                <IconButton onClick={() => setSelectedMsg(null)}>
+                                    <ArrowBackIcon fontSize="small" />
+                                </IconButton>
+                            </Tooltip>
+
+                            <h1 className="p-3">
+                                {selectedMsg ? selectedMsg : 'No sharing requests'}
+                            </h1>
+
+                        </>
+
+                    )
                     }
                 </div>
             }

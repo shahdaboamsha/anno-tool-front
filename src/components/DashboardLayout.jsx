@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import { Outlet } from 'react-router-dom';
 import clsx from 'clsx';
-export default function DashboardLayout({ mode, toggleMode }) {
+export default function DashboardLayout() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -29,10 +29,12 @@ export default function DashboardLayout({ mode, toggleMode }) {
 
   return (
     <div className="flex h-screen overflow-x-auto">
-      <Sidebar isOpen={isSidebarOpen} mode={mode} />
+      <Sidebar isOpen={isSidebarOpen} />
       <div className="flex flex-col flex-1">
-        <Topbar toggleSidebar={toggleSidebar} mode={mode} toggleMode={toggleMode} />
-        <main className={clsx("p-0 pb-5 overflow-x-auto flex-1 transition-all duration-300 ease-in-out", mode === 'light' ? 'bg-white' : 'bg-black')}>
+
+
+        <Topbar toggleSidebar={toggleSidebar} />
+        <main className={clsx("p-0 pb-5 overflow-x-auto flex-1 transition-all duration-300 ease-in-out")}>
           <Outlet />
         </main>
       </div>

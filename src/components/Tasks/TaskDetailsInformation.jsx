@@ -4,7 +4,10 @@ import { useState } from 'react';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material';
 import CircularProgress from '../CircularProgress';
-import {Button} from '@mui/material';
+import { Button } from '@mui/material';
+import QuickDialog from '../Dialog';
+import EditTask from './EditTask';
+import { useMemo } from 'react';
 
 
 const capitailizeFirstLetterOfArray = (str) => {
@@ -18,28 +21,17 @@ const capitailizeFirstLetterOfArray = (str) => {
 
 export default function TaskDetailsInformation({ task }) {
 
-    const theme = useTheme()
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'))
+    task = useMemo(() => task, [])
+    const [editDialogState, setEditDialogState] = useState(false)
+    const setOpenState = () => setEditDialogState(!editDialogState)
 
-    const [editIconVisibility, setEditIconVisibility] = useState('none')
-
-    const handleEditIconVisibility = (display) => {
-        if (isSmallScreen) {
-            setEditIconVisibility('initial')
-            return
-        }
-        setEditIconVisibility(display)
-
-    }
 
     return (
-        <div>
-            <div className="relative flex flex-wrap" onMouseEnter={(e) => handleEditIconVisibility('initial')} onMouseLeave={(e) => handleEditIconVisibility('none')}>
-
+        <div className='relative'>
+            <div>
+                <h1 className="text-[20px] font-medium p-2 w-full">About This Task</h1>
                 <table className="table-fixed">
-
                     <tbody>
-                        <tr><td className="text-[20px] font-medium p-2 w-full">About This Task</td></tr>
                         <tr>
                             <th className="text-left p-2 font-semibold">Task ID</th>
                             <td className="p-2">{task.task_id}</td>
@@ -53,10 +45,13 @@ export default function TaskDetailsInformation({ task }) {
                             <td className="p-2">{task.annotation_type}</td>
                         </tr>
                         <tr>
+                            <th className="text-left p-2 font-semibold">Description</th>
+                            <td className="p-2">{task.task_description}</td>
+                        </tr>
+                        <tr>
                             <th className="text-left p-2 font-semibold">Labels</th>
                             <td className="p-2">{task.labels && capitailizeFirstLetterOfArray(task.labels)}</td>
                         </tr>
-
                         <tr>
                             <th className="text-left p-2 font-semibold">Total number of sentences</th>
                             <td className="p-2">{task.total_sentences}</td>
@@ -68,8 +63,11 @@ export default function TaskDetailsInformation({ task }) {
 
                     </tbody>
                 </table>
-                <div className="progress flex flex-wrap justify-center items-center gap-5 m-auto ">
-                    <h1 className="text-[20px] font-medium p-2 w-full">Progress</h1>
+            </div>
+            <Divider />
+            <div>
+                <h1 className="text-[20px] font-medium p-2">Progress</h1>
+                <div className="flex gap-10 flex-wrap justify-center">
                     <div className="annotated p-3 flex justify-center items-center gap-3 shadowed flex-col w-50" style={{
                         borderRadius: 0,
                         boxShadow: "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px"
@@ -86,18 +84,24 @@ export default function TaskDetailsInformation({ task }) {
                     </div>
                 </div>
 
-                <Tooltip title='Edit this task' >
-                    <IconButton size='small' sx={{
-                        position: 'absolute',
-                        top: 0,
-                        right: 0,
-                        display: isSmallScreen ? 'initial' : editIconVisibility
-                    }}>
-                        <EditRoundedIcon fontSize='small' />
-                    </IconButton>
-                </Tooltip>
-
             </div>
+
+            <Tooltip title='Edit this task' >
+                <IconButton size='small' sx={{
+                    position: 'absolute',
+                    top: 5,
+                    right: 5,
+                }} onClick={setOpenState}>
+                    <EditRoundedIcon fontSize='small' />
+                </IconButton>
+            </Tooltip>
+
+            <QuickDialog
+                component={<EditTask initialData={task} />}
+                openState={editDialogState}
+                setOpenState={setOpenState}
+            />
+
         </div>
 
     )

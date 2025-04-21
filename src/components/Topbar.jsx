@@ -65,12 +65,11 @@ export default function Topbar({ toggleSidebar, mode }) {
   return (
     <header
       className={clsx(
-        "transition-all duration-300 ease-in-out shadow border-b flex items-center justify-between px-4 py-2 sticky top-0 z-10",
-        mode === 'light' ? "bg-white border-gray-200" : "bg-black border-gray-800"
+        "transition-all duration-300 ease-in-out shadow border-b border-gray-300 flex items-center justify-between px-4 py-2 sticky top-0 z-10",
       )}
     >
       <IconButton onClick={toggleSidebar}>
-        <MenuIcon sx={{ color: mode === 'light' ? '#000000' : '#ffffff' }} />
+        <MenuIcon sx={{color: 'black'}} />
       </IconButton>
 
       <div className="flex items-center gap-4 justify-end w-full">
@@ -121,7 +120,7 @@ export default function Topbar({ toggleSidebar, mode }) {
           horizontal: 'right',
         }}
       >
-        <UserCard setOpen={closeUserPopover} />
+        <UserCard setOpen={closeUserPopover} closeUserPopover={closeUserPopover}/>
       </Popover>
     </header>
   );

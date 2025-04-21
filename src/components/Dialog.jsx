@@ -1,20 +1,16 @@
 
 import { useState } from 'react';
-import { Button, Dialog, DialogActions, DialogContent, useTheme, useMediaQuery, IconButton, MobileStepper } from '@mui/material';
-import UploadFileFormStepper from './UploadFileFormStepper';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import { Tooltip, Dialog, DialogContent, useTheme, IconButton } from '@mui/material';
 import ClearOutlinedIcon from '@mui/icons-material/ClearOutlined';
 import './style_modules/styles.css'
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
-import { Tooltip } from '@mui/material';
+import clsx from 'clsx'
 
 export default function QuickDialog({ openState, setOpenState, component }) {
 
-    const theme = useTheme()
-
     const [fullScreen, setFullScreen] = useState(false)
+
     const handleClose = () => {
         setOpenState(false)
     };
@@ -27,23 +23,30 @@ export default function QuickDialog({ openState, setOpenState, component }) {
                 onClose={handleClose}
                 sx={{ backdropFilter: 'blur(10px)' }}
             >
-                <DialogContent>
+                <DialogContent className=''>
                     <IconButton
                         onClick={handleClose}
                     >
                         <ClearOutlinedIcon fontSize='small' />
                     </IconButton>
-                    <Tooltip title={fullScreen? 'Minimize' : 'Maximize'}>
-                    <IconButton
-                        onClick={() => setFullScreen(!fullScreen)}
-                    >
-                        {fullScreen ? <FullscreenExitIcon fontSize='small' /> : <FullscreenIcon fontSize='small' />}
-                    </IconButton>
-                </Tooltip>
-                {component}
+                    <Tooltip title={fullScreen ? 'Minimize' : 'Maximize'}>
+                        <IconButton
+                            onClick={() => setFullScreen(!fullScreen)}
+                        >
+                            {fullScreen ? <FullscreenExitIcon fontSize='small' /> : <FullscreenIcon fontSize='small' />}
+                        </IconButton>
+                    </Tooltip>
 
-            </DialogContent>
-        </Dialog >
+                    <div className={clsx('flex justify-center items-center')}>
+                        <div className={clsx(fullScreen ? 'shadowed m-5 ' : '')}>
+                            {component}
+                        </div>
+
+                    </div>
+
+
+                </DialogContent>
+            </Dialog >
         </>
     );
 }

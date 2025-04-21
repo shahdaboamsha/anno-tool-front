@@ -258,7 +258,7 @@ export default function AnnotationForm() {
                     title="Labels"
                     name="labels"
                     id="labels"
-                    placeholder='Labels comma seperated (,)'
+                    placeholder='Labels comma seperated (;)'
                     value={fileFormData.labels.value}
                     validation_error={fileFormData.labels.errorMsg}
                     changeHandler={changeHandler}
