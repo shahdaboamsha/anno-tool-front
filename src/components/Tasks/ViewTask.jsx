@@ -1,16 +1,16 @@
 import { Outlet, useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
-import InnerLoader from "../InnerLoader"
+import InnerLoader from "../Loaders/InnerLoader"
 import axios from "axios"
-import TaskDetailsInformation from "./TaskDetailsInformation"
+import TaskDetailsInformation from "./Details/TaskDetails"
 import { Divider } from "@mui/material"
-import TaskSentences from "./TaskSentences"
-import AnnotateForm from "./AnnotateForm"
-import QuickDialog from "../Dialog"
+import TaskSentences from "./Sentences/TaskSentences"
+import AnnotateForm from "./Annotations/AnnotateForm"
+import QuickDialog from "../Public/QuickDialog"
 import { useLocation } from "react-router-dom"
-import AnimatedButton from "../AnimatedButton"
+import AnimatedButton from "../Inputs/AnimatedButton"
 import { Button } from "@mui/material"
-import AnnotatedSentences from "./AnnotatedSentences"
+import AnnotatedSentences from "./Annotations/AnnotatedSentences"
 
 export default function ViewTask() {
 
@@ -46,7 +46,7 @@ export default function ViewTask() {
                 }
                 else if (error.status == 401) {
                     localStorage.removeItem('ACCESS_TOKEN')
-                    navigate('/signin', { state: { message: "Session expired, Sign in to continue" } })
+                    navigate('/signin', { state: { message: "Session expired. Sign in to continue" } })
                 }
                 else {
                     navigate('/dashboard/taskslist', { state: { message: `Task does not exist` } })
@@ -76,7 +76,6 @@ export default function ViewTask() {
                         openState={AnnotatedDialogState}
                         setOpenState={openAnnotatedDialog} />
                 </div>
-
 
                 <Divider variant='middle' sx={{ mt: 0 }} />
                 <Divider variant='middle' sx={{ mt: 0 }} />

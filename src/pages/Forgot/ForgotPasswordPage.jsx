@@ -1,5 +1,5 @@
-import InputText from "../../components/InputText"
-import inputValidators from "../../assets/inputValidators"
+import InputText from "../../components/Inputs/InputText"
+import inputValidators from "../../utils/inputValidators"
 import { useState, useEffect } from "react"
 import { Fade, Grid2 as Grid, Button } from "@mui/material"
 

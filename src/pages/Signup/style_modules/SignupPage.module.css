@@ -1,65 +1,6 @@
-.flexColumsCenteredItems {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    text-align: center;
-}
-.boldHeader {
-    font-weight: 600;
-    font-size: 36px;
-    line-height: 8px;
-}
-.pageContainer{
-    display: flex;
-    height: 100vh;
-    width: 100vw;
-    align-items: center;
-    justify-content: center;
-}
-.shadowedRounded {
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    border-radius: 25px;
-}
 .pinkyBgColor {
     background-color: #ff8fab;
     background: linear-gradient(rgba(63, 62, 62, 0.7), rgba(66, 65, 65, 0.7)), 
-    url('https://images.pexels.com/photos/3913025/pexels-photo-3913025.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+    url('../../../assets/signup-img.jpg');
     color: white;
-}
-.signupFormHeader {
-    color: gray;
-    text-align: center;
-}
-.signupHelp p { 
-    display: block;
-    font-size: 14px;
-}
-.signupHelp{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    line-height: 10px;
-}
-.signupHelp a {
-    text-decoration: none;
-}
-.signupHelp p a:hover{
-    color: rgb(136, 136, 214);
-    text-decoration: underline;
-}
-.signupFormHeader {
-    color: gray;
-    text-align: center;
-}
-.signupHeader{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
 }

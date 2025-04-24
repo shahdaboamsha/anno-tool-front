@@ -1,12 +1,12 @@
 import { Grid2 as Grid, Typography, Button } from "@mui/material"
 import { useMediaQuery, useTheme } from '@mui/material';
-import SigninForm from "../../components/SigninForm";
+import SigninForm from "../../components/Forms/SigninForm";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
-import QuickDialog from "../../components/Dialog";
-import NavigationBar from "../../components/NavigationBar";
+import QuickDialog from "../../components/Public/QuickDialog";
+import NavigationBar from "../../components/Public/NavigationBar";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import Loader from "../../components/Loader";
+import Loader from "../../components/Loaders/Loader";
 
 const quickActionButtonProps = {
     margin: 2,

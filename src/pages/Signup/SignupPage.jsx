@@ -1,15 +1,17 @@
-import SignupForm from "../../components/SignupForm"
-import Grid from '@mui/material/Grid2'
-import signupPageStyles from './style_modules/SignupPage.module.css'
-import { Fade } from "@mui/material"
-import Loader from "../../components/Loader"
+import SignupForm from "../../components/Forms/SignupForm"
+import './style_modules/SignupPage.module.css'
+import { Fade, useMediaQuery } from "@mui/material"
+import Loader from "../../components/Loaders/Loader"
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
-import NavigationBar from '../../components/NavigationBar'
+import signupLogo from '../../assets/signup-img.jpg'
+import NavigationBar from '../../components/Public/NavigationBar'
+import { useTheme } from "@mui/material"
+import clsx from "clsx"
+
 export default function SignupPage() {
 
     const navigate = useNavigate()
-
     const [pageLoading, setPageLoading] = useState(true)
 
     useEffect(() => {
@@ -18,52 +20,38 @@ export default function SignupPage() {
         }
         isLoggedIn() ? navigate('/dashboard') : setPageLoading(false)
     }, [])
-
+    const theme = useTheme()
+    const isWideScreen = useMediaQuery(theme.breakpoints.up('md'))
 
     document.title = "Sign up"
     return (
         <>
-
             {
-                pageLoading ? <Loader />
-                    :
+                pageLoading ? <Loader /> :
                     <Fade in timeout={700}>
-                        <div className='flex flex-col items-center'>
-                            <div style={{
-                                top: '0px',
-                                width: '100%',
-                                backgroundColor: 'var(--dark-bg)'
-                            }}>
+                        <div className="h-screen flex items-center justify-center relative">
+                            <div className="w-full" style={{ position: 'absolute', top: 0, backgroundColor: 'var(--dark-bg)' }}>
                                 <NavigationBar />
                             </div>
-                            <div className="shadowed rounded-xl bg-white text-[14px] mt-2" style={{width: 'fit-content'}}>
-                                <Grid container width={{ lg: 800, sm: 380, xs: 380 }} columns={12}>
-                                    {/* Title Grid */}
-                                    <Grid
-                                        size={{ lg: 6, md: 12, xl: 6 }}
-                                        sx={{
-                                            display: { xs: 'none', sm: 'none', md: 'none', lg: 'block', xl: 'block' },
-                                        }}
-                                    >
-                                        <div
-                                            className={`${signupPageStyles.pinkyBgColor} h-full rounded-l-xl flex flex-col justify-center items-center`}
+                            <div className=" mt-4 flex items-stretch justify-center rounded-tl-2xl rounded-bl-2xl rounded-tr-2xl rounded-br-2xl" style={{ boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 2px" }}>
+                                {
+                                    isWideScreen ?
+                                        <div style={{ backgroundImage: `url(${signupLogo})`, backgroundBlendMode: 'multiply', backgroundColor: '#83a894', objectFit: 'cover' }}
+                                            className="p-4 w-1/2 flex flex-col items-center justify-center rounded-tl-2xl rounded-bl-2xl"
+
                                         >
-                                            <h1 className="text-[30px]">Welcome</h1>
-                                            <h3>Join our unique platform. Explore a new experience</h3>
-                                        </div>
-                                    </Grid>
+                                            <h1 className="text-[36px] text-white">Welcome</h1>
+                                            <h1 className="text-[16px] text-white">Join our unique platform. Explore a new experience</h1>
+                                        </div> : ""
+                                }
 
-                                    <Grid size={{ lg: 6, md: 12, xs: 12, xl: 6, sm: 12 }}>
-                                        <div className="p-4 h-full bg-white rounded-r-xl">
-                                            <SignupForm />
-                                        </div>
-                                    </Grid>
-                                </Grid>
+                                <div className="p-4">
+                                    <SignupForm />
+                                </div>
                             </div>
-
-
                         </div>
-                    </Fade>}
+                    </Fade>
+            }
         </>
     )
 }

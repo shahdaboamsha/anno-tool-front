@@ -4,11 +4,10 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import DeleteIcon from '@mui/icons-material/Delete'
 import clsx from "clsx";
-import QuickDialog from "../Dialog";
-import ShareTaskForm from "./ShareTaskForm";
+import QuickDialog from "../Public/QuickDialog";
+import ShareTaskForm from "./Shares/ShareTaskForm";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-
+import * as swals from '../Public/Swals'
 export default function AssignedTasks({ assignedTasks, state }) {
 
     const navigate = useNavigate()
@@ -36,12 +35,13 @@ export default function AssignedTasks({ assignedTasks, state }) {
     const deleteTask = async () => {
 
         try {
-            const url = `http://localhost:3000/tasks/${selectedTask.task_id}`
-            const headers = { Authorization: `Brearer ${localStorage.getItem('ACCESS_TOKEN')}` }
-
-            await axios.delete(url, { headers: headers })
-            setAlertMsg({ isError: false, message: `Task ${selectedTask.task_name} deleted successfully` })
-        
+            /* const url = `http://localhost:3000/tasks/${selectedTask.task_id}`
+             const headers = { Authorization: `Brearer ${localStorage.getItem('ACCESS_TOKEN')}` }
+ 
+             await axios.delete(url, { headers: headers })
+             setAlertMsg({ isError: false, message: `Task ${selectedTask.task_name} deleted successfully` })
+         */
+            swals.deleteTaskSwal(`http://localhost:3000/tasks/${selectedTask.task_id}`)
         } catch (error) {
             console.log(error)
             if (error.code == "ERR_NETWORK") {
@@ -59,7 +59,7 @@ export default function AssignedTasks({ assignedTasks, state }) {
 
     return (
         <div className="relative overflow-x-auto shadow-md bg-white mt-2">
-            {alertMsg.message && <Alert sx={{m: 1}} severity={alertMsg.isError ? 'error' : 'success'}>{alertMsg.message}</Alert>}
+            {alertMsg.message && <Alert sx={{ m: 1 }} severity={alertMsg.isError ? 'error' : 'success'}>{alertMsg.message}</Alert>}
 
             <table className="w-full text-sm text-left text-gray-500">
                 <thead className="text-md text-black bg-gray-100 font-bold">
@@ -90,10 +90,10 @@ export default function AssignedTasks({ assignedTasks, state }) {
                                     <td className="px-6 py-3">{task.status.total_classified}/{task.status.total_sentences}</td>
                                     <td className="px-6 py-3">
                                         <Tooltip title="View task">
-                                            <button className="text-[14px] flex jusify-center text-blue-500 hover:text-blue-700 mr-1 cursor-pointer" onClick={() => navigate(`../viewtask?task_id=${task.task_id}`)} >View</button>
+                                            <button className="text-[14px] text-blue-500 hover:text-blue-700 mr-1 cursor-pointer" onClick={() => navigate(`../viewtask?task_id=${task.task_id}`)} >View</button>
                                         </Tooltip>
                                         <Tooltip title="Annotate">
-                                            <button className="text-[14px] text-center text-blue-500 hover:text-blue-700 ml-1 cursor-pointer" onClick={() => navigate(`../viewtask?task_id=${task.task_id}`, { state: { openDialog: true } })} >Annotate</button>
+                                            <button className="text-[14px] text-blue-500 hover:text-blue-700 ml-1 cursor-pointer" onClick={() => navigate(`../viewtask?task_id=${task.task_id}`, { state: { openDialog: true } })} >Annotate</button>
                                         </Tooltip>
                                     </td>
                                     <td className="px-6 py-3">

@@ -1,0 +1,56 @@
+/* From Uiverse.io by satyamchaudharydev */
+
+.brcard {
+    --bg: #f7f7f8;
+    --hover-bg: #ffe5f4;
+    --hover-text: #e50087;
+    text-align: center;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+    transition:
+        0.3s cubic-bezier(0.6, 0.4, 0, 1),
+        transform 0.15s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    color: black;
+}
+.brcard__body {
+    color: #464853;
+    line-height: 1.5em;
+    font-size: 1em;
+}
+
+.brcard> :not(.span) {
+    transition: 0.3s cubic-bezier(0.6, 0.4, 0, 1);
+}
+
+.brcard .span {
+    position: absolute;
+    inset: 0;
+    width: inherit;
+    height: inherit;
+    color: var(--hover-text);
+    transform: rotateX(90deg);
+    transform-origin: bottom;
+    background-color: var(--hover-bg);
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.brcard:hover .icon{
+    scale: 0;
+}
+.brcard:hover .span {
+    transform: rotateX(0deg);
+    background-color: var(--hover-bg);
+}
+
+
+.brcard:hover>.icon,
+.brcard:hover>strong {
+    opacity: 0;
+    background-color: var(--hover-bg);
+}
