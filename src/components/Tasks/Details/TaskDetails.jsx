@@ -5,6 +5,7 @@ import CircularProgress from '../CircularProgress';
 import QuickDialog from '../../Public/QuickDialog';
 import EditTask from '../Edit/EditTask';
 import { useMemo } from 'react';
+import clsx from 'clsx';
 
 
 const capitailizeFirstLetterOfArray = (str) => {
@@ -20,6 +21,7 @@ export default function TaskDetails({ task }) {
 
 
     task = useMemo(() => task, [task])
+    console.log(task)
     const [editDialogState, setEditDialogState] = useState(false)
     const setOpenState = () => setEditDialogState(!editDialogState)
 
@@ -44,7 +46,7 @@ export default function TaskDetails({ task }) {
                         </tr>
                         <tr>
                             <th className="text-left p-2 font-semibold">Description</th>
-                            <td className="p-2">{task.task_description}</td>
+                            <td className="p-2">{task.task_description || "-"}</td>
                         </tr>
                         <tr>
                             <th className="text-left p-2 font-semibold">Labels</th>
@@ -55,9 +57,22 @@ export default function TaskDetails({ task }) {
                             <td className="p-2">{task.total_sentences}</td>
                         </tr>
                         <tr>
+                            <th className="text-left p-2 font-semibold">Annotated Sentences</th>
+                            <td className="p-2">{task.annotatedCount}</td>
+                        </tr>
+                        <tr>
+                            <th className="text-left p-2 font-semibold">Skipped Sentences</th>
+                            <td className="p-2">{task.skippedCount}</td>
+                        </tr>
+                        <tr>
                             <th className="text-left p-2 font-semibold">Collaborators</th>
                             <td className="p-2">{task.collaborators.length}</td>
                         </tr>
+                        <tr>
+                            <th className="text-left p-2 font-semibold">Task Status</th>
+                            <td className={clsx("p-2", task.status === 'Completed' ? 'text-green-600' : "text-red-600")}>{task.status}</td>
+                        </tr>
+
 
                     </tbody>
                 </table>

@@ -1,19 +1,22 @@
-import { useState } from "react";
-import InputText from "../Inputs/InputText";
+import { useState, useEffect } from "react";
+import InputText from '../../components/Inputs/InputText'
 import inputValidators from "../../utils/inputValidators";
 import { Button, Divider, Alert } from "@mui/material";
-import LockIcon from '@mui/icons-material/Lock';
+import NavigationBar from "../../components/Public/NavigationBar";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import * as swalls from '../Public/Swals'
+import * as swalls from '../../components/Public/Swals'
+import { useLocation } from "react-router-dom";
+export default function ResetPassword() {
 
-export default function UserAccountSecurity() {
+    const location = useLocation()
+    useEffect(() => {
+        localStorage.getItem('ACCESS_TOKEN') ||
+            !location.state ||
+            !localStorage.getItem('RECOVER_ACCOUNT_TOKEN') ? navigate('/signin') : ""
+    }, [])
 
     const [formData, setFormData] = useState({
-        currentPassword: {
-            value: "",
-            errorMsg: ""
-        },
         newPassword: {
             value: "",
             errorMsg: null
@@ -49,71 +52,70 @@ export default function UserAccountSecurity() {
 
     const prepareDataToSubmit = () => {
         return {
-            current_password: formData.currentPassword.value,
-            new_password: formData.newPassword.value
+            newPassword: formData.newPassword.value,
+            confirmPassword: formData.confirmNewPassword.value
         }
     }
 
-    const changePassword = async () => {
-
-        console.log(formData)
+    const resetPassword = async () => {
 
         const isValidData = inputValidators.validate("newPassword", formData.newPassword.value) === 'VALID'
             &&
             inputValidators.validate("confirmNewPassword", formData.confirmNewPassword.value, formData.newPassword.value) === 'VALID'
 
-        console.log(formData, isValidData)
 
         if (!isValidData) return
 
         const data = prepareDataToSubmit()
         setLoading(true)
         try {
-            const url = `http://localhost:3000/users/changePassword`
-            const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
+            const url = `http://localhost:3000/auth/reset-password`
+            const headers = { Authorization: `Bearer ${localStorage.getItem('RECOVER_ACCOUNT_TOKEN')}` }
 
             await axios.post(url, data, { headers: headers })
-            swalls.updateAccountInfoSwal("Your password changed successfully")
+            localStorage.removeItem('RECOVER_ACCOUNT_TOKEN')
+            swalls.updateAccountInfoSwal("Your password reset successfully")
+
+            setTimeout(() => {
+                navigate('/signin')
+            }, 2000);
+
         } catch (error) {
             if (error.code == "ERR_NETWORK") {
                 setAlertMsg({ severity: 'error', message: 'Unable to connect with server. Try again' })
             }
             else if (error.status == 401) {
-                localStorage.removeItem('ACCESS_TOKEN')
-                navigate('/signin', { state: { message: 'Session Expired. Sign in again to continue' } })
+                localStorage.removeItem('RECOVER_ACCOUNT_TOKEN')
+                navigate('/signin', { state: { message: 'Access Denied' } })
             }
             else if (error.status == 400) {
-                setFormData({ ...formData, currentPassword: { ...formData['currentPassword'], errorMsg: 'Please enter your correct current password' } })
+                setFormData({ ...formData, currentPassword: { ...formData['currentPassword'], errorMsg: 'Passwords does not matched' } })
             }
             else if (error.status == 404) {
-                localStorage.removeItem('ACCESS_TOKEN')
+                localStorage.removeItem('RECOVER_ACCOUNT_TOKEN')
                 navigate('/signin', { state: { message: 'Access Denied' } })
             }
             else {
-                setAlertMsg({ severity: 'error', message: "Oops! An error occured during change password process. Try again" })
+                setAlertMsg({ severity: 'error', message: "Oops! An error occured during reset your password process. Try again" })
             }
+            setLoading(false)
         }
-        setLoading(false)
-    }
 
-    const deleteAccount = () => {
-        swalls.deleteAccoutSwal()
     }
 
     return (
-        <div className="flex flex-col p-10">
+        <div className="h-screen flex flex-col items-center justify-start relative gap-5">
 
-            <h1 className="text-[28px]"> <LockIcon /> Edit your account password</h1>
-            <Divider />
-            {alertMsg.message && <Alert sx={{ mt: 1 }} severity={alertMsg.severity}>{alertMsg.message}</Alert>}
+            <div style={{ width: '100%', backgroundColor: 'var(--dark-bg)' }}>
+                <NavigationBar />
+            </div>
+            <div className="shadowed text-[14px] mt-5 max-w-[400px]">
 
-            <div className="pt-4 flex flex-col items-start justify-center gap-1 sm:w-full lg:w-[500px]">
-                <InputText required type="password" title="Current password" placeholder="Enter your current password" name="currentPassword"
-                    id="password"
-                    value={formData.currentPassword.value}
-                    validation_error={formData.currentPassword.errorMsg}
-                    changeHandler={handleChange}
-                />
+                <h1 className="text-[28px] text-center">Set your new password</h1>
+                <p className='text-gray-500 text-[14px] text-center mb-2'>Now you can type your new password. Please choose a strong password</p>
+
+                {alertMsg.message && <Alert sx={{ mt: 1 }} severity={alertMsg.severity}>{alertMsg.message}</Alert>}
+
                 <InputText required type="password" title="New password" placeholder="Enter your new password" name="newPassword"
                     id="newPassword"
                     value={formData.newPassword.value}
@@ -126,14 +128,9 @@ export default function UserAccountSecurity() {
                     validation_error={formData.confirmNewPassword.errorMsg}
                     changeHandler={handleChange}
                 />
-                <Button size='small' fullWidth variant="contained" loading={loading} onClick={changePassword}
+                <Button fu size='small' fullWidth variant="contained" loading={loading} onClick={resetPassword}
                     sx={{ backgroundColor: "var(--dark-bg)", textTransform: 'none', mt: 1, fontWeight: '400' }}
                 >Change Password
-                </Button>
-
-                <Button variant="contained" color="error" sx={{ textTransform: 'none', mt: 2, float: 'left' }}
-                    onClick={deleteAccount}>
-                    Delete Account
                 </Button>
             </div>
         </div>

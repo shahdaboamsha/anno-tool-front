@@ -1,5 +1,5 @@
 import InputText from '../Inputs/InputText'
-import { useState  } from 'react'
+import { useState } from 'react'
 import { Button, Alert } from "@mui/material"
 import axios from 'axios'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -88,25 +88,28 @@ export default function SigninForm() {
 
     return (
         <>
-            <div style={{ width: '100%' }} className='flex flex-col gap-1'>
+            <div style={{ width: '100%' }} className='flex flex-col gap-1 max-w-[400px]'>
                 <h1 className='text-[28px] text-center'>Sign in</h1>
-                <p className='text-gray-500 text-[14px] text-center'>Type your email and password to sign into your account</p>
+                <p className='text-gray-500 text-[14px] text-center mb-3'>Type your email and password to sign into your account</p>
 
-                {location.state != null && <Alert sx={{ mb: 2 }} severity={location.state.notError? 'success' : 'error'}>{location.state.message}</Alert>}
+                {location.state != null && <Alert sx={{ mb: 2 }} severity={location.state.notError ? 'success' : 'error'}>{location.state.message}</Alert>}
                 {alertMsg.isError && <Alert sx={{ mb: 2 }} severity='error'>{alertMsg.message}</Alert>}
+                <div className='flex flex-col gap-1'>
+                    <InputText autoFocus required id="email" type="email" title="Email address" name="email"
+                        value={formData.email.value}
+                        validation_error={formData.email.errorMsg}
+                        changeHandler={handleChange}
+                        startIcon={<PersonIcon fontSize='small' color='action' />}
+                    />
+                    <InputText required id="password" type="password" title="Password" name="password"
+                        value={formData.password.value}
+                        validation_error={formData.password.errorMsg}
+                        changeHandler={handleChange}
+                        startIcon={<LockIcon fontSize='small' color='action' />}
+                    />
 
-                <InputText autoFocus required id="email" type="email" title="Email address" name="email"
-                    value={formData.email.value}
-                    validation_error={formData.email.errorMsg}
-                    changeHandler={handleChange}
-                    startIcon={<PersonIcon fontSize='small' color='action' />}
-                />
-                <InputText required id="password" type="password" title="Password" name="password"
-                    value={formData.password.value}
-                    validation_error={formData.password.errorMsg}
-                    changeHandler={handleChange}
-                    startIcon={<LockIcon fontSize='small' color='action' />}
-                />
+                </div>
+
 
                 <p className='text-[14px] text-left mt-3 mb-3'>Forgot your password? <a href="/recover" className="text-blue-400 hover:text-blue-800">Recover your account</a></p>
 

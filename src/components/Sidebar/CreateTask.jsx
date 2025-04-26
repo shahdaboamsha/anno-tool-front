@@ -265,7 +265,7 @@ export default function CreateTask() {
                 <Button variant='contained' size='small' fullWidth
                     loading={loading}
                     onClick={uploadTask}
-                    sx={{ textTransform: 'none', bgcolor: 'var(--dark-bg)', mt: 2 }}
+                    sx={{ textTransform: 'none', bgcolor: 'var(--dark-bg)', mt: 1 }}
                 >
                     Save Task
                 </Button>

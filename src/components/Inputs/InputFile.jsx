@@ -45,12 +45,12 @@ export default function InputFile({ fileSelectionHandler, loadingState, validati
                     loading={loadingState === "loading"}
                 >
                     <CloudUploadIcon fontSize="large" color="action" />
-                    <Typography className="text-[20px]" variant="body1">
+                    <h1 className="text-[16x]">
                         Upload a file by browsing or dragging and dropping
-                    </Typography>
+                    </h1>
                 </Button>
 
-                <span className='text-red-600 text-[12px] text-left p-0 m-0' style={{marginRight: '5px'}}>
+                <span className='text-red-600 text-[12px] text-left p-0 m-0'>
                     {validation_error}
                 </span>
             </Tooltip>

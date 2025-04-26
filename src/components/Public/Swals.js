@@ -100,4 +100,5 @@ const deleteTaskSwal = (url) => {
         }
     });
 }
+
 export { deleteAccoutSwal, updateAccountInfoSwal, deleteTaskSwal }

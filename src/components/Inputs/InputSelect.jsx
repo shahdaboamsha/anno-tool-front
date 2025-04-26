@@ -3,6 +3,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
+import clsx from 'clsx';
 
 
 function InputSelect({
@@ -33,7 +34,7 @@ function InputSelect({
     }
     return (
         <>
-            <div className='w-full flex flex-col mt-2'>
+            <div className={clsx('w-full flex flex-col',  validation_error? 'mb-0' : 'mb-1')}>
                 <Tooltip title={`Enter ${title}`}>
                     <FormControl required={required} fullWidth
                         sx={{ ...borderFocusStyleProps }}

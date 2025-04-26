@@ -36,8 +36,8 @@ export default function QuickDialog({ openState, setOpenState, component }) {
                         </IconButton>
                     </Tooltip>
 
-                    <div className={clsx('flex justify-center items-center')}>
-                        <div className={clsx(fullScreen ? 'shadowed m-5 ' : '')}>
+                    <div className={clsx('flex justify-center items-center overflow-auto')}>
+                        <div className={clsx(fullScreen ? 'shadowed ' : '')}>
                             {component}
                         </div>
 

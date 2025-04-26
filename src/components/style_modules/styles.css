@@ -97,14 +97,14 @@
     color: black;
     text-decoration: none;
     position: relative;
-    font-size: medium;
+    font-size: small;
     font-weight: 400;
 }
 
 .nav-link {
     color: white;
     text-decoration: none;
-    font-size: medium;
+    font-size: small;
     font-weight: 400;
     margin-left: 30px;
     display: inline-block;
@@ -215,7 +215,7 @@
 .sign-link {
     color: white;
     margin-left: 20px;
-    font-size: medium;
+    font-size: small;
     font-weight: 400;
     text-decoration: none;
     transition: 0.2s ease-in-out;
@@ -267,9 +267,71 @@
 .notification-icon {
     display: inline-block;
     animation: vibrator .5s infinite alternate-reverse linear !important;
-  }
-  
-  @keyframes vibrator {
-    0%  { transform: rotate(15deg); }
-    100% { transform: rotate(-15deg); }
-  }
+}
+
+@keyframes vibrator {
+    0% {
+        transform: rotate(15deg);
+    }
+
+    100% {
+        transform: rotate(-15deg);
+    }
+}
+
+.animation-view {
+    animation: animationView ease-in-out forwards;
+    animation-timeline: view();
+    animation-range: entry 0%;
+    opacity: 0;
+}
+
+@keyframes animationView {
+    from {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.ptuk-bg {
+    position: relative;
+    overflow: hidden;
+    scroll-behavior: smooth;
+}
+
+.ptuk-bg::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('https://ptuk.edu.ps/uploads/news/239.webp');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: #11030363;
+    background-blend-mode: multiply;
+    filter: blur(2px);
+    /* Blur here */
+    z-index: 0;
+}
+
+/* Make sure the content inside is above the blurred background */
+.ptuk-bg>* {
+    position: relative;
+    z-index: 1;
+}
+
+.developer-img {
+    transition: all .5s linear;
+}
+
+.developer-img:hover {
+    transform: scale(1.3);
+}

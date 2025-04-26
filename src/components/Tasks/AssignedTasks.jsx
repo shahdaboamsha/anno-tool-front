@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IconButton, Menu, MenuItem, ToggleButton, ToggleButtonGroup, Tooltip, Alert } from "@mui/material";
+import { IconButton, Menu, MenuItem, Tooltip, Alert } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -8,6 +8,7 @@ import QuickDialog from "../Public/QuickDialog";
 import ShareTaskForm from "./Shares/ShareTaskForm";
 import { useNavigate } from "react-router-dom";
 import * as swals from '../Public/Swals'
+
 export default function AssignedTasks({ assignedTasks, state }) {
 
     const navigate = useNavigate()
@@ -35,12 +36,6 @@ export default function AssignedTasks({ assignedTasks, state }) {
     const deleteTask = async () => {
 
         try {
-            /* const url = `http://localhost:3000/tasks/${selectedTask.task_id}`
-             const headers = { Authorization: `Brearer ${localStorage.getItem('ACCESS_TOKEN')}` }
- 
-             await axios.delete(url, { headers: headers })
-             setAlertMsg({ isError: false, message: `Task ${selectedTask.task_name} deleted successfully` })
-         */
             swals.deleteTaskSwal(`http://localhost:3000/tasks/${selectedTask.task_id}`)
         } catch (error) {
             console.log(error)

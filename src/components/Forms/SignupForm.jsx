@@ -1,5 +1,6 @@
 import { useState } from "react"
 import InputText from "../Inputs/InputText"
+import InputDate from "../Inputs/InputDate"
 import validator from "../../utils/inputValidators"
 import { Button, Alert } from "@mui/material"
 import { useNavigate } from "react-router-dom";
@@ -77,6 +78,7 @@ export default function SignupForm() {
     // This function is for real signing up by connect to server over post method request  
     const signUp = async () => {
 
+        console.log(formData)
         if (!validator.validateSignupDataBeforeSubmit(formData, setFormData)) {
             return
         }
@@ -142,11 +144,12 @@ export default function SignupForm() {
                 validation_error={formData.confirmPassword.errorMsg}
                 changeHandler={handleChange}
             />
-            <InputText required type="date" title="Date of Birth" name="dateofbirth" id="Date of Birth"
+            <InputDate name='dateofbirth' title="Date of Birth" placeholder='Date of Birth'
                 value={formData.dateofbirth.value}
                 validation_error={formData.dateofbirth.errorMsg}
                 changeHandler={handleChange}
             />
+
             <Button size='small' fullWidth variant="contained"
                 loading={loading}
                 sx={{ mt: 1, backgroundColor: "var(--dark-bg)", textTransform: 'none', color: 'white', fontWeight: '400' }}

@@ -29,8 +29,8 @@ export default function SignupPage() {
             {
                 pageLoading ? <Loader /> :
                     <Fade in timeout={700}>
-                        <div className="h-screen flex items-center justify-center relative">
-                            <div className="w-full" style={{ position: 'absolute', top: 0, backgroundColor: 'var(--dark-bg)' }}>
+                        <div className="h-screen flex flex-col items-center justify-start relative gap-5">
+                            <div className="w-full" style={{ backgroundColor: 'var(--dark-bg)' }}>
                                 <NavigationBar />
                             </div>
                             <div className=" mt-4 flex items-stretch justify-center rounded-tl-2xl rounded-bl-2xl rounded-tr-2xl rounded-br-2xl" style={{ boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 2px" }}>
@@ -40,12 +40,12 @@ export default function SignupPage() {
                                             className="p-4 w-1/2 flex flex-col items-center justify-center rounded-tl-2xl rounded-bl-2xl"
 
                                         >
-                                            <h1 className="text-[36px] text-white">Welcome</h1>
-                                            <h1 className="text-[16px] text-white">Join our unique platform. Explore a new experience</h1>
+                                            <h1 className="text-[36px] text-white text-center">Welcome</h1>
+                                            <h1 className="text-[16px] text-white text-center">Join our unique platform. Explore a new experience</h1>
                                         </div> : ""
                                 }
 
-                                <div className="p-4">
+                                <div className="p-4 max-w-[400px]">
                                     <SignupForm />
                                 </div>
                             </div>

@@ -9,6 +9,9 @@ import SkipNextIcon from '@mui/icons-material/SkipNext';
 
 
 export default function AnnotateForm({ task }) {
+
+   
+
     const navigate = useNavigate()
     const [alertMsg, setAlertMsg] = useState({
         isError: false,
@@ -38,7 +41,6 @@ export default function AnnotateForm({ task }) {
                 const sentenceToAnnotate = (await axios.get(url, { headers: headers })).data
                 setSentenceToAnnotate(sentenceToAnnotate.sentence)
                 setAnnotateMsg(sentenceToAnnotate.message)
-                console.log(sentenceToAnnotate)
             } catch (error) {
                 if (error.code == "ERR_NETWORK") {
                     setAlertMsg({ isError: true, message: "Unable to connect server" })
@@ -63,7 +65,7 @@ export default function AnnotateForm({ task }) {
 
     const annotate = async (process) => {
 
-        if (!selectedLabel && process != 0) {
+        if (!selectedLabel && process !== 0) {
             setAlertMsg({
                 isError: true,
                 message: 'Please select label or skip this sentence'
@@ -71,6 +73,10 @@ export default function AnnotateForm({ task }) {
             return
         }
 
+        if (process === 0 && annotateMsg){
+            setAlertMsg({isError: true, message: "You cannot skip this again. Please select a label"})
+            return
+        }
         setSubmittingLoading(true)
         try {
             const url = `http://localhost:3000/annotation/${task.task_id}/annotate`
@@ -105,10 +111,10 @@ export default function AnnotateForm({ task }) {
 
                     <div className="mt-1 mb-1">
                         {
-                            annotateMsg && <Alert severity="info">{!sentenceToAnnotate? "Task Completed" : annotateMsg}</Alert>
+                            annotateMsg && <Alert severity="info">{!sentenceToAnnotate? "Completed" : annotateMsg}</Alert>
                         }
                     </div>
-                    <div className="w-full flex flex-row justify-items-center flex-wrap gap-2 mt-10">
+                    <div className="w-full flex flex-row justify-center flex-wrap gap-2 mt-10">
                         <h1 className="w-full text-left text-[14px] grow flex items-center p-2 border border-gray-200 rounded-sm">Annotated <h1 className="text-right w-full">{numOfAnnotatedSentences}</h1></h1>
                         <h1 className="w-full text-left text-[14px] grow flex items-center p-2 border border-gray-200 rounded-sm">Skipped <h1 className="text-right w-full">{numOfSkippedSentences}</h1></h1>
                     </div>

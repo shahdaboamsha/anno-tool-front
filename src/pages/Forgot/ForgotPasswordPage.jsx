@@ -1,73 +1,84 @@
 import InputText from "../../components/Inputs/InputText"
 import inputValidators from "../../utils/inputValidators"
 import { useState, useEffect } from "react"
-import { Fade, Grid2 as Grid, Button } from "@mui/material"
+import { Fade, Alert, Button } from "@mui/material"
+import NavigationBar from "../../components/Public/NavigationBar"
+import { useNavigate } from "react-router-dom"
+import axios from "axios"
 
 export default function ForgotPasswordPage() {
+    document.title = "Recover your account"
+    useEffect(() => {localStorage.getItem('ACCESS_TOKEN')? navigate('/dashboard/security') : ""}, [])
 
+    const navigate = useNavigate()
     const [email, setEmail] = useState({
         value: "",
-        error: null
+        errorMsg: null
     })
+    const [alertMsg, setAlertMsg] = useState({ severity: 'error', message: null})
+    const [loading, setLoading] = useState(false)
 
-    const handleInputChange = (event) => {
+    const validateInput = (event) => {
         const { name, value } = event.target
-
-        setEmail({ value: value, error: null })
+        if (value === "") return 'VALID'
+        return inputValidators.validate(name, value)
     }
 
-    const handleInputBlur = (e) => {
-        const { name, value } = event.target
+    // track the changes over the fields
+    const handleChange = (event) => {
+        const { value } = event.target
 
-        if (value.trim() === "") {
-            setEmail({ ...email, error: null })
-            return
+        const validation = validateInput(event)
+        const errorMsg = validation != 'VALID' ? validation : null
+
+        setEmail({ value: value, errorMsg: errorMsg })
+    }
+
+    const requestPasswordChange = async () => {
+
+        const validation = inputValidators.validate('email', email.value)
+        const errorMsg = validation === 'VALID' ? null : validation
+        setEmail({ ...email, errorMsg: errorMsg })
+
+        if (validation != 'VALID') return
+
+        setLoading(true)
+        try {
+            const url = `http://localhost:3000/auth/sendcode`
+            const token = (await axios.post(url, {email: email.value})).data.token
+            localStorage.setItem('RECOVER_ACCOUNT_TOKEN', token)
+            navigate('/recover/verify', { state: {verify: true, message: `We send a code to your email address ${email.value}. Please check your mail inbox to reset your password`}})
+        } catch (error) {
+            console.log(error)
+            setAlertMsg({severity: 'error', message: `Oops! an error occured`})
         }
-
-        const validationResult = inputValidators.validate(name, value)
-
-        if (validationResult != "VALID") {
-            setEmail({ ...email, error: validationResult })
-        }
+        setLoading(false)
 
     }
 
     return (
         <Fade in timeout={700}>
-            <div className='page-container' >
-                <div className='shadowed'>
-                    <Grid container width={{ lg: 400, sm: 390, xs: 350 }} columns={12}>
-                        <div>
-                            <h1 className='form-header'>Recover your account</h1>
-                            <p  className='form-header-desc'>Forgot password? Please type your email and submit to recover your account password</p>
-                        </div>
-
-                        <InputText
-                            required
-                            type='email'
-                            name='email'
-                            title='Email address'
-                            id='email'
-                            placeholder='Email address'
-                            value={email.value}
-                            changeHandler={handleInputChange}
-                            blurHandler={handleInputBlur}
-                            validation_error={email.error}
-                            
-                        />
-                        <div style={{ width: '100%' }}>
-                            <Button
-                                fullWidth
-                                variant="contained"
-                                sx={{ bgcolor: 'var(--dark-bg)', textTransform: 'none', marginTop: '15px' }}
-                            >
-                                Recover Password
-                            </Button>
-                        </div>
-                    </Grid>
+            <div className="h-screen flex flex-col items-center justify-start relative gap-5">
+                <div style={{ width: '100%', backgroundColor: 'var(--dark-bg)' }}>
+                    <NavigationBar />
                 </div>
 
+                <div className='shadowed text-[14px] mt-5 max-w-[400px]'>
+                    <h1 className='text-[28px] text-center'>Recover your account</h1>
+                    <p className='text-gray-500 text-[14px] text-center'>Please type your email and submit to recover your account password</p>
+                    {alertMsg.message? <Alert severity={alertMsg.severity}>{alertMsg.message}</Alert> : ""}
+
+                    <InputText required type='email' name='email' title='Email address' id='email' placeholder='Email address'
+                        value={email.value}
+                        changeHandler={handleChange}
+                        validation_error={email.errorMsg}
+                    />
+                    <Button fullWidth loading={loading} variant="contained" sx={{ bgcolor: 'var(--dark-bg)', textTransform: 'none', mt: 1 }} onClick={requestPasswordChange} >
+                        Recover Password
+                    </Button>
+                </div>
             </div >
+
         </Fade>
     )
 }

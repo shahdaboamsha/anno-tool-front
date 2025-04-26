@@ -26,10 +26,11 @@ export default function DashboardLayout() {
 
     const getUserData = async () => {
       const url = 'http://localhost:3000/users/getUserData'
-      const headers = { Authorization: `Beared ${localStorage.getItem('ACCESS_TOKEN')}` }
+      const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
       try {
-        setUserData((await axios.get(url, { headers: headers })).data)
+        setUserData({...(await axios.get(url, { headers: headers })).data, role: 'admin'})
+        //console.log({...(await axios.get(url, { headers: headers })).data, role: 'admin'})
       } catch (error) {
         if (error.code == "ERR_NETWORK") {
           localStorage.removeItem('ACCESS_TOKEN')
@@ -57,7 +58,7 @@ export default function DashboardLayout() {
     <>
       {loading ? <Loader /> :
         <div className="flex h-screen overflow-x-auto">
-          <Sidebar isOpen={isSidebarOpen} />
+          <Sidebar isOpen={isSidebarOpen} role={userData.role}/>
           <div className="flex flex-col flex-1">
             <UserContext.Provider value={{ userData }}>
               <Topbar toggleSidebar={toggleSidebar} userName={userData.userName} />

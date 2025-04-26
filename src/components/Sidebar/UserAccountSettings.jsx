@@ -1,5 +1,6 @@
 import { useState } from "react";
 import InputText from "../Inputs/InputText";
+import InputDate from "../Inputs/InputDate";
 import inputValidators from "../../utils/inputValidators";
 import { Button, Divider, Alert } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
@@ -110,7 +111,7 @@ export default function UserAccountSettings() {
                     validation_error={formData.email.errorMsg}
                     changeHandler={handleChange}
                 />
-                <InputText required type="date" title="Date of Birth" name="dateofbirth" id="Date of Birth"
+                <InputDate name='dateofbirth' title="Date of Birth" placeholder='Date of Birth'
                     value={formData.dateofbirth.value}
                     validation_error={formData.dateofbirth.errorMsg}
                     changeHandler={handleChange}

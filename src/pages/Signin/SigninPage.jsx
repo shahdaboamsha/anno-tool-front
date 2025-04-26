@@ -26,8 +26,8 @@ function SigninPage() {
             {pageLoading ? <Loader />
                 :
                 <Fade in timeout={700}>
-                    <div className="h-screen flex items-center justify-center relative">
-                        <div style={{ position: 'absolute', top: '0px', width: '100%', backgroundColor: 'var(--dark-bg)' }}>
+                    <div className="h-screen flex flex-col items-center justify-start relative gap-5">
+                        <div style={{ width: '100%', backgroundColor: 'var(--dark-bg)' }}>
                             <NavigationBar />
                         </div>
 

@@ -36,7 +36,7 @@ const borderFocusStyleProps = {
 }
     return (
         <>
-            <div className={clsx('flex flex-col relative', validation_error ? 'mt-2' : "mt-2")} style={{ width: '100%' }}>
+            <div className={clsx('flex flex-col relative',  validation_error? 'mb-1' : 'mb-1')} style={{ width: '100%' }}>
                 <Tooltip title={`Enter ${title}`}>
                     <TextField
                         required={required}

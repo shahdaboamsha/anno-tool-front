@@ -108,6 +108,11 @@ function NavigationBar() {
                                         ABOUT US
                                     </MenuItem>
                                 </a>
+                                <a href="/#" className='nav-link-menu-items'>
+                                    <MenuItem key='home' {...menuItemProps} >
+                                        CONTACT US
+                                    </MenuItem>
+                                </a>
                                 <a href="/signin" className='nav-link-menu-items'>
                                     <MenuItem key='home' {...menuItemProps}>
                                         SIGN IN
@@ -131,6 +136,7 @@ function NavigationBar() {
                             </a>
                             <a href="/" className='nav-link'>HOME</a>
                             <a href="" className='nav-link'>ABOUT US</a>
+                            <a href="#contact-us" className='nav-link'>CONTACT US</a>
                         </div>
                     </>
                     }
