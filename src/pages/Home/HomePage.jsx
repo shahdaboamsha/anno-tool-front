@@ -2,11 +2,10 @@ import { Grid2 as Grid, Typography, Button } from "@mui/material"
 import { useMediaQuery, useTheme } from '@mui/material';
 import SigninForm from "../../components/Forms/SigninForm";
 import { useNavigate } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
+import { useState, } from "react";
 import QuickDialog from "../../components/Public/QuickDialog";
 import NavigationBar from "../../components/Public/NavigationBar";
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import clsx from 'clsx'
 import account from '../../assets/acc.jpg'
 import Card from "./Card";
 import share from '../../assets/share.png'
@@ -40,25 +39,6 @@ export default function HomePage() {
     
     return (
         <div>
-<<<<<<< HEAD
-            <div
-                className='text-white flex gap-3 flex-col items-center justify-center white-text center-text home-img-container'
-                style={{ height: `${isWideScreen ? '98vh' : '80vh'}`, position: 'relative' }}
-            >
-                <div style={{ position: 'absolute', top: '0px', width: '100%' }}>
-                    <NavigationBar />
-                </div>
-
-                <h1 className={clsx("font-bold text-[42px]", !isWideScreen ? "mt-10" : "")}>Streamline Your Data with Our Text Annotation Tool</h1>
-                <h1 className="text-[16px]">Our intuitive tool simplifies annotation, helping you organize and analyze text effortlessly. Start streamlining your data today!</h1>
-                <h1 className="text-[16px]">Easily upload your files and classify words with precision</h1>
-
-                <div>
-                    <Button id="quick-action-button" variant="contained" onClick={getStarted}
-                        sx={{ ...quickActionButtonProps }}
-                        endIcon={<ArrowForwardIcon className="arrow-icon" fontSize='large' />}
-                    >
-=======
             <div className='text-white flex flex-centered-items flex-column-items white-text center-text home-img-container'
                 style={{ height: `${isWideScreen ? '90vh' : '70vh'}`,  position: 'relative' }} >
                
@@ -81,7 +61,6 @@ export default function HomePage() {
                 <div>
                     <Button id="quick-action-button" variant="contained" sx={{ ...quickActionButtonProps }} onClick={getStarted}
                         endIcon={ <ArrowForwardIcon className="arrow-icon" fontSize='large' /> }>
->>>>>>> 903b1e3445f62050af3615010feb8238e85b04fe
                         Get started
                     </Button>
                     <QuickDialog 
