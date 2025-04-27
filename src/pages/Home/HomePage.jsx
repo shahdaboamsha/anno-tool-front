@@ -118,7 +118,7 @@ export default function HomePage() {
                             <img src={mais} alt="" loading="lazy" />
                         </div>
                         <div className="max-w-[500px] developer-img">
-                            <img src={nagham} alt=""  />
+                            <img src={nagham} alt=""  loading="lazy"/>
                         </div>
                     </div>
                     <p className="animation-view text-[18px] max-w-[900px] text-white ">

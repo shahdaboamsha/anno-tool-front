@@ -1,12 +1,12 @@
 import { DataGrid } from '@mui/x-data-grid';
 import { useState } from 'react';
 import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
+import { Button, Divider } from '@mui/material';
 import { Delete } from '@mui/icons-material';
 
 const paginationModel = { page: 0, pageSize: 5 };
 
-export default function DataTable({ rows, columns, deleteSelected }) {
+export default function DataTable({ rows, columns, deleteSelected, getRowId }) {
 
     const [selectedRecords, setSelectedRecords] = useState([])
 
@@ -15,20 +15,24 @@ export default function DataTable({ rows, columns, deleteSelected }) {
     }
 
     return (
-        <div className='flex flex-col items-end gap-3 w-full'>
-            <div>
+        <div className='flex flex-col gap-3'>
+            <Divider />
+            <div className='p-3'>
                 <Button variant='contained' color='error'
                     onClick={() => deleteSelected(selectedRecords)}
                     sx={{ textTransform: 'none' }}
                     endIcon={< Delete />}
+                    disabled={selectedRecords.length === 0}
                 >Delete selected records
                 </Button>
             </div>
-            <Paper sx={{ height: 400, width: '100%' }}>
+
+            <Paper sx={{ height: 400 }}>
                 <DataGrid
                     rows={rows}
                     columns={columns}
-                    getRowId={(row) => row.user_id}
+                    density='standard'
+                    getRowId={getRowId}
                     initialState={{ pagination: { paginationModel } }}
                     pageSizeOptions={[5, 10]}
                     checkboxSelection

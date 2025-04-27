@@ -4,6 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import UsersManagement from '../Admin/UsersManagement';
+import TasksManagement from '../Admin/TasksManagement';
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -42,8 +43,7 @@ export default function AdminDashboard() {
     };
 
     return (
-        <div>
-            <Box sx={{ width: '100%', pt: 1, pl: 1 }}>
+            <Box sx={{  pt: 1, pl: 1}}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                         <Tab label="Users Management" {...a11yProps(0)} sx={{ textTransform: 'none' }} />
@@ -54,12 +54,8 @@ export default function AdminDashboard() {
                     <UsersManagement />
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={1}>
-                    Item Two
-                </CustomTabPanel>
-                <CustomTabPanel value={value} index={2}>
-                    Item Three
+                    <TasksManagement/>
                 </CustomTabPanel>
             </Box>
-        </div>
     );
 }

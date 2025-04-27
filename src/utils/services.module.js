@@ -11,4 +11,15 @@ const formatUserName = (str) => {
     return splittedStr.map(word => capitalizeFirstLetter(word)).join(" ")
 }
 
-export { formatDateToLong, formatUserName }
+const capitalizeFirstLetter = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+}
+
+const capitailizeFirstLetterOfArray = (str) => {
+
+    str = str.toLocaleString()
+    const splittedStrAsArray = str.split(";")
+    const newStr = splittedStrAsArray.map(label => label.charAt(0).toUpperCase() + label.toLowerCase().slice(1))
+    return newStr.toLocaleString().split(",").join(", ")
+}
+export { formatDateToLong, formatUserName, capitalizeFirstLetter, capitailizeFirstLetterOfArray }

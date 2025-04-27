@@ -1,5 +1,5 @@
 // src/components/DashboardLayout.jsx
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useContext } from 'react';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
 import { Outlet } from 'react-router-dom';
@@ -8,9 +8,9 @@ import axios from 'axios';
 import { createContext } from "react";
 import Loader from '../Loaders/Loader';
 import { useNavigate } from 'react-router-dom';
-export const UserContext = createContext()
 import { useMediaQuery, useTheme } from '@mui/material';
 
+export const UserContext = createContext()
 export default function DashboardLayout() {
   const theme = useTheme()
   const isWideScreen = useMediaQuery(theme.breakpoints.down('sm'))
@@ -56,7 +56,7 @@ export default function DashboardLayout() {
     <>
       {loading ? <Loader /> :
         <div className="flex h-screen overflow-x-auto">
-          <Sidebar isOpen={isSidebarOpen} role={userData.role}/>
+          <Sidebar isOpen={isSidebarOpen} role={userData.role} toggleSidebar={toggleSidebar}/>
           <div className="flex flex-col flex-1">
             <UserContext.Provider value={{ userData }}>
               <Topbar toggleSidebar={toggleSidebar} userName={userData.userName} />

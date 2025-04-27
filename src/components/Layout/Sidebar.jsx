@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, ChevronUp  } from "lucide-react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import clsx from "clsx";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddIcon from "@mui/icons-material/Add";
@@ -8,10 +8,13 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import axios from "axios";
 import PersonIcon from '@mui/icons-material/Person';
 import ShieldIcon from '@mui/icons-material/Shield';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import logo from '../../assets/logo.png'
 
-export default function Sidebar({ isOpen }) {
+export default function Sidebar({ isOpen, toggleSidebar }) {
+
   const navigate = useNavigate();
+
   const [openDropdown, setOpenDropdown] = useState(null);
 
   const toggleDropdown = (label) => {
@@ -47,8 +50,8 @@ export default function Sidebar({ isOpen }) {
   return (
     <aside
       className={clsx(
-        "border-r border-gray-300 h-full transition-all duration-300 ease-in-out",
-        isOpen ? "w-80" : "w-20",
+        "border-r border-gray-300 h-full transition-all duration-300 linear",
+        isOpen ? "w-64" : "w-16",
       )}
     >
       <div className="p-2 text-lg font-bold text-black border-b border-gray-300">
@@ -66,7 +69,11 @@ export default function Sidebar({ isOpen }) {
 
         {/* Overview */}
         <div
-          onClick={() => { navigate("overview"); setSelectedButton('overview') }}
+          onClick={() => {
+            navigate("overview");
+            setSelectedButton('overview');
+            isOpen ? toggleSidebar() : ""
+          }}
           className={clsx(
             "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
             isOpen ? "gap-4" : "justify-center",
@@ -79,7 +86,11 @@ export default function Sidebar({ isOpen }) {
 
         {/* New Task */}
         <div
-          onClick={() => { navigate("new"); setSelectedButton('new') }}
+          onClick={() => {
+            navigate("new");
+            setSelectedButton('new')
+            isOpen ? toggleSidebar() : ""
+          }}
           className={clsx(
             "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
             isOpen ? "gap-4" : "justify-center",
@@ -93,11 +104,16 @@ export default function Sidebar({ isOpen }) {
         {/* Tasks Dropdown */}
         <div className="flex flex-col">
           <div
-            onClick={() => { toggleDropdown("Tasks"); navigate("taskslist"); setSelectedButton('taskslist') }}
+            onClick={() => {
+              toggleDropdown("Tasks");
+              navigate("taskslist");
+              setSelectedButton('taskslist');
+              isOpen ? toggleSidebar() : ""
+            }}
             className={clsx(
               "flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
               isOpen ? "gap-2" : "justify-center",
-              selectedButton === 'taskslist'? 'bg-gray-300' : ''
+              selectedButton === 'taskslist' ? 'bg-gray-300' : ''
             )}
           >
             <div className="flex items-center gap-4" >
@@ -136,9 +152,13 @@ export default function Sidebar({ isOpen }) {
             </div>
           )}
         </div>
-        {/* Overview */}
+        {/* Account */}
         <div
-          onClick={() => { navigate("account"); setSelectedButton('account') }}
+          onClick={() => {
+            navigate("account");
+            setSelectedButton('account');
+            isOpen ? toggleSidebar() : ""
+          }}
           className={clsx(
             "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
             isOpen ? "gap-4" : "justify-center",
@@ -149,7 +169,11 @@ export default function Sidebar({ isOpen }) {
           {isOpen && <span className="text-sm">My Account</span>}
         </div>
         <div
-          onClick={() => { navigate("security"); setSelectedButton('security') }}
+          onClick={() => {
+            navigate("security");
+            setSelectedButton('security');
+            isOpen ? toggleSidebar() : ""
+          }}
           className={clsx(
             "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
             isOpen ? "gap-4" : "justify-center",
@@ -158,6 +182,21 @@ export default function Sidebar({ isOpen }) {
         >
           <ShieldIcon />
           {isOpen && <span className="text-sm">Security</span>}
+        </div>
+        <div
+          onClick={() => {
+            navigate("administration")
+            setSelectedButton('administration')
+            isOpen ? toggleSidebar() : ""
+          }}
+          className={clsx(
+            "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
+            isOpen ? "gap-4" : "justify-center",
+            selectedButton === 'administration' ? "bg-gray-300" : ""
+          )}
+        >
+          <ManageAccountsIcon />
+          {isOpen && <span className="text-sm">Management</span>}
         </div>
 
       </nav>

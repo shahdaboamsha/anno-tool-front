@@ -51,7 +51,7 @@ export default function UsersManagement({ users = null }) {
         if (selected.length === 0) {
             return
         }
-    
+
         try {
             const url = 'http://localhost:3000/admin/deleteusers'
             const headers = `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
@@ -64,10 +64,18 @@ export default function UsersManagement({ users = null }) {
 
     }
     return (
-        <div className="p-5 flex justify-start gap-5 flex-wrap">
-            <BriefCard title="Registered Users" description="25" icon={<Person sx={{ fontSize: '4rem' }} />} />
-            <Divider />
-            <DataTable rows={rows} columns={columns} deleteSelected={deleteSelectedUsers} />
+        <div>
+            <div className="p-5 flex justify-start gap-5 flex-wrap">
+                <BriefCard title="Registered Users" description="25" icon={<Person sx={{ fontSize: '4rem' }} />} />
+                <BriefCard title="Deleted Users" description="25" icon={<Person sx={{ fontSize: '4rem' }} />} />
+            </div>
+            
+            <DataTable
+                rows={rows}
+                columns={columns}
+                deleteSelected={deleteSelectedUsers}
+                getRowId={(row) => row.user_id}
+            />
         </div>
     )
 }
