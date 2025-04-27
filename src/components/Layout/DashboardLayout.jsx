@@ -29,8 +29,8 @@ export default function DashboardLayout() {
       const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
       try {
-        setUserData({...(await axios.get(url, { headers: headers })).data, role: 'admin'})
-        //console.log({...(await axios.get(url, { headers: headers })).data, role: 'admin'})
+        const userData = (await axios.get(url, { headers: headers })).data
+        setUserData(userData)
       } catch (error) {
         if (error.code == "ERR_NETWORK") {
           localStorage.removeItem('ACCESS_TOKEN')

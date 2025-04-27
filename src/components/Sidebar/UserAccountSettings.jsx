@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useOutletContext } from "react-router-dom";
 import * as swals from '../Public/Swals'
+import * as services from '../../utils/services.module'
 
 export default function UserAccountSettings() {
 
@@ -100,6 +101,10 @@ export default function UserAccountSettings() {
 
             {alertMsg.message && <Alert sx={{ mt: 2 }} severity={alertMsg.severity}>{alertMsg.message}</Alert>}
             <div className="pt-4 flex flex-col items-center justify-center gap-1 sm:w-full lg:w-[500px]">
+
+                <div className="w-full mb-1 text-gray-500">
+                    <p className="text-right text-[14px]">Updated at {services.formatDateToLong(userData.updatedAt)}</p>
+                </div>
 
                 <InputText required ype="text" title="Your name" name="userName" id="userName"
                     value={formData.userName.value}

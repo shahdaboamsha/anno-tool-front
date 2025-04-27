@@ -34,15 +34,15 @@ const columns = [
 ];
 
 const rows = [
-    { user_id: 1, userName: 'Ghassan Amous', dateofbirth: 35, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 2, userName: 'Ghassan Amous', dateofbirth: 42, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 3, userName: 'Ghassan Amous', dateofbirth: 45, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 4, userName: 'Ghassan Amous', dateofbirth: 16, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 5, userName: 'Ghassan Amous', dateofbirth: 13, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 6, userName: 'Ghassan Amous', dateofbirth: 15, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 7, userName: 'Ghassan Amous', dateofbirth: 44, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 8, userName: 'Ghassan Amous', dateofbirth: 36, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 9, userName: 'Ghassan Amous', dateofbirth: 65, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
+    { user_id: 1, userName: 'Shahd Mohammad', dateofbirth: 35, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
+    { user_id: 2, userName: 'Shahd Mohammad', dateofbirth: 42, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
+    { user_id: 3, userName: 'Shahd Mohammad', dateofbirth: 45, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
+    { user_id: 4, userName: 'Shahd Mohammad', dateofbirth: 16, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
+    { user_id: 5, userName: 'Shahd Mohammad', dateofbirth: 13, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
+    { user_id: 6, userName: 'Shahd Mohammad', dateofbirth: 15, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
+    { user_id: 7, userName: 'Shahd Mohammad', dateofbirth: 44, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
+    { user_id: 8, userName: 'Shahd Mohammad', dateofbirth: 36, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
+    { user_id: 9, userName: 'Shahd Mohammad', dateofbirth: 65, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
 ]
 
 export default function UsersManagement({ users = null }) {

@@ -10,7 +10,7 @@ import SkipNextIcon from '@mui/icons-material/SkipNext';
 
 export default function AnnotateForm({ task }) {
 
-   
+
 
     const navigate = useNavigate()
     const [alertMsg, setAlertMsg] = useState({
@@ -18,6 +18,7 @@ export default function AnnotateForm({ task }) {
         message: null
     })
     const [sentenceToAnnotate, setSentenceToAnnotate] = useState(null)
+    const [usersAnnotations, setUsersAnnotations] = useState([])
     const [loading, setLoading] = useState(true)
     const [submittingLoading, setSubmittingLoading] = useState(false)
     const [getNext, setGetNext] = useState(0)
@@ -38,10 +39,12 @@ export default function AnnotateForm({ task }) {
                     Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
                 }
 
-                const sentenceToAnnotate = (await axios.get(url, { headers: headers })).data
-                setSentenceToAnnotate(sentenceToAnnotate.sentence)
-                setAnnotateMsg(sentenceToAnnotate.message)
+                const nextSentence = (await axios.get(url, { headers: headers })).data
+                setSentenceToAnnotate(nextSentence.sentenceToAnnotate)
+                setUsersAnnotations(nextSentence.usersAnnotations)
+                setAnnotateMsg(nextSentence.message)
             } catch (error) {
+                console.log(error)
                 if (error.code == "ERR_NETWORK") {
                     setAlertMsg({ isError: true, message: "Unable to connect server" })
                 }
@@ -60,7 +63,6 @@ export default function AnnotateForm({ task }) {
 
 
     const [selectedLabel, setSelectedLabel] = useState(null)
-
     const handleLabelSelection = (selection) => setSelectedLabel(selection)
 
     const annotate = async (process) => {
@@ -73,8 +75,8 @@ export default function AnnotateForm({ task }) {
             return
         }
 
-        if (process === 0 && annotateMsg){
-            setAlertMsg({isError: true, message: "You cannot skip this again. Please select a label"})
+        if (process === 0 && annotateMsg) {
+            setAlertMsg({ isError: true, message: "You cannot skip this again. Please select a label" })
             return
         }
         setSubmittingLoading(true)
@@ -106,24 +108,41 @@ export default function AnnotateForm({ task }) {
             loading ? <InnerLoader /> :
 
                 <div>
-                    <h1 className="text-center text-[18px]">Annotation Task: {task.annotation_type}</h1>
+                    <h1 className="text-center text-[18px]">Annotation Task: {task.task_name} - {task.annotation_type}</h1>
                     <Divider variant='fullWidth' />
 
                     <div className="mt-1 mb-1">
                         {
-                            annotateMsg && <Alert severity="info">{!sentenceToAnnotate? "Completed" : annotateMsg}</Alert>
+                            annotateMsg && <Alert severity="info">{!sentenceToAnnotate ? "Completed" : annotateMsg}</Alert>
                         }
                     </div>
                     <div className="w-full flex flex-row justify-center flex-wrap gap-2 mt-10">
-                        <h1 className="w-full text-left text-[14px] grow flex items-center p-2 border border-gray-200 rounded-sm">Annotated <h1 className="text-right w-full">{numOfAnnotatedSentences}</h1></h1>
-                        <h1 className="w-full text-left text-[14px] grow flex items-center p-2 border border-gray-200 rounded-sm">Skipped <h1 className="text-right w-full">{numOfSkippedSentences}</h1></h1>
+                        <div className="w-full text-left text-[14px] grow flex items-center p-2 border border-gray-200 rounded-sm">Annotated <h1 className="text-right w-full">{numOfAnnotatedSentences}</h1></div>
+                        <div className="w-full text-left text-[14px] grow flex items-center p-2 border border-gray-200 rounded-sm">Skipped <h1 className="text-right w-full">{numOfSkippedSentences}</h1></div>
                     </div>
 
-                    { sentenceToAnnotate ? 
+                    {sentenceToAnnotate ?
                         <>
                             <div className="p-5 bg-gray-100 mt-3">
                                 <h1 className="text-right text-[14px]">{sentenceToAnnotate.sentence_text}</h1>
                             </div>
+                            {
+                                <div className="p-5 bg-gray-100 mt-3">
+                                    <h1 className="text-[14px] font-bold">Collaborators annotations</h1>
+                                    <table className="  border-gray-300 w-full">
+                                        {usersAnnotations.length > 0? (
+                                            <tbody>
+                                                {usersAnnotations.map((annotation, index) => (
+                                                    <tr key={index} className="">
+                                                        <th className="text-left p-2 font-semibold border border-gray-300" >{annotation.userName}</th>
+                                                        <td className="p-2 border border-gray-300">{annotation.annotation}</td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        ) : <h1 className="text-[14px]">Not annotated by any collaborator yet</h1>}
+                                    </table>
+                                </div>
+                            }
 
                             {alertMsg.isError && <Alert sx={{ mt: 2 }} color="error" severity="error">{alertMsg.message}</Alert>}
                             <h1 className="text-[16px] mt-2">Select label:</h1>

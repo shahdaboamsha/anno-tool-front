@@ -21,7 +21,7 @@ export default function TaskDetails({ task }) {
 
 
     task = useMemo(() => task, [task])
-    console.log(task)
+
     const [editDialogState, setEditDialogState] = useState(false)
     const setOpenState = () => setEditDialogState(!editDialogState)
 

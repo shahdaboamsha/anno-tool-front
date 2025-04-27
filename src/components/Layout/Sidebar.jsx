@@ -11,7 +11,7 @@ import ShieldIcon from '@mui/icons-material/Shield';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import logo from '../../assets/logo.png'
 
-export default function Sidebar({ isOpen, toggleSidebar }) {
+export default function Sidebar({ isOpen, toggleSidebar, role }) {
 
   const navigate = useNavigate();
 
@@ -183,7 +183,7 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
           <ShieldIcon />
           {isOpen && <span className="text-sm">Security</span>}
         </div>
-        <div
+        { role && role === 'admin' && <div
           onClick={() => {
             navigate("administration")
             setSelectedButton('administration')
@@ -197,7 +197,7 @@ export default function Sidebar({ isOpen, toggleSidebar }) {
         >
           <ManageAccountsIcon />
           {isOpen && <span className="text-sm">Management</span>}
-        </div>
+        </div>}
 
       </nav>
     </aside>

@@ -13,6 +13,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import clsx from 'clsx';
+import helpImage from '../../assets/wallpaper/create-form-help.png'
 
 export default function CreateTask() {
 
@@ -146,7 +147,6 @@ export default function CreateTask() {
 
         setLoading(true)
         try {
-
             const url = 'http://localhost:3000/file/upload'
             const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
             const data = prepareDataBeforeSubmit()
@@ -178,98 +178,108 @@ export default function CreateTask() {
             <p className='text-gray-500 text-[14px]'>Create your new annotation task by filling out the task metadata fields. Attach the task with a dataset file</p>
             {alertMsg.isError ? <Alert severity='error' id='alert'>{alertMsg.message}</Alert> : ''}
 
-            <div className="pt-4 flex flex-col gap-1 sm:w-full lg:w-[500px]">
-                <h1 className='text-[18px]'>{<AssignmentIcon sx={{ mr: 1 }} />}Task metadata</h1>
-                <InputText required type='text' title="Task name" name="task_name" id="task name"
-                    value={formData.task_name.value}
-                    validation_error={formData.task_name.errorMsg}
-                    changeHandler={changeHandler}
-                />
-
-                <InputSelect required name='annotation_type' title="Annotation type"
-                    value={formData.annotation_type.value}
-                    validation_error={formData.annotation_type.errorMsg}
-                    menuItems={["Sentiment", "Sarcasm", "Stennce"]}
-                    changeHandler={changeHandler}
-                />
-
-                <InputText required type='text' title="Labels" name="labels" id="labels"
-                    placeholder='example (positive;pegative)'
-                    value={formData.labels.value}
-                    validation_error={formData.labels.errorMsg}
-                    changeHandler={changeHandler}
-                />
-                <InputText type='text' title="Description" name="task_description" id="description"
-                    placeholder='Description (optional)'
-                    value={formData.task_description.value}
-                    validation_error={formData.task_description.errorMsg}
-                    changeHandler={changeHandler}
-                />
-
-                <h1 className='text-[18px] mt-4 text-left'>{<DatasetIcon sx={{ mr: 1 }} />}Task dataset</h1>
-                <div style={{ display: fileChangedAtLeastOnce ? 'none' : 'block' }}>
-                    <h1 className='text-gray-500 text-[14px]'>Please upload a file in CSV or XLSX format</h1>
-                    <InputFile
-                        fileSelectionHandler={fileSelectionHandler}
-                        validation_error={formData.file.errorMsg}
+            <div className="flex flex-row gap-8 justify-between flex-wrap">
+                <div className="pt-4 flex flex-col gap-1  sm:w-full lg:w-[500px]">
+                    <h1 className='text-[18px]'>{<AssignmentIcon sx={{ mr: 1 }} />}Task metadata</h1>
+                    <InputText required type='text' title="Task name" name="task_name" id="task name"
+                        value={formData.task_name.value}
+                        validation_error={formData.task_name.errorMsg}
+                        changeHandler={changeHandler}
                     />
+
+                    <InputSelect required name='annotation_type' title="Annotation type"
+                        value={formData.annotation_type.value}
+                        validation_error={formData.annotation_type.errorMsg}
+                        menuItems={["Sentiment", "Sarcasm", "Stennce"]}
+                        changeHandler={changeHandler}
+                    />
+
+                    <InputText required type='text' title="Labels" name="labels" id="labels"
+                        placeholder='example (positive;negative)'
+                        value={formData.labels.value}
+                        validation_error={formData.labels.errorMsg}
+                        changeHandler={changeHandler}
+                    />
+
+                    <InputText type='text' title="Description" name="task_description" id="description"
+                        placeholder='Description (optional)'
+                        value={formData.task_description.value}
+                        validation_error={formData.task_description.errorMsg}
+                        changeHandler={changeHandler}
+                    />
+
+                    <h1 className='text-[18px] mt-4 text-left'>{<DatasetIcon sx={{ mr: 1 }} />}Task dataset</h1>
+                    <div style={{ display: fileChangedAtLeastOnce ? 'none' : 'block' }}>
+                        <h1 className='text-gray-500 text-[14px]'>Please upload a file in CSV or XLSX format</h1>
+                        <InputFile
+                            fileSelectionHandler={fileSelectionHandler}
+                            validation_error={formData.file.errorMsg}
+                        />
+                    </div>
+
+                    {
+                        formData.file.values.fileName != "" &&
+                        <table className="text-sm text-left rtl:text-right">
+                            <thead className="text-xs text-white bg-black" style={{ backgroundColor: 'var(--dark-bg)' }}>
+                                <tr>
+                                    <th scope="col" className="px-6 py-3">
+                                        File name
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        File size
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Number of lines
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <td scope="row" className="px-6 py-4">
+                                        {formData.file.values.fileName}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {formData.file.values.fileSize}
+                                    </td>
+                                    <td className="px-6 py-4">
+                                        {formData.file.values.lines}
+                                    </td>
+
+                                    <td className="px-6 py-4">
+                                        <Tooltip title='Delete file'>
+                                            <IconButton onClick={(e) => fileSelectionHandler(null, true)}>
+                                                <DeleteIcon color='error' />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title='Choose another file'>
+                                            <IconButton onClick={(e) => document.getElementById('dataInput')?.click()}>
+                                                <EditIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+                    <Button variant='contained' size='small' fullWidth
+                        loading={loading}
+                        onClick={uploadTask}
+                        sx={{ textTransform: 'none', bgcolor: 'var(--dark-bg)', mt: 1 }}
+                    >
+                        Save Task
+                    </Button>
                 </div>
 
-                {
-                    formData.file.values.fileName != "" &&
-                    <table className="text-sm text-left rtl:text-right">
-                        <thead className="text-xs text-white bg-black" style={{ backgroundColor: 'var(--dark-bg)' }}>
-                            <tr>
-                                <th scope="col" className="px-6 py-3">
-                                    File name
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    File size
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Number of lines
-                                </th>
-                                <th scope="col" className="px-6 py-3">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                <td scope="row" className="px-6 py-4">
-                                    {formData.file.values.fileName}
-                                </td>
-                                <td className="px-6 py-4">
-                                    {formData.file.values.fileSize}
-                                </td>
-                                <td className="px-6 py-4">
-                                    {formData.file.values.lines}
-                                </td>
-
-                                <td className="px-6 py-4">
-                                    <Tooltip title='Delete file'>
-                                        <IconButton onClick={(e) => fileSelectionHandler(null, true)}>
-                                            <DeleteIcon color='error' />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title='Choose another file'>
-                                        <IconButton onClick={(e) => document.getElementById('dataInput')?.click()}>
-                                            <EditIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                }
-                <Button variant='contained' size='small' fullWidth
-                    loading={loading}
-                    onClick={uploadTask}
-                    sx={{ textTransform: 'none', bgcolor: 'var(--dark-bg)', mt: 1 }}
-                >
-                    Save Task
-                </Button>
+                <div className="pt-4 help-img  max-w-[450px] shadowed grow" >
+                    <p className='text-[14px] mb-1 font-bold'>Please make sure that your file colums structure like the screenshot below</p>
+                    <img src={helpImage} alt="" />
+                    <p className='text-[14px] mt-2 font-bold'>You can use "sentence, field or content" word instead of "text"</p>
+                </div>
             </div>
+
         </div>
     )
 }

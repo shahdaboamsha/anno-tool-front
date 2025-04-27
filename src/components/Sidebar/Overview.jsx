@@ -20,7 +20,8 @@ export default function Overview() {
 
         const getOverviewDetails = async () => {
             try {
-                setOverviewDetails((await axios.get(url, { headers: headers })).data.information)
+                const details = (await axios.get(url, { headers: headers })).data.information
+                setOverviewDetails(details)
             } catch (error) {
                 if (error.code == "ERR_NETWORK") {
                     setAlertMsg({ isError: true, message: "Unable to connect to server" })

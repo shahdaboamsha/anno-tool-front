@@ -50,8 +50,8 @@ const columns = [
 ];
 
 const rows = [
-    { task_id: 2, task_name: 'My Task', annotation_type: 'Sentiment', labels: 'Positive; negative', createdAt: '12 Apr 2025', updatedAt: '17 April 2026', created_by: 18, userName: 'Ghassan Amous' },
-    { task_id: 1, task_name: 'My Task', annotation_type: 'Sentiment', labels: 'Positive; negative', createdAt: '12 Apr 2025', updatedAt: '17 April 2026', created_by: 20, userName: 'Ghassan Amous' },
+    { task_id: 2, task_name: 'My Task', annotation_type: 'Sentiment', labels: 'Positive; negative', createdAt: '12 Apr 2025', updatedAt: '17 April 2026', created_by: 18, userName: 'Shahd Mohammad' },
+    { task_id: 1, task_name: 'My Task', annotation_type: 'Sentiment', labels: 'Positive; negative', createdAt: '12 Apr 2025', updatedAt: '17 April 2026', created_by: 20, userName: 'Shahd Mohammad' },
 ]
 
 
