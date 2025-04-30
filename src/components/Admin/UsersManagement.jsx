@@ -4,74 +4,56 @@ import DataTable from "./DataTable"
 import { Divider } from "@mui/material"
 import * as services from '../../utils/services.module';
 import axios from "axios";
+import * as swals from '../Public/Swals'
+
+import { useMemo } from "react";
 
 const columns = [
     { field: 'user_id', headerName: 'ID', width: 70 },
-    {
-        field: 'dateofbirth',
-        headerName: 'Age',
-        type: 'number',
-        width: 90,
-    },
     {
         field: 'userName',
         headerName: 'Full Name',
         description: 'Formatted by services.formatUserName',
         sortable: false,
-        width: 200,
+        width: 300,
         valueGetter: (params, row) => services.formatUserName(row.userName),
+    },
+    {
+        field: 'email',
+        headerName: 'Email',
+        type: 'number',
+        width: 200,
     },
     {
         field: 'createdAt',
         headerName: 'Created At',
-        width: 150,
-    },
-    {
-        field: 'updatedAt',
-        headerName: 'Updated At',
-        width: 150,
-    },
+        width: 200,
+    }
 ];
 
-const rows = [
-    { user_id: 1, userName: 'Shahd Mohammad', dateofbirth: 35, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 2, userName: 'Shahd Mohammad', dateofbirth: 42, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 3, userName: 'Shahd Mohammad', dateofbirth: 45, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 4, userName: 'Shahd Mohammad', dateofbirth: 16, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 5, userName: 'Shahd Mohammad', dateofbirth: 13, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 6, userName: 'Shahd Mohammad', dateofbirth: 15, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 7, userName: 'Shahd Mohammad', dateofbirth: 44, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 8, userName: 'Shahd Mohammad', dateofbirth: 36, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-    { user_id: 9, userName: 'Shahd Mohammad', dateofbirth: 65, is_deleted: 0, createdAt: '17 Nov 2025', updatedAt: '12 Apr 2025' },
-]
 
-export default function UsersManagement({ users = null }) {
+
+export default function UsersManagement({ users, notifyChanges }) {
 
     const deleteSelectedUsers = async (selected) => {
-        if (selected.length === 0) {
-            return
+        if (selected.length === 0) return
+        const config = {
+            headers: { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` },
+            data: { userIds: selected }
         }
-
-        try {
-            const url = 'http://localhost:3000/admin/deleteusers'
-            const headers = `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
-
-            await axios.post(url, selected, { headers: headers })
-            alertSwal("Deleted successfully", "", "success")
-        } catch (error) {
-            alertSwal("Oops", "Server error", "error")
-        }
+        const url = 'http://localhost:3000/admin/deleteusers'
+    
+        swals.deleteUsersSwal(url, config, notifyChanges)
 
     }
     return (
         <div>
             <div className="p-5 flex justify-start gap-5 flex-wrap">
-                <BriefCard title="Registered Users" description="25" icon={<Person sx={{ fontSize: '4rem' }} />} />
-                <BriefCard title="Deleted Users" description="25" icon={<Person sx={{ fontSize: '4rem' }} />} />
+                <BriefCard title="Registered Users" description={users.length} icon={<Person sx={{ fontSize: '4rem' }} />} />
             </div>
-            
+
             <DataTable
-                rows={rows}
+                rows={users}
                 columns={columns}
                 deleteSelected={deleteSelectedUsers}
                 getRowId={(row) => row.user_id}

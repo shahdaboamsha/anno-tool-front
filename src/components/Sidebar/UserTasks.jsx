@@ -15,6 +15,9 @@ export default function UserTasks() {
 
     const [loading, setLoading] = useState(true)
     const [errorMsg, setErrorMsg] = useState({ message: null })
+    const [tasksEdited, setTaskEdited] = useState(false)
+
+    const notifyChanges = () => setTaskEdited(prev => !prev)
 
     const navigate = useNavigate()
 
@@ -48,7 +51,7 @@ export default function UserTasks() {
         }
         getAssignedTasks()
         setLoading(false)
-    }, [])
+    }, [tasksEdited])
 
 
     const [alignment, setAlignment] = useState('My Tasks')
@@ -88,7 +91,7 @@ export default function UserTasks() {
                     </ToggleButtonGroup>
                 </div>
 
-                <AssignedTasks assignedTasks={tasksToRender} state={errorMsg.message} />
+                <AssignedTasks assignedTasks={tasksToRender} state={errorMsg.message} notifyChanges={notifyChanges} />
             </>}
 
         </div>

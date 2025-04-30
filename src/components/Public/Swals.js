@@ -60,7 +60,7 @@ const updateAccountInfoSwal = (message) => {
     })
 }
 
-const deleteTaskSwal = (url) => {
+const deleteTaskSwal = (url, notifyChanges) => {
 
     swalWithBootstrapButtons.fire({
         title: "Are you sure that you want to delete this task?",
@@ -83,6 +83,7 @@ const deleteTaskSwal = (url) => {
                     text: "Thank you for joining our experience",
                     icon: "success"
                 })
+                notifyChanges()
             })
                 .catch(error => {
                     Swal.fire({
@@ -101,4 +102,108 @@ const deleteTaskSwal = (url) => {
     });
 }
 
-export { deleteAccoutSwal, updateAccountInfoSwal, deleteTaskSwal }
+const deleteUsersSwal = (url, config, notifyChanges) => {
+
+    swalWithBootstrapButtons.fire({
+        title: "Are you sure that you want to delete the selected users?",
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonColor: "var(--dark-bg)",
+        confirmButtonText: "Yes, delete it!",
+        confirmButtonColor: "#d33",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+
+            await axios.delete(url, config).then(() => {
+                Swal.fire({
+                    title: "Users deleted successfully",
+                    icon: "success"
+                })
+                notifyChanges()
+                
+            })
+                .catch(error => {
+                    let text = ""
+                    if (error.code == "ERR_NETWORK"){
+                        text = "Unable to connect to server"
+                    }
+                    else if (error.status == 401){
+                        localStorage.removeItem('ACCESS_TOKEN')
+                        text = error.response.data.message
+                    }
+                    else if (error.status == 400){
+                        text = error.response.data.message
+                    }
+                    else {
+                        text = "Oops! An error occured during delete selected users. Try again"
+                    }
+                    Swal.fire({
+                        title: "Oops! An error occured while deleting the users. Please try again",
+                        text: text,
+                        icon: "error"
+                    })
+                })
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire({
+                title: "Cancelled",
+                icon: "error"
+            });
+        }
+    });
+}
+
+const deleteTaskssSwal = (url, config, notifyChanges) => {
+
+    swalWithBootstrapButtons.fire({
+        title: "Are you sure that you want to delete the selected tasks?",
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonColor: "var(--dark-bg)",
+        confirmButtonText: "Yes, delete it!",
+        confirmButtonColor: "#d33",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+
+            await axios.delete(url, config).then(() => {
+                Swal.fire({
+                    title: "Tasks deleted successfully",
+                    icon: "success"
+                })
+                notifyChanges()
+                
+            })
+                .catch(error => {
+                    let text = ""
+                    if (error.code == "ERR_NETWORK"){
+                        text = "Unable to connect to server"
+                    }
+                    else if (error.status == 401){
+                        localStorage.removeItem('ACCESS_TOKEN')
+                        text = error.response.data.message
+                    }
+                    else if (error.status == 400){
+                        text = error.response.data.message
+                    }
+                    else {
+                        text = "Oops! An error occured during delete selected tasks. Try again"
+                    }
+                    Swal.fire({
+                        title: "Oops! An error occured while deleting the tasks. Please try again",
+                        text: text,
+                        icon: "error"
+                    })
+                })
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            swalWithBootstrapButtons.fire({
+                title: "Cancelled",
+                icon: "error"
+            });
+        }
+    });
+}
+
+export { deleteAccoutSwal, updateAccountInfoSwal, deleteTaskSwal, deleteUsersSwal, deleteTaskssSwal }

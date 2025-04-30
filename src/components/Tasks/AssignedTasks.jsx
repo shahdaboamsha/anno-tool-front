@@ -9,7 +9,7 @@ import ShareTaskForm from "./Shares/ShareTaskForm";
 import { useNavigate } from "react-router-dom";
 import * as swals from '../Public/Swals'
 
-export default function AssignedTasks({ assignedTasks, state }) {
+export default function AssignedTasks({ assignedTasks, state, notifyChanges }) {
 
     const navigate = useNavigate()
     const [anchorEl, setAnchorEl] = useState(null)
@@ -36,7 +36,7 @@ export default function AssignedTasks({ assignedTasks, state }) {
     const deleteTask = async () => {
 
         try {
-            swals.deleteTaskSwal(`http://localhost:3000/tasks/${selectedTask.task_id}`)
+            swals.deleteTaskSwal(`http://localhost:3000/tasks/${selectedTask.task_id}`, notifyChanges)
         } catch (error) {
             console.log(error)
             if (error.code == "ERR_NETWORK") {

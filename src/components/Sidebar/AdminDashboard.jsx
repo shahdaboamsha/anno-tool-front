@@ -5,6 +5,8 @@ import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import UsersManagement from '../Admin/UsersManagement';
 import TasksManagement from '../Admin/TasksManagement';
+import axios from 'axios';
+import InnerLoader from '../../components/Loaders/InnerLoader'
 
 function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
@@ -36,6 +38,28 @@ function a11yProps(index) {
 }
 
 export default function AdminDashboard() {
+
+    const [data, setData] = useState({ tasks: [], users: [] })
+    const [usersDeleted, setUsersDeleted] = useState(false)
+    const notifyChanges = () => setUsersDeleted(prev => !prev)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchAllData = async () => {
+            const url = 'http://localhost:3000/admin/data'
+            const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
+            try {
+                const fetchedData = await axios.get(url, { headers: headers })
+                
+                setData(fetchedData.data)
+            } catch (error) {
+                console.log("Fetching admin data error: ", error)
+            }
+            setLoading(false)
+        }
+        fetchAllData()
+    }, [usersDeleted])
+
     const [value, setValue] = useState(0);
 
     const handleChange = (event, newValue) => {
@@ -43,19 +67,23 @@ export default function AdminDashboard() {
     };
 
     return (
-            <Box sx={{  pt: 1, pl: 1}}>
+        <>
+            {loading ? <InnerLoader /> : <Box sx={{ pt: 1, pl: 1 }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
                         <Tab label="Users Management" {...a11yProps(0)} sx={{ textTransform: 'none' }} />
                         <Tab label="Tasks Management" {...a11yProps(1)} sx={{ textTransform: 'none' }} />
                     </Tabs>
                 </Box>
+
                 <CustomTabPanel value={value} index={0}>
-                    <UsersManagement />
+                    <UsersManagement users={data.users} notifyChanges={notifyChanges} />
                 </CustomTabPanel>
                 <CustomTabPanel value={value} index={1}>
-                    <TasksManagement/>
+                    <TasksManagement tasks={data.tasks} notifyChanges={notifyChanges} />
                 </CustomTabPanel>
             </Box>
+            }
+        </>
     );
 }

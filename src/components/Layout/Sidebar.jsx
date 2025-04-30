@@ -10,11 +10,9 @@ import PersonIcon from '@mui/icons-material/Person';
 import ShieldIcon from '@mui/icons-material/Shield';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import logo from '../../assets/logo.png'
-
 export default function Sidebar({ isOpen, toggleSidebar, role }) {
 
   const navigate = useNavigate();
-
   const [openDropdown, setOpenDropdown] = useState(null);
 
   const toggleDropdown = (label) => {

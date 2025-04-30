@@ -1,31 +1,19 @@
 import BriefCard from "../Sidebar/BriefCard"
-import { Person } from "@mui/icons-material"
 import DataTable from "./DataTable"
-import { Divider } from "@mui/material"
 import * as services from '../../utils/services.module';
-
-import axios from "axios";
-
+import { useOutletContext } from "react-router-dom";
+import { useMemo } from "react";
+import * as swals from '../Public/Swals'
+import { Assignment } from "@mui/icons-material";
 const columns = [
     { field: 'task_id', headerName: 'ID', width: 70 },
     {
         field: 'task_name',
         headerName: 'Task name',
         type: 'number',
-        width: 90,
+        width: 300,
     },
     {
-        field: 'createdAt',
-        headerName: 'Created At',
-        width: 150,
-        valueGetter: (params, row) => services.formatDateToLong(row.createdAt),
-    },
-    {
-        field: 'updatedAt',
-        headerName: 'Updated At',
-        width: 150,
-        valueGetter: (params, row) => services.formatDateToLong(row.updatedAt),
-    }, {
         field: 'annotation_type',
         headerName: 'Updated At',
         width: 150,
@@ -33,58 +21,66 @@ const columns = [
     {
         field: 'labels',
         headerName: 'Labels',
-        width: 200,
+        width: 250,
         valueGetter: (params, row) => services.capitailizeFirstLetterOfArray(row.labels),
     },
     {
-        field: 'userName',
-        headerName: 'User Name',
-        with: 200,
-        valueGetter: (params, row) => services.formatUserName(row.userName),
+        field: 'status',
+        headerName: 'Status',
+        width: 150,
     },
     {
         field: 'created_by',
         headerName: 'User ID',
-        with: 200,
+        with: 70,
+    },
+    {
+        field: 'createdAt',
+        headerName: 'Created At',
+        width: 150,
+        valueGetter: (params, row) => services.formatDateToLong(row.createdAt),
     }
 ];
 
-const rows = [
-    { task_id: 2, task_name: 'My Task', annotation_type: 'Sentiment', labels: 'Positive; negative', createdAt: '12 Apr 2025', updatedAt: '17 April 2026', created_by: 18, userName: 'Shahd Mohammad' },
-    { task_id: 1, task_name: 'My Task', annotation_type: 'Sentiment', labels: 'Positive; negative', createdAt: '12 Apr 2025', updatedAt: '17 April 2026', created_by: 20, userName: 'Shahd Mohammad' },
-]
+export default function TasksManagement({ tasks, notifyChanges }) {
 
+    const { userData } = useOutletContext()
 
-export default function TasksManagement({ tasks = null }) {
-
+    tasks = useMemo(() => {
+        return tasks.map(task => {
+            if (task.Owner.email === userData.email){
+                return {
+                    ...task,
+                    created_by: task.created_by + " (You)"
+                }
+            }
+            return task
+        })
+    }, [userData.email, tasks])
     const deleteSelectedUsers = async (selected) => {
-        if (selected.length === 0) {
-            return
+            if (selected.length === 0) return
+            const config = {
+                headers: { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` },
+                data: { taskIds: selected }
+            }
+            const url = 'http://localhost:3000/admin/deletetasks'
+        
+            swals.deleteTaskssSwal(url, config, notifyChanges)
+    
         }
-
-        try {
-            const url = 'http://localhost:3000/admin/deleteTasks'
-            const headers = `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
-
-            await axios.post(url, selected, { headers: headers })
-            alertSwal("Deleted successfully", "", "success")
-        } catch (error) {
-            alertSwal("Oops", "Server error", "error")
-        }
-
-    }
     return (
         <div>
             <div className="p-5 flex justify-start gap-5 flex-wrap">
-                <BriefCard title="Registered Users" description="25" icon={<Person sx={{ fontSize: '4rem' }} />} />
-                <BriefCard title="Deleted Users" description="25" icon={<Person sx={{ fontSize: '4rem' }} />} />
+                <BriefCard title="Total Tasks" description={tasks.length} icon={<Assignment sx={{ fontSize: '4rem' }} />} />
+                <BriefCard title="Completed Tasks" description={tasks.filter(task => task.status != 'in-progress').length} icon={<Assignment sx={{ fontSize: '4rem' }} />} />
             </div>
 
             <DataTable
-                rows={rows}
+                rows={tasks}
                 columns={columns}
                 deleteSelected={deleteSelectedUsers}
                 getRowId={(row) => row.task_id}
+                
             />
         </div>
     )
