@@ -16,6 +16,7 @@ import ViewTask from './components/Tasks/ViewTask'
 import UserAccountSettings from "./components/Sidebar/UserAccountSettings"
 import UserAccountSecurity from "./components/Sidebar/UserAccountSecurity"
 import Overview from "./components/Sidebar/Overview"
+import PageNotFound from "./pages/PageNotFound"
 
 function App() {
   document.title = "Annotation Tool"
@@ -39,7 +40,7 @@ function App() {
           <Route path="viewtask" element={<ViewTask />} />
         </Route>
 
-        <Route path="*" element={<img className="w-1/2" src="https://comodosslstore.com/blog/wp-content/uploads/2024/01/website-page-found-error-robot-character-broken-chatbot-mascot-disabled-site-technical-work_502272-1888.jpg" />} />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Router >
   )
