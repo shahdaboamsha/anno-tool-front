@@ -40,10 +40,7 @@ export default function QuickDialog({ openState, setOpenState, component }) {
                         <div className={clsx(fullScreen ? 'shadowed ' : '')}>
                             {component}
                         </div>
-
                     </div>
-
-
                 </DialogContent>
             </Dialog >
         </>

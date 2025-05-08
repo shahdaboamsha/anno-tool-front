@@ -11,4 +11,5 @@ export default defineConfig({
     https: false, // Ensure HTTPS is disabled
     port: 5173, // Default port for Vite
   },
+  assetsInclude: ['**/*.xlsx']
 })

@@ -9,11 +9,8 @@ const paginationModel = { page: 0, pageSize: 5 };
 export default function DataTable({ rows, columns, deleteSelected, getRowId }) {
 
     const [selectedRecords, setSelectedRecords] = useState([])
-
-    const handleSelect = (event) => {
-        setSelectedRecords(Array.from(event.ids))
-    }
-
+    const handleSelect = (event) => setSelectedRecords(Array.from(event.ids))
+    
     return (
         <div className='flex flex-col gap-3'>
             <Divider />

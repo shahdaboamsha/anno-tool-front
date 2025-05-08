@@ -34,9 +34,8 @@ export default function ViewTask() {
         const fetchTaskDetails = async () => {
             try {
                 const url = `http://localhost:3000/tasks/${taskIdAsParam}/details`
-                const headers = {
-                    'Authorization': `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
-                }
+                const headers = {  Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
+
                 const taskDetails = (await axios.get(url, { headers: headers })).data
                 setTaskDetails(taskDetails)
             } catch (error) {

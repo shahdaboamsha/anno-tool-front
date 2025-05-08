@@ -1,0 +1,16 @@
+{
+    "annotationTypes": [
+        {
+            "annotationName": "Sentiment",
+            "labels": "Positive;Negative;Neutral"
+        },
+        {
+            "annotationName": "Sarcasm",
+            "labels": "Sarcastic;Not Sarcastic"
+        },
+        {
+            "annotationName": "Stance",
+            "labels": "Favor;Against;Neutral"
+        }
+    ]
+}

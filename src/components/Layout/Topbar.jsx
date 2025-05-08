@@ -39,6 +39,7 @@ export default function Topbar({ toggleSidebar }) {
   const navigate = useNavigate()
 
 
+
   useEffect(() => {
     const getRequests = async () => {
       try {
@@ -63,8 +64,14 @@ export default function Topbar({ toggleSidebar }) {
       }
 
       setLoading(false)
+
     }
     getRequests()
+   /* const getRequsestsInterval = setInterval(() => {
+      getRequests()
+    }, 5000);
+    return () => clearInterval(getRequsestsInterval)*/
+
   }, [])
 
 

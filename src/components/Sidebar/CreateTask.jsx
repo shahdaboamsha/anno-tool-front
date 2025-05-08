@@ -12,8 +12,12 @@ import fileLineCounter from '../../utils/fileLinesCounter';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import AddBoxIcon from '@mui/icons-material/AddBox';
-import clsx from 'clsx';
+import appData from '../../utils/appData.json'
 import helpImage from '../../assets/wallpaper/create-form-help.png'
+import templateFile from '../../utils/template.xlsx'
+const annotationTypes = appData.annotationTypes
+const annotationLabels = (annotationName) => annotationTypes.filter(annotationType => annotationType.annotationName === annotationName)[0]
+const annotationsNames = appData.annotationTypes.map(annotationType => annotationType.annotationName)
 
 export default function CreateTask() {
 
@@ -46,6 +50,7 @@ export default function CreateTask() {
         }
     })
 
+
     const [loading, setLoading] = useState(false)
     const [fileChangedAtLeastOnce, setFileChangedAtLeastOnce] = useState(false)
     const [alertMsg, setAlertMsg] = useState({ isError: false, message: null })
@@ -62,6 +67,16 @@ export default function CreateTask() {
     // on each change on the input fields, update the value of its corresponding object in the form data
     const changeHandler = (event) => {
         const { name, value } = event.target
+
+        if (name === 'annotation_type') {
+            const selectedTaskLabels = annotationLabels(value).labels.toString()
+            setFormData({
+                ...formData,
+                labels: { value: selectedTaskLabels, errorMsg: null },
+                annotation_type: { value: value, errorMsg: null }
+            })
+            return
+        }
 
         const validation = validateInput(event)
         const errorMsg = validation != 'VALID' ? validation : null
@@ -141,6 +156,7 @@ export default function CreateTask() {
     }
 
     const uploadTask = async () => {
+        console.log(formData)
 
         if (!inputValidators.validateTaskFormBeforeSubmit(formData, setFormData))
             return
@@ -190,7 +206,7 @@ export default function CreateTask() {
                     <InputSelect required name='annotation_type' title="Annotation type"
                         value={formData.annotation_type.value}
                         validation_error={formData.annotation_type.errorMsg}
-                        menuItems={["Sentiment", "Sarcasm", "Stennce"]}
+                        menuItems={annotationsNames}
                         changeHandler={changeHandler}
                     />
 
@@ -277,6 +293,9 @@ export default function CreateTask() {
                     <p className='text-[14px] mb-1 font-bold'>Please make sure that your file colums structure like the screenshot below</p>
                     <img src={helpImage} alt="" />
                     <p className='text-[14px] mt-2 font-bold'>You can use "sentence, field or content" word instead of "text"</p>
+                    <p className='text-[14px] mt-2 font-bold'>
+                        <a className='text-[14px] mt-2 text-center text-blue-500 hover:text-blue-400 cursor-pointer text-underlined' href={templateFile} download>Download file template</a>
+                    </p>
                 </div>
             </div>
 

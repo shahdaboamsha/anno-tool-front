@@ -6,7 +6,7 @@ import QuickDialog from '../../Public/QuickDialog';
 import EditTask from '../Edit/EditTask';
 import { useMemo } from 'react';
 import clsx from 'clsx';
-
+import { useOutletContext } from 'react-router-dom';
 
 const capitailizeFirstLetterOfArray = (str) => {
 
@@ -17,11 +17,15 @@ const capitailizeFirstLetterOfArray = (str) => {
 }
 
 
+
+
 export default function TaskDetails({ task }) {
 
-
+    const { userData } = useOutletContext()
     task = useMemo(() => task, [task])
 
+    const isOwner = () => task.collaborators.find(collab => collab.email !== userData.email)
+    
     const [editDialogState, setEditDialogState] = useState(false)
     const setOpenState = () => setEditDialogState(!editDialogState)
 
@@ -99,15 +103,17 @@ export default function TaskDetails({ task }) {
 
             </div>
 
-            <Tooltip title='Edit this task' >
-                <IconButton size='small' sx={{
-                    position: 'absolute',
-                    top: 5,
-                    right: 5,
-                }} onClick={setOpenState}>
-                    <EditRoundedIcon fontSize='small' />
-                </IconButton>
-            </Tooltip>
+            { isOwner() &&
+                <Tooltip title='Edit this task' >
+                    <IconButton size='small' sx={{
+                        position: 'absolute',
+                        top: 5,
+                        right: 5,
+                    }} onClick={setOpenState}>
+                        <EditRoundedIcon fontSize='small' />
+                    </IconButton>
+                </Tooltip>
+            }
 
             <QuickDialog
                 component={<EditTask initialData={task} />}

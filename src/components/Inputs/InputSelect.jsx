@@ -15,7 +15,6 @@ function InputSelect({
     changeHandler,
     menuItems
 }) {
-
     const borderFocusStyleProps = {
 
         '& .MuiOutlinedInput-root': {

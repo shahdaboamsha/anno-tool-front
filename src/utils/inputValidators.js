@@ -129,11 +129,11 @@ const validataLables = (input) => {
     if (input.trim() === "") {
         return "Please provide labels"
     }
-    const regex = /^[a-zA-Z0-9;]+$/
+   /* const regex = /^[a-zA-Z0-9;]+$/
 
     if (!input || !regex.test(input.trim())) {
         return "Please provide label names seperated by semicolon (;)"
-    }
+    }*/
     return "VALID"
 }
 
