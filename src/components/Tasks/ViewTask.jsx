@@ -17,6 +17,7 @@ export default function ViewTask() {
     const location = useLocation()
     const navigate = useNavigate()
     const [taskDetails, setTaskDetails] = useState()
+    const [taskFiles, setTaskFiles] = useState([])
 
     const [loading, setLoading] = useState(true)
     const taskIdAsParam = new URLSearchParams(document.location.search).get('task_id')
@@ -28,15 +29,18 @@ export default function ViewTask() {
     const openAnnotatedDialog = () => { setAnnotatedDialogState(!AnnotatedDialogState) }
 
 
-    useEffect(() => {
+    useEffect( () => {
         taskIdAsParam ? "" : navigate('/dashboard/taskslist', { state: { message: "Task does not exist" } })
 
         const fetchTaskDetails = async () => {
             try {
-                const url = `http://localhost:3000/tasks/${taskIdAsParam}/details`
+                const url1 = `http://localhost:3000/tasks/${taskIdAsParam}/details`
+                const url2 = `http://localhost:3000/tasks/${taskIdAsParam}/files`
                 const headers = {  Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
-                const taskDetails = (await axios.get(url, { headers: headers })).data
+                const taskDetails = (await axios.get(url1, { headers: headers })).data
+                const taskFiles = (await axios.get(url2, { headers: headers })).data.files
+                setTaskFiles(taskFiles)
                 setTaskDetails(taskDetails)
             } catch (error) {
 
@@ -55,15 +59,14 @@ export default function ViewTask() {
             }
             setLoading(false)
         }
-        fetchTaskDetails()
-
+         fetchTaskDetails()
     }, [taskIdAsParam])
 
     return (
         <div className="text-[14px] p-3 relative">
             <Outlet />
             {loading ? <InnerLoader /> : <>
-                <TaskDetailsInformation task={taskDetails} />
+                <TaskDetailsInformation task={taskDetails} taskFiles={taskFiles} />
                 <Divider variant='middle' sx={{ mt: 2 }} />
                 <div style={{ margin: 'auto', width: 'fit-content' }}>
                     <Button variant="contained" color="success" onClick={openAnnotatedDialog}

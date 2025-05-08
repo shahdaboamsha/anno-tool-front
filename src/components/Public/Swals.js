@@ -63,7 +63,7 @@ const updateAccountInfoSwal = (message) => {
 const deleteTaskSwal = (url, notifyChanges) => {
 
     swalWithBootstrapButtons.fire({
-        title: "Are you sure that you want to delete this task?",
+        title: "Are you sure that you want to restrict this task?",
         text: "You will lose all your annotaions for this task",
         icon: "warning",
         showCancelButton: true,
@@ -157,7 +157,7 @@ const deleteUsersSwal = (url, config, notifyChanges) => {
 const deleteTaskssSwal = (url, config, notifyChanges) => {
 
     swalWithBootstrapButtons.fire({
-        title: "Are you sure that you want to delete the selected tasks?",
+        title: "Are you sure that you want to restrict the selected tasks?",
         icon: "warning",
         showCancelButton: true,
         cancelButtonColor: "var(--dark-bg)",

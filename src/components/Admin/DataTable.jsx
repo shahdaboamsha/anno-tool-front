@@ -20,7 +20,7 @@ export default function DataTable({ rows, columns, deleteSelected, getRowId }) {
                     sx={{ textTransform: 'none' }}
                     endIcon={< Delete />}
                     disabled={selectedRecords.length === 0}
-                >Delete selected records
+                >Restrict selected records
                 </Button>
             </div>
 

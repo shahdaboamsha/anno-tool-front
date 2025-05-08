@@ -9,26 +9,20 @@ import clsx from 'clsx';
 import { useOutletContext } from 'react-router-dom';
 
 const capitailizeFirstLetterOfArray = (str) => {
-
     str = str.toLocaleString()
     const splittedStrAsArray = str.split(";")
     const newStr = splittedStrAsArray.map(label => label.charAt(0).toUpperCase() + label.toLowerCase().slice(1))
     return newStr.toLocaleString().split(",").join(", ")
 }
 
-
-
-
-export default function TaskDetails({ task }) {
+export default function TaskDetails({ task, taskFiles }) {
 
     const { userData } = useOutletContext()
     task = useMemo(() => task, [task])
 
-    const isOwner = () => task.collaborators.find(collab => collab.email !== userData.email)
-    
+    const isCollab = task.collaborators.find(collab => collab.email !== userData.email)
     const [editDialogState, setEditDialogState] = useState(false)
     const setOpenState = () => setEditDialogState(!editDialogState)
-
 
     return (
         <div className='relative'>
@@ -76,10 +70,14 @@ export default function TaskDetails({ task }) {
                             <th className="text-left p-2 font-semibold">Task Status</th>
                             <td className={clsx("p-2", task.status === 'Completed' ? 'text-green-600' : "text-red-600")}>{task.status}</td>
                         </tr>
-
-
                     </tbody>
                 </table>
+
+                <div className='flex justify-end'>
+                    <Tooltip title="Download annotated sentences" arrow placement='top'>
+                        <a className='text-[14px] mt-2 text-center text-blue-500 hover:text-blue-400 cursor-pointer text-underlined' href={`http://localhost:3000/uploads/${taskFiles[0].file_name}`} download>Download</a>
+                    </Tooltip>
+                </div>
             </div>
             <Divider />
             <div>
@@ -103,7 +101,7 @@ export default function TaskDetails({ task }) {
 
             </div>
 
-            { isOwner() &&
+            {!isCollab &&
                 <Tooltip title='Edit this task' >
                     <IconButton size='small' sx={{
                         position: 'absolute',

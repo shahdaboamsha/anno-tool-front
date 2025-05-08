@@ -14,7 +14,7 @@ export default function Sidebar({ isOpen, toggleSidebar, role }) {
 
   const navigate = useNavigate();
   const [openDropdown, setOpenDropdown] = useState(null);
-
+  console.log(role)
   const toggleDropdown = (label) => {
     setOpenDropdown((prev) => (prev === label ? null : label));
   }
@@ -70,7 +70,6 @@ export default function Sidebar({ isOpen, toggleSidebar, role }) {
           onClick={() => {
             navigate("overview");
             setSelectedButton('overview');
-            isOpen ? toggleSidebar() : ""
           }}
           className={clsx(
             "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
@@ -87,7 +86,6 @@ export default function Sidebar({ isOpen, toggleSidebar, role }) {
           onClick={() => {
             navigate("new");
             setSelectedButton('new')
-            isOpen ? toggleSidebar() : ""
           }}
           className={clsx(
             "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
@@ -106,7 +104,6 @@ export default function Sidebar({ isOpen, toggleSidebar, role }) {
               toggleDropdown("Tasks");
               navigate("taskslist");
               setSelectedButton('taskslist');
-              isOpen ? toggleSidebar() : ""
             }}
             className={clsx(
               "flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
@@ -155,7 +152,6 @@ export default function Sidebar({ isOpen, toggleSidebar, role }) {
           onClick={() => {
             navigate("account");
             setSelectedButton('account');
-            isOpen ? toggleSidebar() : ""
           }}
           className={clsx(
             "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
@@ -170,7 +166,6 @@ export default function Sidebar({ isOpen, toggleSidebar, role }) {
           onClick={() => {
             navigate("security");
             setSelectedButton('security');
-            isOpen ? toggleSidebar() : ""
           }}
           className={clsx(
             "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
