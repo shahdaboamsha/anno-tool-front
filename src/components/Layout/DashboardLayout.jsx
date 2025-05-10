@@ -13,8 +13,7 @@ import { useMediaQuery, useTheme } from '@mui/material';
 export const UserContext = createContext()
 export default function DashboardLayout() {
   const theme = useTheme()
-  const isWideScreen = useMediaQuery(theme.breakpoints.down('sm'))
-  const [isSidebarOpen, setIsSidebarOpen] = useState(!isWideScreen)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const [userData, setUserData] = useState()
   const [userEdited, setUserEdited] = useState(false)

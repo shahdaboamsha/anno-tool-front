@@ -13,6 +13,7 @@ import ShareRequestCards from '../Tasks/Shares/ShareRequestCards';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useRef } from 'react';
+import logo from '../../assets/logo.png';
 
 export default function Topbar({ toggleSidebar }) {
 
@@ -78,13 +79,17 @@ export default function Topbar({ toggleSidebar }) {
   return (
     <header
       className={clsx(
-        "transition-all duration-300 ease-in-out shadow border-b border-gray-300 flex items-center justify-between px-4 py-2 sticky top-0 z-10",
+        "transition-all duration-300 ease-in-out shadow border-b border-gray-300 flex items-center justify-between px-4 py-0 sticky top-0 z-10",
       )}
     >
       <IconButton onClick={toggleSidebar}>
-        <MenuIcon sx={{ color: 'black' }} />
+        <MenuIcon sx={{ color: 'black' }} fontSize='small' />
       </IconButton>
-
+      <div className="pt-1">
+        <a href="/">
+          <img src={logo} alt="Logo" className='max-w-50 mt-1' loading="lazy" />
+        </a>
+      </div>
       <div className="flex items-center gap-4 justify-end w-full">
 
         <IconButton onClick={handleNotificationClick} >

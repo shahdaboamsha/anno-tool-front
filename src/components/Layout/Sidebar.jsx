@@ -1,198 +1,147 @@
-import { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import clsx from "clsx";
+import axios from "axios";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Collapse from "@mui/material/Collapse";
+import Divider from "@mui/material/Divider";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddIcon from "@mui/icons-material/Add";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import axios from "axios";
-import PersonIcon from '@mui/icons-material/Person';
-import ShieldIcon from '@mui/icons-material/Shield';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
-import logo from '../../assets/logo.png'
-export default function Sidebar({ isOpen, toggleSidebar, role = "admin" }) {
+import PersonIcon from "@mui/icons-material/Person";
+import ShieldIcon from "@mui/icons-material/Shield";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import logo from '../../assets/logo.png';
 
+export default function Sidebar({ isOpen, toggleSidebar, role = "admin" }) {
   const navigate = useNavigate();
-  const [openDropdown, setOpenDropdown] = useState(null);
-  
-  const toggleDropdown = (label) => {
-    setOpenDropdown((prev) => (prev === label ? null : label));
-  }
-  const [assignedTasks, setAssignedTasks] = useState([])
-  const [selectedButton, setSelectedButton] = useState(null)
+  const [openTasks, setOpenTasks] = useState(false);
+  const [assignedTasks, setAssignedTasks] = useState([]);
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     const getAssignedTasks = async () => {
       try {
-        const token = localStorage.getItem('ACCESS_TOKEN')
-
-        const url = `http://localhost:3000/users/owned-tasks`
-        const headers = {
-          'Authorization': `Bearer ${token}`
-        }
-
-        const assignedTasks = (await axios.get(url, { headers: headers })).data
-        setAssignedTasks(assignedTasks.ownedTasks)
+        const token = localStorage.getItem("ACCESS_TOKEN");
+        const response = await axios.get("http://localhost:3000/users/owned-tasks", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setAssignedTasks(response.data.ownedTasks);
       } catch (error) {
-        if (error.status == 401) {
-          localStorage.removeItem('ACCESS_TOKEN')
-          navigate('/signin')
+        if (error.response?.status === 401) {
+          localStorage.removeItem("ACCESS_TOKEN");
+          navigate("/signin");
         }
       }
-    }
-    getAssignedTasks()
+    };
+    getAssignedTasks();
+  }, [navigate]);
 
+  const handleNavigation = (path, key) => {
+    setSelected(key);
+    navigate(path);
+  };
 
-
-  }, [])
   return (
-    <aside
-      className={clsx(
-        "border-r border-gray-300 h-full transition-all duration-300 linear",
-        isOpen ? "w-64" : "w-16",
-      )}
+    <Drawer
+      anchor="left"
+      variant="temporary"
+      onClose={toggleSidebar}
+      open={isOpen}
+      ModalProps={{
+        keepMounted: true,
+        BackdropProps: {
+          style: { backgroundColor: 'rgba(0, 0, 0, 0.5)' }
+        }
+      }}
+      sx={{
+        position: 'absolute',
+        width: 240,
+        flexShrink: 0,
+        '& .MuiDrawer-paper': {
+          width: 240,
+          boxSizing: 'border-box',
+        },
+      }}
     >
-      <div className="p-2 text-lg font-bold text-black border-b border-gray-300">
-        <a href="/">
-          <img
-            src={logo}
-            width="700px"
-            alt="IMAGE"
-            loading="lazy"
-          />
-        </a>
-      </div>
+      <Divider />
+      <List>
+        <ListItem disablePadding>
+          <ListItemButton selected={selected === 'overview'} onClick={() => handleNavigation('overview', 'overview')}>
+            <ListItemIcon><DashboardIcon /></ListItemIcon>
+            <ListItemText primary="Overview" />
+          </ListItemButton>
+        </ListItem>
 
-      <nav className="flex flex-col  mt-4">
+        <ListItem disablePadding>
+          <ListItemButton selected={selected === 'new'} onClick={() => handleNavigation('new', 'new')}>
+            <ListItemIcon><AddIcon /></ListItemIcon>
+            <ListItemText primary="New Task" />
+          </ListItemButton>
+        </ListItem>
 
-        {/* Overview */}
-        <div
-          onClick={() => {
-            navigate("overview");
-            setSelectedButton('overview');
-          }}
-          className={clsx(
-            "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
-            isOpen ? "gap-4" : "justify-center",
-            selectedButton === 'overview' ? "bg-gray-300" : ""
-          )}
-        >
-          <DashboardIcon />
-          {isOpen && <span className="text-sm">Overview</span>}
-        </div>
-
-        {/* New Task */}
-        <div
-          onClick={() => {
-            navigate("new");
-            setSelectedButton('new')
-          }}
-          className={clsx(
-            "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
-            isOpen ? "gap-4" : "justify-center",
-            selectedButton === 'new' ? "bg-gray-300" : ""
-          )}
-        >
-          <AddIcon />
-          {isOpen && <span className="text-sm">New Task</span>}
-        </div>
-
-        {/* Tasks Dropdown */}
-        <div className="flex flex-col">
-          <div
-            onClick={() => {
-              toggleDropdown("Tasks");
-              navigate("taskslist");
-              setSelectedButton('taskslist');
-            }}
-            className={clsx(
-              "flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
-              isOpen ? "gap-2" : "justify-center",
-              selectedButton === 'taskslist' ? 'bg-gray-300' : ''
-            )}
-          >
-            <div className="flex items-center gap-4" >
-              <AssignmentIcon />
-              {isOpen && <span className="text-sm">Tasks</span>}
-            </div>
-            {isOpen && (
-              openDropdown === "Tasks" ? (
-                <ChevronUp size={16} />
-              ) : (
-                <ChevronDown size={16} />
-              )
-            )}
-          </div>
-
-          {openDropdown === "Tasks" && isOpen && (
-            <div className="pl-12 flex flex-col transition-all duration-300">
-              <div
-                onClick={() => navigate("taskslist")}
-                className="text-sm text-gray-600 hover:text-black py-1 cursor-pointer rounded-tr-2xl rounded-br-2xl"
+        <ListItem disablePadding>
+          <ListItemButton onClick={() => {
+            setOpenTasks(!openTasks);
+            handleNavigation('taskslist', 'taskslist');
+          }} selected={selected === 'taskslist'}>
+            <ListItemIcon><AssignmentIcon /></ListItemIcon>
+            <ListItemText primary="Tasks" />
+            {openTasks ? <ExpandLess /> : <ExpandMore />}
+          </ListItemButton>
+        </ListItem>
+        <Collapse in={openTasks} timeout="auto" unmountOnExit>
+          <List component="div" disablePadding>
+            <ListItemButton sx={{ pl: 4 }} onClick={() => navigate('taskslist')}>
+              <ListItemText primary="All Tasks" />
+            </ListItemButton>
+            {assignedTasks.map((task, index) => (
+              <ListItemButton
+                key={index}
+                sx={{ pl: 4 }}
+                onClick={() => navigate(`viewtask?task_id=${task.task_id}`)}
               >
-                All Tasks
-              </div>
-              {
-                assignedTasks.map((task, index) => (
-                  <div
-                    key={index}
-                    onClick={() => navigate(`viewtask?task_id=${task.task_id}`)}
-                    className="text-sm text-gray-600 hover:text-black py-1 cursor-pointer rounded-tr-2xl rounded-br-2xl"
-                  >
-                    {task.task_name}
-                  </div>
-                ))
-              }
+                <ListItemText primary={task.task_name} />
+              </ListItemButton>
+            ))}
+          </List>
+        </Collapse>
 
-            </div>
-          )}
-        </div>
-        {/* Account */}
-        <div
-          onClick={() => {
-            navigate("account");
-            setSelectedButton('account');
-          }}
-          className={clsx(
-            "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
-            isOpen ? "gap-4" : "justify-center",
-            selectedButton === 'account' ? "bg-gray-300" : ""
-          )}
-        >
-          <PersonIcon />
-          {isOpen && <span className="text-sm">My Account</span>}
-        </div>
-        <div
-          onClick={() => {
-            navigate("security");
-            setSelectedButton('security');
-          }}
-          className={clsx(
-            "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
-            isOpen ? "gap-4" : "justify-center",
-            selectedButton === 'security' ? "bg-gray-300" : ""
-          )}
-        >
-          <ShieldIcon />
-          {isOpen && <span className="text-sm">Security</span>}
-        </div>
-        { role && role === 'admin' && <div
-          onClick={() => {
-            navigate("administration")
-            setSelectedButton('administration')
-            isOpen ? toggleSidebar() : ""
-          }}
-          className={clsx(
-            "flex items-center px-4 py-2 text-gray-700 hover:bg-gray-300 cursor-pointer rounded-tr-2xl rounded-br-2xl",
-            isOpen ? "gap-4" : "justify-center",
-            selectedButton === 'administration' ? "bg-gray-300" : ""
-          )}
-        >
-          <ManageAccountsIcon />
-          {isOpen && <span className="text-sm">Management</span>}
-        </div>}
+        <Divider sx={{ my: 1 }} />
 
-      </nav>
-    </aside>
+        <ListItem disablePadding>
+          <ListItemButton selected={selected === 'account'} onClick={() => handleNavigation('account', 'account')}>
+            <ListItemIcon><PersonIcon /></ListItemIcon>
+            <ListItemText primary="My Account" />
+          </ListItemButton>
+        </ListItem>
+
+        <ListItem disablePadding>
+          <ListItemButton selected={selected === 'security'} onClick={() => handleNavigation('security', 'security')}>
+            <ListItemIcon><ShieldIcon /></ListItemIcon>
+            <ListItemText primary="Security" />
+          </ListItemButton>
+        </ListItem>
+
+        {role === 'admin' && (
+          <ListItem disablePadding>
+            <ListItemButton selected={selected === 'administration'} onClick={() => {
+              handleNavigation('administration', 'administration');
+            }}>
+              <ListItemIcon><ManageAccountsIcon /></ListItemIcon>
+              <ListItemText primary="Management" />
+            </ListItemButton>
+          </ListItem>
+        )}
+      </List>
+    </Drawer>
   );
 }
