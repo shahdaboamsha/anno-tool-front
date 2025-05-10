@@ -12,10 +12,8 @@ import fileLineCounter from '../../utils/fileLinesCounter';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DatasetIcon from '@mui/icons-material/Dataset';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import xlsxHelpScreenshot from '../../assets/xlsx_preview.png'
 import appData from '../../utils/appData.json'
-import helpImage from '../../assets/wallpaper/create-form-help.png'
-import templateFile from '../../utils/template.xlsx'
-const annotationTypes = appData.annotationTypes
 const annotationLabels = (annotationName) => annotationTypes.filter(annotationType => annotationType.annotationName === annotationName)[0]
 const annotationsNames = appData.annotationTypes.map(annotationType => annotationType.annotationName)
 
@@ -194,7 +192,7 @@ export default function CreateTask() {
             <p className='text-gray-500 text-[14px]'>Create your new annotation task by filling out the task metadata fields. Attach the task with a dataset file</p>
             {alertMsg.isError ? <Alert severity='error' id='alert'>{alertMsg.message}</Alert> : ''}
 
-            <div className="flex flex-row gap-8 justify-between flex-wrap">
+            <div className="flex flex-row gap-8 justify-between flex-wrap-reverse">
                 <div className="pt-4 flex flex-col gap-1  sm:w-full lg:w-[500px]">
                     <h1 className='text-[18px]'>{<AssignmentIcon sx={{ mr: 1 }} />}Task metadata</h1>
                     <InputText required type='text' title="Task name" name="task_name" id="task name"
@@ -289,14 +287,44 @@ export default function CreateTask() {
                     </Button>
                 </div>
 
-                <div className="pt-4 help-img  max-w-[450px] shadowed grow" >
-                    <p className='text-[14px] mb-1 font-bold'>Please make sure that your file colums structure like the screenshot below</p>
-                    <img src={helpImage} alt="" />
-                    <p className='text-[14px] mt-2 font-bold'>You can use "sentence, field or content" word instead of "text"</p>
-                    <p className='text-[14px] mt-2 font-bold'>
-                        <a className='text-[14px] mt-2 text-center text-blue-500 hover:text-blue-400 cursor-pointer text-underlined' href={templateFile} download>Download file template</a>
+                <div className="pt-4 help-img max-w-md grow">
+                    <p className="text-[14px] mb-1 font-bold">
+                        Make sure your file has the correct column structure, as shown below:
                     </p>
+
+                    <p className="text-[14px] font-semibold mb-1">File preview:</p>
+                    <img src={xlsxHelpScreenshot} alt="XLSX TEMPLATE" className=" rounded shadow-sm" />
+
+                    <p className="text-[14px] mt-3">
+                        The header must include <strong>ID</strong> and <strong>Text</strong> (or a similar word like <strong>Sentence</strong>, <strong>Field</strong>, or <strong>Content</strong>).
+                    </p>
+
+                    <p className="text-[14px] mt-2">
+                        Don’t worry about adding a <strong>Label</strong> column — we’ll take care of that automatically.
+                    </p>
+
+                    <div className="mt-4 space-y-2">
+                        <p className="text-[14px] font-bold">
+                            <a
+                                className="text-blue-500 hover:text-blue-400 underline cursor-pointer"
+                                href="/xlsx_template.xlsx"
+                                download
+                            >
+                                📥 Download Excel Template
+                            </a>
+                        </p>
+                        <p className="text-[14px] font-bold">
+                            <a
+                                className="text-blue-500 hover:text-blue-400 underline cursor-pointer"
+                                href="/csv_template.csv"
+                                download
+                            >
+                                📥 Download CSV Template
+                            </a>
+                        </p>
+                    </div>
                 </div>
+
             </div>
 
         </div>

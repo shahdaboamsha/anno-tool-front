@@ -30,7 +30,7 @@ export default function DashboardLayout() {
 
       try {
         const userData = (await axios.get(url, { headers: headers })).data
-        setUserData({...userData, role: "admin"})
+        setUserData({...userData })
       } catch (error) {
         if (error.code == "ERR_NETWORK") {
           localStorage.removeItem('ACCESS_TOKEN')
