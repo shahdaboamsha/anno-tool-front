@@ -182,7 +182,7 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
             {
                 usersWithAccess.length != 0 &&
                 <div className="border border-gray-200 overflow-y-auto" style={{ maxHeight: window.innerWidth > 500 ? '300px' : 'none' }}>
-                    <SharedUsersList taskId={taskId} sharedUsers={usersWithAccess} />
+                    <SharedUsersList taskId={taskId} sharedUsers={usersWithAccess}/>
                 </div>
             }
 
