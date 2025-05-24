@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useRef } from 'react';
 import logo from '../../assets/logo.png';
+import ResponseMessage from '../../utils/ResponsesMessage';
 
 export default function Topbar({ toggleSidebar }) {
 
@@ -44,7 +45,7 @@ export default function Topbar({ toggleSidebar }) {
   useEffect(() => {
     const getRequests = async () => {
       try {
-        const url = `http://localhost:3000/tasks/getuserinvitation`
+        const url = `${import.meta.env.VITE_API_URL}/tasks/getuserinvitation`
         const headers = {
           'Authorization': `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
         }
@@ -56,22 +57,25 @@ export default function Topbar({ toggleSidebar }) {
 
       } catch (error) {
         if (error.code == "ERR_NETWORK") {
-          navigate('/dashboard/taskslist', { state: { message: `Oops! An error occured while view the ${taskIdAsParam || ""}, unable to connect with server. Please try again` } })
+          navigate('/dashboard/taskslist', { state: { message: ResponseMessage.ERR_NETWORK_MSG } })
         }
         else if (error.status == 401) {
           localStorage.removeItem('ACCESS_TOKEN')
-          navigate('/signin', { state: { message: "Session expired, Sign in to continue" } })
+          navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
         }
+        
+      } finally {
+        setLoading(false)
       }
 
-      setLoading(false)
+
 
     }
     getRequests()
-    const getRequsestsInterval = setInterval(() => {
+   /* const getRequsestsInterval = setInterval(() => {
       getRequests()
     }, 5000);
-    return () => clearInterval(getRequsestsInterval)
+    return () => clearInterval(getRequsestsInterval)*/
 
   }, [])
 

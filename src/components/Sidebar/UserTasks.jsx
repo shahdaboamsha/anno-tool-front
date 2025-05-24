@@ -26,7 +26,7 @@ export default function UserTasks() {
             try {
                 const token = localStorage.getItem('ACCESS_TOKEN')
 
-                const url = `http://localhost:3000/users/owned-tasks`
+                const url = `${import.meta.env.VITE_API_URL}/users/owned-tasks`
                 const headers = {
                     'Authorization': `Bearer ${token}`
                 }

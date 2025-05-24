@@ -12,5 +12,9 @@
             "annotationName": "Stance",
             "labels": "Favor;Against;Neutral"
         }
-    ]
+    ],
+    "sentencesFilter": {
+        "keys": ["annotated_by", "text", "created_at", "label", "sentence_id"],
+        "displayKeys": ["Annotated by", "Text", "Annotated at", "Label", "Sentence ID"]
+    }
 }

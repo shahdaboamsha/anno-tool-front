@@ -13,16 +13,17 @@ function InputSelect({
     value,
     validation_error,
     changeHandler,
-    menuItems
+    menuItems,
+    withDetection = true
 }) {
     const borderFocusStyleProps = {
 
         '& .MuiOutlinedInput-root': {
             '&.Mui-focused fieldset': {
-                borderColor: value.trim() === "" ? 'var(--dark-bg)' : (validation_error ? 'red' : 'green'),
+                borderColor: withDetection ? (value.trim() === "" ? 'var(--dark-bg)' : (validation_error ? 'red' : 'green')) : "",
             },
             '& fieldset': {
-                borderColor: value.trim() === "" ? 'rgba(0, 0, 0, 0.23)' : (validation_error ? 'red' : 'green')
+                borderColor: withDetection ? (value.trim() === "" ? 'rgba(0, 0, 0, 0.23)' : (validation_error ? 'red' : 'green')) : ""
             }
         },
         '& .MuiInputLabel-root.Mui-focused': {

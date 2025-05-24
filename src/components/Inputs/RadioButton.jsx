@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-export default function RadioButtonGroup({ labels = [], handleLabelSelection }) {
+export default function RadioButtonGroup({ labels = [], handleLabelSelection, checkedValue = null }) {
 
 
     const capitalizeFirstLetter = (str) => {
@@ -20,6 +20,7 @@ export default function RadioButtonGroup({ labels = [], handleLabelSelection }) 
                             onChange={() => handleLabelSelection(label)}
                             name='label'
                             className="w-4 text-blue-600 bg-gray-100 border-gray-300"
+                            defaultChecked={label === checkedValue }
                         />
                         <label
                             htmlFor="bordered-radio-1"

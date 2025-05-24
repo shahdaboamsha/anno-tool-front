@@ -5,6 +5,7 @@ import validator from "../../utils/inputValidators"
 import { Button, Alert } from "@mui/material"
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
+import ResponseMessage from "../../utils/ResponsesMessage"
 
 export default function SignupForm() {
 
@@ -78,7 +79,6 @@ export default function SignupForm() {
     // This function is for real signing up by connect to server over post method request  
     const signUp = async () => {
 
-        console.log(formData)
         if (!validator.validateSignupDataBeforeSubmit(formData, setFormData)) {
             return
         }
@@ -86,13 +86,13 @@ export default function SignupForm() {
         setLoading(true)
 
         try {
-            await axios.post('http://localhost:3000/auth/register', userData)
+            await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, userData)
             navigate('/signin', { state: { notError: true, message: "You successfully registerd. Sign into you account" } })
 
         } catch (error) {
             if (error.code == "ERR_NETWORK") {
                 setAlertMsg({
-                    message: "Unable to connect to server. Try again",
+                    message: ResponseMessage.ERR_NETWORK_MSG,
                     isError: true
                 })
             }
@@ -108,14 +108,16 @@ export default function SignupForm() {
                         }
                     })
                 }
-            } else if (error.status === 500) {
+            } else {
                 setAlertMsg({
                     isError: true,
-                    message: "Oops! An error occured while registering. Try again"
+                    message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG
                 })
             }
+        } finally {
+            setLoading(false)
         }
-        setLoading(false)
+
 
     }
     return (

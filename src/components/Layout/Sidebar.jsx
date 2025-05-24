@@ -18,6 +18,7 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import logo from '../../assets/logo.png';
+import ResponseMessage from "../../utils/ResponsesMessage";
 
 export default function Sidebar({ isOpen, toggleSidebar, role = "admin" }) {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function Sidebar({ isOpen, toggleSidebar, role = "admin" }) {
       } catch (error) {
         if (error.response?.status === 401) {
           localStorage.removeItem("ACCESS_TOKEN");
-          navigate("/signin");
+          navigate("/signin", { state: { message: ResponseMessage.UN_AUTHORIZED_MSG }});
         }
       }
     };

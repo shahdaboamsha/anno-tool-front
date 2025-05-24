@@ -7,8 +7,11 @@ import UsersManagement from '../Admin/UsersManagement';
 import TasksManagement from '../Admin/TasksManagement';
 import axios from 'axios';
 import InnerLoader from '../../components/Loaders/InnerLoader'
+import { useNavigate } from 'react-router-dom';
+import { useOutletContext } from 'react-router-dom';
 
 function CustomTabPanel(props) {
+
     const { children, value, index, ...other } = props;
 
     return (
@@ -39,23 +42,38 @@ function a11yProps(index) {
 
 export default function AdminDashboard() {
 
+    const navigate = useNavigate()
+
     const [data, setData] = useState({ tasks: [], users: [] })
     const [usersDeleted, setUsersDeleted] = useState(false)
     const notifyChanges = () => setUsersDeleted(prev => !prev)
     const [loading, setLoading] = useState(true)
 
+    const { userData } = useOutletContext();
+
     useEffect(() => {
+
+        if (!userData || userData.role !== 'admin') {
+            alert("You are not authorized to access this page.")
+            navigate('/dashboard/overview')
+            return
+        }
         const fetchAllData = async () => {
-            const url = 'http://localhost:3000/admin/data'
+            const url = `${import.meta.env.VITE_API_URL}/admin/data`
             const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
             try {
+
                 const fetchedData = await axios.get(url, { headers: headers })
-                
                 setData(fetchedData.data)
+
             } catch (error) {
-                console.log("Fetching admin data error: ", error)
+                console.error("Error fetching data:", error);
+                alert("You are not authorized to access this page or error in fetching data")
+                navigate('/dashboard/overview')
+            } finally {
+                setLoading(false)
             }
-            setLoading(false)
+
         }
         fetchAllData()
     }, [usersDeleted])

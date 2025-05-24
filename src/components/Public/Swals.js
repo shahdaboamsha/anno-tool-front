@@ -1,13 +1,57 @@
 import Swal from "sweetalert2";
 import "sweetalert2/src/sweetalert2.scss";
 import axios from "axios";
+import SessionController from "../../utils/SessionController";
 
 const swalWithBootstrapButtons = Swal.mixin({
   customClass: {
     confirmButton: "btn btn-success",
     cancelButton: "btn btn-danger",
   },
-});
+})
+
+const warningSwalProps = {
+  icon: "warning",
+  showCancelButton: true,
+  cancelButtonColor: "var(--dark-bg)",
+  confirmButtonText: "Delete",
+  confirmButtonColor: "#d33",
+  cancelButtonText: "Cancel",
+  reverseButtons: true
+}
+
+/** Delete operation swal alerts */
+const deleteSwal = async (api,  warningMsg, successMsg) => {
+
+  swalWithBootstrapButtons.fire({ text: warningMsg, ...warningSwalProps })
+    .then(
+      async (result) => {
+        if (result.isConfirmed) {
+
+          try {
+
+            const headers = { Authorization: `Bearer ${localStorage.getItem("ACCESS_TOKEN")}` }
+            await axios.delete(`${import.meta.env.VITE_API_URL}/${api}`, { headers: headers })
+            Swal.fire({ text: successMsg, icon: "success" })
+
+          } catch (error) {
+
+            if (error.response && error.response.status === 401) {
+
+              const newToken = SessionController.refreshToken()
+              if (newToken instanceof Error) {
+                localStorage.removeItem('ACCESS_TOKEN')
+                deleteSwal(api, warningMsg, successMsg)
+              }
+            }
+            else {
+              Swal.fire({ text: "Oops, an error occured during the process, please try again", icon: "error" })
+            }
+          }
+
+        }
+      })
+}
 
 const deleteAccoutSwal = (title, feedback) => {
   swalWithBootstrapButtons
@@ -217,7 +261,7 @@ const deleteTaskssSwal = (url, config, notifyChanges) => {
     });
 };
 
-const removeUserFromShareSwal = (url, config,  selectedUserName ) => {
+const removeUserFromShareSwal = (url, config, selectedUserName) => {
   swalWithBootstrapButtons
     .fire({
       title: `Are you sure that you want to remove ${selectedUserName} from task collaborating?`,
@@ -274,4 +318,5 @@ export {
   deleteUsersSwal,
   deleteTaskssSwal,
   removeUserFromShareSwal,
+  deleteSwal
 };

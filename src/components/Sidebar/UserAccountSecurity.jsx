@@ -56,20 +56,18 @@ export default function UserAccountSecurity() {
 
     const changePassword = async () => {
 
-        console.log(formData)
 
         const isValidData = inputValidators.validate("newPassword", formData.newPassword.value) === 'VALID'
             &&
             inputValidators.validate("confirmNewPassword", formData.confirmNewPassword.value, formData.newPassword.value) === 'VALID'
 
-        console.log(formData, isValidData)
 
         if (!isValidData) return
 
         const data = prepareDataToSubmit()
         setLoading(true)
         try {
-            const url = `http://localhost:3000/users/changePassword`
+            const url = `${import.meta.env.VITE_API_URL}/users/changePassword`
             const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
             await axios.post(url, data, { headers: headers })

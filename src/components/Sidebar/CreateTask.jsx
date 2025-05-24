@@ -14,7 +14,7 @@ import DatasetIcon from '@mui/icons-material/Dataset';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import xlsxHelpScreenshot from '../../assets/xlsx_preview.png'
 import appData from '../../utils/appData.json'
-const annotationLabels = (annotationName) => annotationTypes.filter(annotationType => annotationType.annotationName === annotationName)[0]
+const annotationLabels = (annotationName) => appData.annotationTypes.filter(annotationType => annotationType.annotationName === annotationName)[0]
 const annotationsNames = appData.annotationTypes.map(annotationType => annotationType.annotationName)
 
 export default function CreateTask() {
@@ -65,7 +65,6 @@ export default function CreateTask() {
     // on each change on the input fields, update the value of its corresponding object in the form data
     const changeHandler = (event) => {
         const { name, value } = event.target
-
         if (name === 'annotation_type') {
             const selectedTaskLabels = annotationLabels(value).labels.toString()
             setFormData({
@@ -154,14 +153,14 @@ export default function CreateTask() {
     }
 
     const uploadTask = async () => {
-        console.log(formData)
 
         if (!inputValidators.validateTaskFormBeforeSubmit(formData, setFormData))
             return
 
         setLoading(true)
         try {
-            const url = 'http://localhost:3000/file/upload'
+            
+            const url = `${import.meta.env.VITE_API_URL}/file/upload`
             const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
             const data = prepareDataBeforeSubmit()
 
@@ -220,6 +219,7 @@ export default function CreateTask() {
                         value={formData.task_description.value}
                         validation_error={formData.task_description.errorMsg}
                         changeHandler={changeHandler}
+                        widthDetection={false}
                     />
 
                     <h1 className='text-[18px] mt-4 text-left'>{<DatasetIcon sx={{ mr: 1 }} />}Task dataset</h1>

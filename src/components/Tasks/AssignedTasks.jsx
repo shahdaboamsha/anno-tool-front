@@ -30,29 +30,33 @@ export default function AssignedTasks({ assignedTasks, state, notifyChanges }) {
   const openShareDialogForm = () => {
     setShowShareForm(true);
     setAnchorEl(null);
-  };
+  }
 
   const deleteTask = async () => {
     try {
-      swals.deleteTaskSwal(
-        `http://localhost:3000/tasks/${selectedTask.task_id}`,
-        notifyChanges
-      );
-    } catch (error) {
-      console.log(error);
+      const api = `tasks/${selectedTask.task_id}`
+      const operationDescription = `Delete ${selectedTask.task_name}?`
+      const successMsg = 'Task deleted'
+
+      await swals.deleteSwal(api, operationDescription, successMsg)
+    }
+    catch (error) {
+
       if (error.code == "ERR_NETWORK") {
-        setAlertMsg({ isError: true, message: "Unable to connect to server" });
-      } else if (error.response.status === 401) {
-        navigate("/signin", { state: { message: "Access Denied" } });
-      } else {
+        setAlertMsg({ isError: true, message: "Unable to connect to server" })
+      }
+      else if (error.response.status === 401) {
+        navigate("/signin", { state: { message: "Access Denied" } })
+      }
+      else {
         setAlertMsg({
           isError: true,
           message:
             "Oops, an error occured during the process, please try again",
-        });
+        })
       }
     }
-  };
+  }
 
   return (
     <div className="relative overflow-x-auto shadow-md bg-white mt-2">

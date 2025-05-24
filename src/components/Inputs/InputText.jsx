@@ -16,16 +16,17 @@ function InputText({ size = "small",
     validation_error,
     changeHandler,
     startIcon = null,
-    autoFocus = false
+    autoFocus = false,
+    widthDetection = true
 }) {
 const borderFocusStyleProps = {
 
         '& .MuiOutlinedInput-root': {
             '&.Mui-focused fieldset': {
-                borderColor: value.trim() === "" ? 'var(--dark-bg)' : (validation_error  ? 'red' : 'green'),
+                borderColor: widthDetection ? (value.trim() === "" ? 'var(--dark-bg)' : (validation_error  ? 'red' : 'green')) : "",
             },
             '& fieldset': {
-                borderColor: value.trim() === ""? 'rgba(0, 0, 0, 0.23)' : (validation_error ? 'red' : 'green')
+                borderColor: widthDetection? (value.trim() === ""? 'rgba(0, 0, 0, 0.23)' : (validation_error ? 'red' : 'green')) : ""
             }
         },
         '& .MuiInputLabel-root.Mui-focused': {
@@ -50,14 +51,13 @@ const borderFocusStyleProps = {
                         variant="outlined"
                         type={type}
                         onChange={changeHandler}
-                        // onBlur={event => blurHandler(event, title, required)}
                         name={name}
                         value={value}
                         error={validation_error}
                         InputProps={{
                             endAdornment: (
                                 <InputAdornment position="end">
-                                    {validation_error? <ReportOutlinedIcon fontSize='small' color="error" /> : (value !== "" &&  <CheckCircleOutlineIcon fontSize='small' color='success' />)}
+                                    {widthDetection? (validation_error? <ReportOutlinedIcon fontSize='small' color="error" /> : (value !== "" &&  <CheckCircleOutlineIcon fontSize='small' color='success' />)) : ""}
                                 </InputAdornment>
                             ),
                             startAdornment: startIcon

@@ -101,7 +101,7 @@ export default function TaskDetails({ task, taskFiles }) {
 
             </div>
 
-            {!isCollab &&
+            {isCollab &&
                 <Tooltip title='Edit this task' >
                     <IconButton size='small' sx={{
                         position: 'absolute',

@@ -15,7 +15,7 @@ export default function Overview() {
     const [alertMsg, setAlertMsg] = useState({ isError: false, message: null })
 
     useEffect(() => {
-        const url = 'http://localhost:3000/users/task-status'
+        const url = `${import.meta.env.VITE_API_URL}/users/task-status`
         const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
         const getOverviewDetails = async () => {
@@ -32,8 +32,10 @@ export default function Overview() {
                 else {
                     setAlertMsg({ isError: true, message: "Oops! An error occured while connection with server. Try to refresh the page" })
                 }
+            } finally {
+                setLoading(false)
             }
-            setLoading(false)
+
         }
         getOverviewDetails()
     }, [])

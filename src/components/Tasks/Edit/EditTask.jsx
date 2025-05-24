@@ -5,6 +5,7 @@ import { Button, Divider, Alert } from '@mui/material'
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import inputValidators from "../../../utils/inputValidators";
+import ResponseMessage from "../../../utils/ResponsesMessage";
 
 export default function EditTask({ initialData }) {
 
@@ -70,11 +71,10 @@ export default function EditTask({ initialData }) {
             return
 
         try {
+
             setLoading(true)
-            const url = `http://localhost:3000/tasks/${initialData.task_id}/updatetask`
-            const headers = {
-                'Authorization': `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
-            }
+            const url = `${import.meta.env.VITE_API_URL}/tasks/${initialData.task_id}/updatetask`
+            const headers = { 'Authorization': `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
             await axios.post(url, prepareDataBeforeSubmit(), { headers: headers })
 
@@ -82,17 +82,19 @@ export default function EditTask({ initialData }) {
 
         } catch (error) {
             if (error.code == "ERR_NETWORK") {
-                setAlertMsg({ isError: true, message: 'Unable to connect to server' })
+                setAlertMsg({ isError: true, message: ResponseMessage.ERR_NETWORK_MSG })
             }
             else if (error.response.status === 401) {
                 localStorage.removeItem('ACCESS_TOKEN')
-                navigate('/signin', { state: { message: "Access Denied" } })
+                navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
             }
             else {
-                setAlertMsg({ isError: true, message: 'Oops, an error occured during the process, please try again' })
+                setAlertMsg({ isError: true, message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG })
             }
+        } finally {
+            setLoading(false)
         }
-        setLoading(false)
+
     }
     return (
         <div className="flex flex-col w-[400px] gap-1">
@@ -126,10 +128,11 @@ export default function EditTask({ initialData }) {
                 value={formData.task_description.value}
                 validation_error={formData.task_description.errorMsg}
                 changeHandler={changeHandler}
+                widthDetection={false}
             />
             <Button fullWidth variant='contained' size='small'
                 loading={loading}
-                sx={{ textTransform: 'none', bgcolor: 'var(--dark-bg)', mt: 1}}
+                sx={{ textTransform: 'none', bgcolor: 'var(--dark-bg)', mt: 1 }}
                 onClick={editTask}
             >
                 Save

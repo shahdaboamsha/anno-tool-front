@@ -6,17 +6,18 @@ import InnerLoader from "../../Loaders/InnerLoader"
 import { Alert, Button, Divider } from "@mui/material"
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
+import ResponseMessage from "../../../utils/ResponsesMessage"
 
 
 export default function AnnotateForm({ task }) {
 
-
-
     const navigate = useNavigate()
+
     const [alertMsg, setAlertMsg] = useState({
         isError: false,
         message: null
     })
+    
     const [sentenceToAnnotate, setSentenceToAnnotate] = useState(null)
     const [usersAnnotations, setUsersAnnotations] = useState([])
     const [loading, setLoading] = useState(true)
@@ -30,21 +31,22 @@ export default function AnnotateForm({ task }) {
     useEffect(() => {
 
         const getSentenceToAnnotate = async () => {
+
             setSelectedLabel(null)
             setAlertMsg({ isError: false, message: null })
             setLoading(true)
+
             try {
-                const url = `http://localhost:3000/tasks/${task.task_id}/sentences/unannotated`
-                const headers = {
-                    Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
-                }
+                const url = `${import.meta.env.VITE_API_URL}/tasks/${task.task_id}/sentences/unannotated`
+                const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
                 const nextSentence = (await axios.get(url, { headers: headers })).data
+
                 setSentenceToAnnotate(nextSentence.sentenceToAnnotate)
                 setUsersAnnotations(nextSentence.usersAnnotations)
                 setAnnotateMsg(nextSentence.message)
+
             } catch (error) {
-                console.log(error)
                 if (error.code == "ERR_NETWORK") {
                     setAlertMsg({ isError: true, message: "Unable to connect server" })
                 }
@@ -55,8 +57,10 @@ export default function AnnotateForm({ task }) {
                 else {
                     setAlertMsg({ isError: true, message: 'Oops! An error occured duting fetching sentence. Try Again' })
                 }
+            } finally {
+                setLoading(false)
             }
-            setLoading(false)
+
         }
         getSentenceToAnnotate()
     }, [task, getNext])
@@ -81,33 +85,40 @@ export default function AnnotateForm({ task }) {
         }
         setSubmittingLoading(true)
         try {
-            const url = `http://localhost:3000/annotation/${task.task_id}/annotate`
-            const headers = {
-                Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
-            }
+
+            const url = `${import.meta.env.VITE_API_URL}/annotation/${task.task_id}/annotate`
+            const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
             const sentence_id = sentenceToAnnotate.sentence_id
             const label = process === 0 ? 'none' : selectedLabel
 
             const annotatedCount = await axios.post(url, { sentence_id, label }, { headers: headers })
+
             setNumOfAnnotatedSentences(annotatedCount.data.annotatedCount)
             setNumOfSkippedSentences(annotatedCount.data.skippedCount)
-
             setGetNext(prev => prev + 1)
 
         } catch (error) {
+            if (error.code === "ERR_NETWORK"){
+                setAlertMsg({isError: true, message: ResponseMessage.ERR_NETWORK_MSG})
+            }
             if (error.status == 401) {
                 localStorage.removeItem('ACCESS_TOKEN')
-                navigate('/signin', { state: { message: 'Session Expired. Sign in to continue', nextUrl: `viewtask?task_id=${task.task_id}` } })
+                navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: `viewtask?task_id=${task.task_id}` } })
             }
+            else {
+                 setAlertMsg({isError: true, message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG})
+            }
+        } finally {
+            setSubmittingLoading(false)
         }
-        setSubmittingLoading(false)
+
     }
     return (
         <> {
             loading ? <InnerLoader /> :
 
-                <div>
+                <div className="w-[800px]">
                     <h1 className="text-center text-[18px]">Annotation Task: {task.task_name} - {task.annotation_type}</h1>
                     <Divider variant='fullWidth' />
 
@@ -130,7 +141,7 @@ export default function AnnotateForm({ task }) {
                                 <div className="p-5 bg-gray-100 mt-3">
                                     <h1 className="text-[14px] font-bold">Collaborators annotations</h1>
                                     <table className="  border-gray-300 w-full">
-                                        {usersAnnotations.length > 0? (
+                                        {usersAnnotations.length > 0 ? (
                                             <tbody>
                                                 {usersAnnotations.map((annotation, index) => (
                                                     <tr key={index} className="">
@@ -148,11 +159,17 @@ export default function AnnotateForm({ task }) {
                             <h1 className="text-[16px] mt-2">Select label:</h1>
                             <RadioButtonGroup labels={task.labels.toLocaleString().split(";")} handleLabelSelection={handleLabelSelection} />
 
-                            <div className="mt-5 flex justify-center gap-5">
-                                <Button endIcon={<ArrowForwardIosIcon />} loading={submittingLoading} onClick={annotate} variant='contained' color="success" sx={{ color: 'white', textTransform: 'none', width: '200px' }}>
+                            <div className="mt-5 flex justify-center gap-2">
+                                <Button endIcon={<ArrowForwardIosIcon />}
+                                    loading={submittingLoading}
+                                    onClick={annotate}
+                                    fullWidth
+                                    variant='contained'
+                                    color="success"
+                                    sx={{ color: 'white', textTransform: 'none', flexGrow: 1 }}>
                                     Save & Next
                                 </Button>
-                                <Button endIcon={<SkipNextIcon />} onClick={() => annotate(0)} variant='outlined' color="error" sx={{ color: 'black', textTransform: 'none', width: '200px' }}>
+                                <Button fullWidth endIcon={<SkipNextIcon />} onClick={() => annotate(0)} variant='outlined' color="error" sx={{ color: 'black', textTransform: 'none' }}>
                                     Skip
                                 </Button>
                             </div>

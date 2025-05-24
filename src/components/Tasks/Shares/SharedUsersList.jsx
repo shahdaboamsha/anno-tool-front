@@ -10,6 +10,7 @@ import { IconButton, Alert } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import * as swals from "../../Public/Swals";
+import ResponseMessage from "../../../utils/ResponsesMessage";
 
 export default function SharedUsersList({
   sharedUsers,
@@ -24,26 +25,23 @@ export default function SharedUsersList({
 
   const removeUserFromAccess = async (user) => {
     try {
-      const url = `http://localhost:3000/tasks/${taskId}/collaborators/${user.user_id}`;
-      const config = {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("ACCESS_TOKEN")}`,
-        },
-      };
+      const url = `${import.meta.env.VITE_API_URL}/tasks/${taskId}/collaborators/${user.user_id}`;
+      
+      const config = { headers: { Authorization: `Bearer ${localStorage.getItem("ACCESS_TOKEN")}`} }
       axios.defaults.withCredentials = true;
       swals.removeUserFromShareSwal(url, config, user.name);
 
      
     } catch (error) {
       if (error.code == "ERR_NETWORK") {
-        setAlertMsg({ isError: true, message: "Unable to connect to server" });
+        setAlertMsg({ isError: true, message: ResponseMessage.ERR_NETWORK_MSG });
       } else if (error.response.status === 401) {
-        navigate("/signin", { state: { message: "Access Denied" } });
+        navigate("/signin", { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } });
       } else {
         setAlertMsg({
           isError: true,
           message:
-            "Oops, an error occured during the process, please try again",
+            ResponseMessage.INTERNAL_SERVER_ERROR_MSG
         });
       }
     }

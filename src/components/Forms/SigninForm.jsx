@@ -6,6 +6,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import PersonIcon from '@mui/icons-material/Person';
 import LockIcon from '@mui/icons-material/Lock';
 import inputValidators from '../../utils/inputValidators'
+import ResponseMessage from '../../utils/ResponsesMessage'
 
 export default function SigninForm() {
 
@@ -51,7 +52,7 @@ export default function SigninForm() {
 
         setLoading(true)
         try {
-            const ACCESS_TOKEN = (await axios.post('http://localhost:3000/auth/login', {
+            const ACCESS_TOKEN = (await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
                 email: formData.email.value,
                 password: formData.password.value
             })).data.token
@@ -61,8 +62,9 @@ export default function SigninForm() {
 
         } catch (error) {
             if (error.code == "ERR_NETWORK") {
+
                 setAlertMsg({
-                    message: "Unable to connect to server. Try again",
+                    message: ResponseMessage.ERR_NETWORK_MSG,
                     isError: true
                 })
             }
@@ -79,7 +81,7 @@ export default function SigninForm() {
             else if (error.status === 500) {
                 setAlertMsg({
                     isError: true,
-                    message: "Oops! An error occured while signing in. Try again"
+                    message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG
                 })
             }
         }
@@ -96,6 +98,7 @@ export default function SigninForm() {
                 {alertMsg.isError && <Alert sx={{ mb: 2 }} severity='error'>{alertMsg.message}</Alert>}
                 <div className='flex flex-col gap-1'>
                     <InputText autoFocus required id="email" type="email" title="Email address" name="email"
+                        widthDetection={false}
                         value={formData.email.value}
                         validation_error={formData.email.errorMsg}
                         changeHandler={handleChange}
@@ -106,6 +109,7 @@ export default function SigninForm() {
                         validation_error={formData.password.errorMsg}
                         changeHandler={handleChange}
                         startIcon={<LockIcon fontSize='small' color='action' />}
+                        widthDetection={false}
                     />
 
                 </div>

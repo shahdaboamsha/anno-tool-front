@@ -9,6 +9,7 @@ import { createContext } from "react";
 import Loader from '../Loaders/Loader';
 import { useNavigate } from 'react-router-dom';
 import { useMediaQuery, useTheme } from '@mui/material';
+import ResponseMessage from '../../utils/ResponsesMessage';
 
 export const UserContext = createContext()
 export default function DashboardLayout() {
@@ -24,7 +25,7 @@ export default function DashboardLayout() {
   useEffect(() => {
 
     const getUserData = async () => {
-      const url = 'http://localhost:3000/users/getUserData'
+      const url = `${import.meta.env.VITE_API_URL}/users/getUserData`
       const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
       try {
@@ -33,15 +34,15 @@ export default function DashboardLayout() {
       } catch (error) {
         if (error.code == "ERR_NETWORK") {
           localStorage.removeItem('ACCESS_TOKEN')
-          navigate('/signin', { state: { message: 'An error occured while connecting with server. Please sign in and try again' } })
+          navigate('/signin', { state: { message: ResponseMessage.ERR_NETWORK_MSG } })
         }
         else if (error.status == 401) {
           localStorage.removeItem('ACCESS_TOKEN')
-          navigate('/signin', { state: { message: 'Session Expired. Sign in again to continue' } })
+          navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
         }
-        else if (error.status == 404) {
+        else {
           localStorage.removeItem('ACCESS_TOKEN')
-          navigate('/signin', { state: { message: 'Access Denied' } })
+          navigate('/signin', { state: { message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG } })
         }
       }
       setLoading(false)

@@ -7,6 +7,7 @@ import { Alert, Button } from "@mui/material";
 import SharedUsersList from "./SharedUsersList";
 import InputText from "../../Inputs/InputText";
 import { useNavigate } from "react-router-dom";
+import ResponseMessage from "../../../utils/ResponsesMessage";
 
 export default function ShareTaskForm({ taskName, nextState, taskId }) {
 
@@ -22,14 +23,14 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
     const [sharedUsersLoading, setSharedUsersLoading] = useState(true)
 
     useEffect(() => {
+
         const getUsersWithAccess = async () => {
             try {
+                
                 setSharedUsersLoading(true)
-                const url = `http://localhost:3000/tasks/${taskId}/collaborators`
+                const url = `${import.meta.env.VITE_API_URL}/tasks/${taskId}/collaborators`
                 const token = localStorage.getItem('ACCESS_TOKEN')
-                const headers = {
-                    'Authorization': `Bearer ${token}`
-                }
+                const headers = { 'Authorization': `Bearer ${token}` }
 
                 const result = (await axios.get(url, { headers: headers })).data
                 setUsersWithAccess(result.people_with_access)
@@ -37,16 +38,18 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
             } catch (error) {
                 console.log(error)
                 if (error.code == "ERR_NETWORK") {
-                    setAlertMsg('Unable to connect to server')
+                    setAlertMsg(ResponseMessage.ERR_NETWORK_MSG)
                 }
                 else if (error.status === 401) {
-                    navigate('/signin', { state: { message: "Access Denied" } })
+                    navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
                 }
                 else {
-                    setAlertMsg('Oops! An error occurred while displaying shared users. Try again')
+                    setAlertMsg(ResponseMessage.INTERNAL_SERVER_ERROR_MSG)
                 }
+            } finally {
+                setSharedUsersLoading(false)
             }
-            setSharedUsersLoading(false)
+            
         }
         getUsersWithAccess()
 
@@ -57,11 +60,10 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
     }
 
     const search = async (e) => {
-        axios.defaults.withCredentials = true
         try {
             setSearchLoading(true)
             const query = `query=${e.target.value}&&task_id=${taskId}`
-            const url = `http://localhost:3000/tasks/search?${query}`
+            const url = `${import.meta.env.VITE_API_URL}/tasks/search?${query}`
             const token = localStorage.getItem('ACCESS_TOKEN')
             const headers = {
                 'Authorization': `Bearer ${token}`
@@ -99,7 +101,7 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
         }
         try {
             setInvitationLoading(true)
-            const url = `http://localhost:3000/tasks/${taskId}/invite`
+            const url = `${import.meta.env.VITE_API_URL}/tasks/${taskId}/invite`
             const token = localStorage.getItem('ACCESS_TOKEN')
             const headers = {
                 'Authorization': `Bearer ${token}`

@@ -68,7 +68,7 @@ export default function UserAccountSettings() {
         const data = prepareDataToSubmit()
         setLoading(true)
         try {
-            const url = `http://localhost:3000/users/editAccountInfo`
+            const url = `${import.meta.env.VITE_API_URL}/users/editAccountInfo`
             const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
             await axios.post(url, data, { headers: headers })

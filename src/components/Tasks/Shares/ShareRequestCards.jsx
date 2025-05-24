@@ -8,6 +8,7 @@ import axios from "axios";
 import InnerLoader from "../../Loaders/InnerLoader";
 import { Badge, Tooltip } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ResponseMessage from "../../../utils/ResponsesMessage";
 
 function formatDateToLong(dateString) {
     const date = new Date(dateString);
@@ -29,21 +30,21 @@ export default function ShareRequestCards({ shareRequests, loading, setShareRequ
 
         try {
             setLoading(true)
-            const url = `http://localhost:3000/tasks/invitations/${request.invitation_id}/${action}`
-            const headers = {
-                'Authorization': `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
-            }
+            const url = `${import.meta.env.VITE_API_URL}/tasks/invitations/${request.invitation_id}/${action}`
+
+            const headers = { 'Authorization': `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
             await axios.post(url, {}, { headers: headers })
             setShareRequests(shareRequests.filter(req => req.invitation_id != request.invitation_id))
 
         } catch (error) {
             if (error.status == 401) {
                 localStorage.removeItem('ACCESS_TOKEN')
-                navigate('/signin', { state: { message: "Session expired, Sign in to continue" } })
+                navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
             }
-            console.log(error)
+        } finally {
+            setLoading(false)
         }
-        setLoading(false)
+
 
     }
 
