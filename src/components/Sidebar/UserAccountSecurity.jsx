@@ -55,8 +55,6 @@ export default function UserAccountSecurity() {
     }
 
     const changePassword = async () => {
-
-
         const isValidData = inputValidators.validate("newPassword", formData.newPassword.value) === 'VALID'
             &&
             inputValidators.validate("confirmNewPassword", formData.confirmNewPassword.value, formData.newPassword.value) === 'VALID'
