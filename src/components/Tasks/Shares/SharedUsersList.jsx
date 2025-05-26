@@ -11,7 +11,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import * as swals from "../../Public/Swals";
 import ResponseMessage from "../../../utils/ResponsesMessage";
-
+import SessionController from "../../../utils/SessionController";
+axios.defaults.withCredentials = true;
 export default function SharedUsersList({
   sharedUsers,
   taskId,
@@ -26,17 +27,25 @@ export default function SharedUsersList({
   const removeUserFromAccess = async (user) => {
     try {
       const url = `${import.meta.env.VITE_API_URL}/tasks/${taskId}/collaborators/${user.user_id}`;
-      
-      const config = { headers: { Authorization: `Bearer ${localStorage.getItem("ACCESS_TOKEN")}`} }
+
+      const config = { headers: { Authorization: `Bearer ${localStorage.getItem("ACCESS_TOKEN")}` } }
       axios.defaults.withCredentials = true;
       swals.removeUserFromShareSwal(url, config, user.name);
 
-     
+
     } catch (error) {
       if (error.code == "ERR_NETWORK") {
         setAlertMsg({ isError: true, message: ResponseMessage.ERR_NETWORK_MSG });
       } else if (error.response.status === 401) {
-        navigate("/signin", { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } });
+        const refreshError = await SessionController.refreshToken();
+        if (refreshError instanceof Error) {
+          localStorage.removeItem("ACCESS_TOKEN");
+          navigate("/signin", {
+            state: { message: ResponseMessage.UN_AUTHORIZED_MSG },
+          });
+        } else {
+          removeUserFromAccess(user);
+        }
       } else {
         setAlertMsg({
           isError: true,

@@ -8,7 +8,8 @@ import SharedUsersList from "./SharedUsersList";
 import InputText from "../../Inputs/InputText";
 import { useNavigate } from "react-router-dom";
 import ResponseMessage from "../../../utils/ResponsesMessage";
-
+import SessionController from "../../../utils/SessionController";
+axios.defaults.withCredentials = true;
 export default function ShareTaskForm({ taskName, nextState, taskId }) {
 
     const navigate = useNavigate()
@@ -41,7 +42,14 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
                     setAlertMsg(ResponseMessage.ERR_NETWORK_MSG)
                 }
                 else if (error.status === 401) {
-                    navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+                    const refreshError = await SessionController.refreshToken()
+                    if (refreshError instanceof Error) {
+                        localStorage.removeItem('ACCESS_TOKEN')
+                        navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+                    }
+                    else {
+                        getUsersWithAccess()
+                    }
                 }
                 else {
                     setAlertMsg(ResponseMessage.INTERNAL_SERVER_ERROR_MSG)

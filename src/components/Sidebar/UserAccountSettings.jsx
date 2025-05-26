@@ -9,7 +9,9 @@ import axios from "axios";
 import { useOutletContext } from "react-router-dom";
 import * as swals from '../Public/Swals'
 import * as services from '../../utils/services.module'
-
+import ResponseMessage from "../../utils/ResponsesMessage";
+import SessionController from "../../utils/SessionController";
+axios.defaults.withCredentials = true;
 export default function UserAccountSettings() {
 
     const navigate = useNavigate()
@@ -76,18 +78,24 @@ export default function UserAccountSettings() {
             notifyEditingUser()
         } catch (error) {
             if (error.code == "ERR_NETWORK") {
-                setAlertMsg({ severity: 'error', message: 'Unable to connect with server. Try again' })
+                setAlertMsg({ severity: 'error', message: ResponseMessage.ERR_NETWORK_MSG })
             }
             else if (error.status == 401) {
-                localStorage.removeItem('ACCESS_TOKEN')
-                navigate('/signin', { state: { message: 'Session Expired. Sign in again to continue' } })
+                const refreshError = await SessionController.refreshToken()
+                if (refreshError instanceof Error) {
+                    localStorage.removeItem('ACCESS_TOKEN')
+                    navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+                }
+                else {
+                    editMyData()
+                }
             }
             else if (error.status == 404) {
                 localStorage.removeItem('ACCESS_TOKEN')
                 navigate('/signin', { state: { message: 'Access Denied' } })
             }
             else {
-                setAlertMsg({ severity: 'error', message: "Oops! An error occured while updating your profile. Try again" })
+                setAlertMsg({ severity: 'error', message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG })
                 console.log(error)
             }
         }

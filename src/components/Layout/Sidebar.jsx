@@ -19,7 +19,7 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import logo from '../../assets/logo.png';
 import ResponseMessage from "../../utils/ResponsesMessage";
-
+import SessionController from "../../utils/SessionController";
 export default function Sidebar({ isOpen, toggleSidebar, role = "admin" }) {
   const navigate = useNavigate();
   const [openTasks, setOpenTasks] = useState(false);
@@ -29,17 +29,23 @@ export default function Sidebar({ isOpen, toggleSidebar, role = "admin" }) {
   useEffect(() => {
     const getAssignedTasks = async () => {
       try {
+        axios.defaults.withCredentials = true
         const token = localStorage.getItem("ACCESS_TOKEN");
-        const response = await axios.get("http://localhost:3000/users/owned-tasks", {
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}/users/owned-tasks`, {
           headers: {
             Authorization: `Bearer ${token}`,
-          },
+            
+          }, withCredentials: true,
         });
         setAssignedTasks(response.data.ownedTasks);
       } catch (error) {
         if (error.response?.status === 401) {
-          localStorage.removeItem("ACCESS_TOKEN");
-          navigate("/signin", { state: { message: ResponseMessage.UN_AUTHORIZED_MSG }});
+          const refreshError = await SessionController.refreshToken()
+          if (refreshError instanceof Error) {
+            localStorage.removeItem('ACCESS_TOKEN')
+            navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+          }
+          getAssignedTasks();
         }
       }
     };

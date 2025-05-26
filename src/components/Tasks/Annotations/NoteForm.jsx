@@ -5,7 +5,8 @@ import { Button, Alert } from "@mui/material";
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
 import ResponseMessage from "../../../utils/ResponsesMessage";
-
+import SessionController from "../../../utils/SessionController";
+axios.defaults.withCredentials = true;
 export default function NoteForm({ note, handleChange, notifyChanges, closeDialog }) {
 
     const navigate = useNavigate()
@@ -36,8 +37,14 @@ export default function NoteForm({ note, handleChange, notifyChanges, closeDialo
                     setAlertMsg({ isError: true, message: ResponseMessage.ERR_NETWORK_MSG })
                 }
                 else if (error.status == 401) {
-                    localStorage.removeItem('ACCESS_TOKEN')
-                    navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: `viewtask?task_id=${task.task_id}` } })
+                    const refreshError = await SessionController.refreshToken()
+                    if (refreshError instanceof Error) {
+                        localStorage.removeItem('ACCESS_TOKEN')
+                        navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: `viewtask?task_id=${note.taskId}` } })
+                    }
+                    else {
+                        sendNote()
+                    }
                 }
                 else {
                     setAlertMsg({ isError: true, message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG })

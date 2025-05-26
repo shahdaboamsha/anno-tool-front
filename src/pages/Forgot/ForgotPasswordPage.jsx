@@ -5,6 +5,8 @@ import { Fade, Alert, Button } from "@mui/material"
 import NavigationBar from "../../components/Public/NavigationBar"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
+import ResponseMessage from "../../utils/ResponsesMessage"
+import SessionController from "../../utils/SessionController"
 
 export default function ForgotPasswordPage() {
     document.title = "Recover your account"
@@ -44,12 +46,12 @@ export default function ForgotPasswordPage() {
 
         setLoading(true)
         try {
-            const url = `http://localhost:3000/auth/sendcode`
+            const url = `${import.meta.env.VITE_API_URL}/auth/sendcode`
             const token = (await axios.post(url, {email: email.value})).data.token
             localStorage.setItem('RECOVER_ACCOUNT_TOKEN', token)
             navigate('/recover/verify', { state: {verify: true, message: `We send a code to your email address ${email.value}. Please check your mail inbox to reset your password`}})
         } catch (error) {
-            console.log(error)
+
             setAlertMsg({severity: 'error', message: `Oops! an error occured`})
         }
         setLoading(false)

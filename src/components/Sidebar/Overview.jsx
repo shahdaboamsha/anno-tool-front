@@ -4,8 +4,10 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import GroupsIcon from '@mui/icons-material/Groups';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import { useNavigate } from "react-router-dom";
+axios.defaults.withCredentials = true;
 import axios from "axios";
 import InnerLoader from "../Loaders/InnerLoader";
+import SessionController from "../../utils/SessionController";
 
 export default function Overview() {
 
@@ -20,14 +22,21 @@ export default function Overview() {
 
         const getOverviewDetails = async () => {
             try {
-                const details = (await axios.get(url, { headers: headers })).data.information
+                axios.defaults.withCredentials = true
+                const details = (await axios.get(url, { headers: headers , withCredentials: true})).data.information
                 setOverviewDetails(details)
             } catch (error) {
                 if (error.code == "ERR_NETWORK") {
                     setAlertMsg({ isError: true, message: "Unable to connect to server" })
                 }
                 else if (error.response.status == 401) {
-                    navigate('/signin', { state: { message: "Session Expired. Sign in to continue" } })
+                    const refreshError = await SessionController.refreshToken()
+                    if (refreshError instanceof Error) {
+                        localStorage.removeItem('ACCESS_TOKEN')
+                        navigate('/signin', { state: { message: "Session Expired. Sign in to continue" } })
+                        return
+                    }
+                    else { getOverviewDetails() }
                 }
                 else {
                     setAlertMsg({ isError: true, message: "Oops! An error occured while connection with server. Try to refresh the page" })

@@ -52,6 +52,7 @@ export default function SigninForm() {
 
         setLoading(true)
         try {
+            axios.defaults.withCredentials = true
             const ACCESS_TOKEN = (await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
                 email: formData.email.value,
                 password: formData.password.value

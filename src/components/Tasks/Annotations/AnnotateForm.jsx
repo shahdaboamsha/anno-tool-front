@@ -7,8 +7,8 @@ import { Alert, Button, Divider } from "@mui/material"
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import ResponseMessage from "../../../utils/ResponsesMessage"
-
-
+import SessionController from "../../../utils/SessionController"
+axios.defaults.withCredentials = true;
 export default function AnnotateForm({ task }) {
 
     const navigate = useNavigate()
@@ -17,7 +17,7 @@ export default function AnnotateForm({ task }) {
         isError: false,
         message: null
     })
-    
+
     const [sentenceToAnnotate, setSentenceToAnnotate] = useState(null)
     const [usersAnnotations, setUsersAnnotations] = useState([])
     const [loading, setLoading] = useState(true)
@@ -51,8 +51,14 @@ export default function AnnotateForm({ task }) {
                     setAlertMsg({ isError: true, message: "Unable to connect server" })
                 }
                 else if (error.status == 401) {
-                    localStorage.removeItem('ACCESS_TOKEN')
-                    navigate('/signin', { state: { message: 'Session Expired. Sign in to continue', nextUrl: `viewtask?task_id=${task.task_id}`, openDialog: true } })
+                    const refreshError = await SessionController.refreshToken()
+                    if (refreshError instanceof Error) {
+                        localStorage.removeItem('ACCESS_TOKEN')
+                        navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: `viewtask?task_id=${task.task_id}` } })
+                    }
+                    else {
+                        getSentenceToAnnotate()
+                    }
                 }
                 else {
                     setAlertMsg({ isError: true, message: 'Oops! An error occured duting fetching sentence. Try Again' })
@@ -99,15 +105,21 @@ export default function AnnotateForm({ task }) {
             setGetNext(prev => prev + 1)
 
         } catch (error) {
-            if (error.code === "ERR_NETWORK"){
-                setAlertMsg({isError: true, message: ResponseMessage.ERR_NETWORK_MSG})
+            if (error.code === "ERR_NETWORK") {
+                setAlertMsg({ isError: true, message: ResponseMessage.ERR_NETWORK_MSG })
             }
             if (error.status == 401) {
-                localStorage.removeItem('ACCESS_TOKEN')
-                navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: `viewtask?task_id=${task.task_id}` } })
+                const refreshError = await SessionController.refreshToken()
+                if (refreshError instanceof Error) {
+                    localStorage.removeItem('ACCESS_TOKEN')
+                    navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: `viewtask?task_id=${task.task_id}` } })
+                }
+                else {
+                    annotate(process)
+                }
             }
             else {
-                 setAlertMsg({isError: true, message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG})
+                setAlertMsg({ isError: true, message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG })
             }
         } finally {
             setSubmittingLoading(false)

@@ -9,7 +9,8 @@ import InnerLoader from "../../Loaders/InnerLoader";
 import { Badge, Tooltip } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ResponseMessage from "../../../utils/ResponsesMessage";
-
+import SessionController from "../../../utils/SessionController";
+axios.defaults.withCredentials = true;
 function formatDateToLong(dateString) {
     const date = new Date(dateString);
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
@@ -38,8 +39,13 @@ export default function ShareRequestCards({ shareRequests, loading, setShareRequ
 
         } catch (error) {
             if (error.status == 401) {
-                localStorage.removeItem('ACCESS_TOKEN')
-                navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+                const refreshError = await SessionController.refreshToken()
+                if (refreshError instanceof Error) {
+                    localStorage.removeItem('ACCESS_TOKEN')
+                    navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: 'share' } })
+                } else {
+                    handleRequest(request, action)
+                }
             }
         } finally {
             setLoading(false)

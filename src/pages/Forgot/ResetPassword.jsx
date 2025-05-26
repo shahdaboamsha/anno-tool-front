@@ -7,6 +7,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import * as swalls from '../../components/Public/Swals'
 import { useLocation } from "react-router-dom";
+import SessionController from "../../utils/SessionController";
+import ResponseMessage from "../../utils/ResponsesMessage";
+
 export default function ResetPassword() {
 
     const location = useLocation()
@@ -69,7 +72,7 @@ export default function ResetPassword() {
         const data = prepareDataToSubmit()
         setLoading(true)
         try {
-            const url = `http://localhost:3000/auth/reset-password`
+            const url = `${import.meta.env.VITE_API_URL}/auth/reset-password`
             const headers = { Authorization: `Bearer ${localStorage.getItem('RECOVER_ACCOUNT_TOKEN')}` }
 
             await axios.post(url, data, { headers: headers })
@@ -85,8 +88,7 @@ export default function ResetPassword() {
                 setAlertMsg({ severity: 'error', message: 'Unable to connect with server. Try again' })
             }
             else if (error.status == 401) {
-                localStorage.removeItem('RECOVER_ACCOUNT_TOKEN')
-                navigate('/signin', { state: { message: 'Access Denied' } })
+                navigate('/signin', { state: { message: 'Session Expired' } })
             }
             else if (error.status == 400) {
                 setFormData({ ...formData, currentPassword: { ...formData['currentPassword'], errorMsg: 'Passwords does not matched' } })

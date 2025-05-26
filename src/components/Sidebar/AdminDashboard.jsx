@@ -6,10 +6,11 @@ import Box from '@mui/material/Box';
 import UsersManagement from '../Admin/UsersManagement';
 import TasksManagement from '../Admin/TasksManagement';
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 import InnerLoader from '../../components/Loaders/InnerLoader'
 import { useNavigate } from 'react-router-dom';
 import { useOutletContext } from 'react-router-dom';
-
+import SessionController from '../../utils/SessionController';
 function CustomTabPanel(props) {
 
     const { children, value, index, ...other } = props;
@@ -67,9 +68,18 @@ export default function AdminDashboard() {
                 setData(fetchedData.data)
 
             } catch (error) {
-                console.error("Error fetching data:", error);
-                alert("You are not authorized to access this page or error in fetching data")
-                navigate('/dashboard/overview')
+                if (error.response && error.response.status === 401) {
+                    const refreshError = await SessionController.refreshToken()
+                    if (refreshError instanceof Error) {
+                        localStorage.removeItem('ACCESS_TOKEN')
+                        navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+                    } else {
+                        fetchAllData()
+                    }
+                }
+                else {
+                    alert("An error occurred while fetching data. Please try again later.")
+                }
             } finally {
                 setLoading(false)
             }

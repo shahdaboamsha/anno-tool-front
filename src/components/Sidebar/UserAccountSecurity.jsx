@@ -4,8 +4,11 @@ import inputValidators from "../../utils/inputValidators";
 import { Button, Divider, Alert } from "@mui/material";
 import LockIcon from '@mui/icons-material/Lock';
 import axios from "axios";
+axios.defaults.withCredentials = true;
 import { useNavigate } from "react-router-dom";
 import * as swalls from '../Public/Swals'
+import SessionController from "../../utils/SessionController";
+import ResponseMessage from "../../utils/ResponsesMessage";
 
 export default function UserAccountSecurity() {
 
@@ -72,11 +75,19 @@ export default function UserAccountSecurity() {
             swalls.updateAccountInfoSwal("Your password changed successfully")
         } catch (error) {
             if (error.code == "ERR_NETWORK") {
-                setAlertMsg({ severity: 'error', message: 'Unable to connect with server. Try again' })
+                setAlertMsg({ severity: 'error', message: ResponseMessage.ERR_NETWORK_MSG })
             }
             else if (error.status == 401) {
-                localStorage.removeItem('ACCESS_TOKEN')
-                navigate('/signin', { state: { message: 'Session Expired. Sign in again to continue' } })
+                const refreshError = await SessionController.refreshToken()
+                if (refreshError instanceof Error) {
+                    localStorage.removeItem('ACCESS_TOKEN')
+                    navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+
+                }
+                else {
+                    changePassword()
+                }
+
             }
             else if (error.status == 400) {
                 setFormData({ ...formData, currentPassword: { ...formData['currentPassword'], errorMsg: 'Please enter your correct current password' } })

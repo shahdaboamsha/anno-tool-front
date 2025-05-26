@@ -5,6 +5,7 @@ import InputFile from '../Inputs/InputFile';
 import { Button, IconButton, Tooltip, Alert, Divider } from '@mui/material';
 import inputValidators from '../../utils/inputValidators';
 import axios from 'axios';
+axios.defaults.withCredentials = true;
 import { useNavigate } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
@@ -14,6 +15,7 @@ import DatasetIcon from '@mui/icons-material/Dataset';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import xlsxHelpScreenshot from '../../assets/xlsx_preview.png'
 import appData from '../../utils/appData.json'
+import SessionController from '../../utils/SessionController';
 const annotationLabels = (annotationName) => appData.annotationTypes.filter(annotationType => annotationType.annotationName === annotationName)[0]
 const annotationsNames = appData.annotationTypes.map(annotationType => annotationType.annotationName)
 
@@ -172,7 +174,12 @@ export default function CreateTask() {
                 setAlertMsg({ isError: true, message: "Unable to connect to server" })
             }
             else if (error.status === 401) {
-                navigate('/signin', { state: { message: "Access Denied" } })
+                const refreshError = await SessionController.refreshToken()
+                if (refreshError instanceof Error) {
+                    localStorage.removeItem('ACCESS_TOKEN')
+                    navigate('/signin', { state: { message: "Session expired, please sign in again" } })
+                }
+                else uploadTask()
             }
             else if (error.status === 400) {
                 setAlertMsg({ isError: true, message: error.response.data.message })

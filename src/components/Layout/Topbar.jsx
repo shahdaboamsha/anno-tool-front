@@ -15,7 +15,7 @@ import axios from 'axios';
 import { useRef } from 'react';
 import logo from '../../assets/logo.png';
 import ResponseMessage from '../../utils/ResponsesMessage';
-
+import SessionController from '../../utils/SessionController';
 export default function Topbar({ toggleSidebar }) {
 
   const [notificationAnchor, setNotificationAnchor] = useState(null);
@@ -49,7 +49,7 @@ export default function Topbar({ toggleSidebar }) {
         const headers = {
           'Authorization': `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
         }
-        const requests = (await axios.get(url, { headers: headers })).data
+        const requests = (await axios.get(url, { headers: headers , withCredentials:true})).data
         setShareRequests(requests.invitations)
         if (requests.invitations.length != 0) {
           notificationRef.current.classList.toggle('notification-icon')
@@ -60,10 +60,14 @@ export default function Topbar({ toggleSidebar }) {
           navigate('/dashboard/taskslist', { state: { message: ResponseMessage.ERR_NETWORK_MSG } })
         }
         else if (error.status == 401) {
-          localStorage.removeItem('ACCESS_TOKEN')
-          navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+          const refreshError = await SessionController.refreshToken()
+          if (refreshError instanceof Error) {
+            localStorage.removeItem('ACCESS_TOKEN')
+            navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+          }
+          getRequests()
         }
-        
+
       } finally {
         setLoading(false)
       }
@@ -72,10 +76,10 @@ export default function Topbar({ toggleSidebar }) {
 
     }
     getRequests()
-   /* const getRequsestsInterval = setInterval(() => {
-      getRequests()
-    }, 5000);
-    return () => clearInterval(getRequsestsInterval)*/
+    /* const getRequsestsInterval = setInterval(() => {
+       getRequests()
+     }, 5000);
+     return () => clearInterval(getRequsestsInterval)*/
 
   }, [])
 

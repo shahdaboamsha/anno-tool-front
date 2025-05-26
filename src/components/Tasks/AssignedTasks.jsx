@@ -8,8 +8,11 @@ import QuickDialog from "../Public/QuickDialog";
 import ShareTaskForm from "./Shares/ShareTaskForm";
 import { useNavigate } from "react-router-dom";
 import * as swals from "../Public/Swals";
+import SessionController from "../../utils/SessionController";
+import ResponseMessage from "../../utils/ResponsesMessage";
 
-export default function AssignedTasks({ assignedTasks, state, notifyChanges }) {
+export default function AssignedTasks({ assignedTasks = [], state, notifyChanges }) {
+
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedTask, setSelectedTask] = useState(null);
@@ -43,16 +46,22 @@ export default function AssignedTasks({ assignedTasks, state, notifyChanges }) {
     catch (error) {
 
       if (error.code == "ERR_NETWORK") {
-        setAlertMsg({ isError: true, message: "Unable to connect to server" })
+        setAlertMsg({ isError: true, message: ResponseMessage.ERR_NETWORK_MSG });
       }
       else if (error.response.status === 401) {
-        navigate("/signin", { state: { message: "Access Denied" } })
+        const refreshError = await SessionController.refreshToken()
+        if (refreshError instanceof Error) {
+          localStorage.removeItem('ACCESS_TOKEN')
+          navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+        }
+        else {
+          deleteTask()
+        }
       }
       else {
         setAlertMsg({
           isError: true,
-          message:
-            "Oops, an error occured during the process, please try again",
+          message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG,
         })
       }
     }

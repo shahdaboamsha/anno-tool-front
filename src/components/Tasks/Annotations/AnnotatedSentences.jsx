@@ -12,8 +12,8 @@ import { useOutletContext } from "react-router-dom";
 import ResponseMessage from "../../../utils/ResponsesMessage";
 import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 import NotesView from "./NotesView";
-import { set } from "lodash";
-
+import SessionController from "../../../utils/SessionController";
+axios.defaults.withCredentials = true;
 const formatDateToLong = (dateString) => {
 
     const date = new Date(dateString)
@@ -131,8 +131,14 @@ export default function AnnotatedSentences({ task }) {
                     setAlertMsg({ isError: true, message: ResponseMessage.ERR_NETWORK_MSG })
                 }
                 else if (error.status == 401) {
-                    localStorage.removeItem('ACCESS_TOKEN')
-                    navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: `viewtask?task_id=${task.task_id}` } })
+                    const refreshError = await SessionController.refreshToken()
+                    if (refreshError instanceof Error) {
+                        localStorage.removeItem('ACCESS_TOKEN')
+                        navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+                    }
+                    else {
+                        getAllAnnotations()
+                    }
                 }
                 else {
                     setAlertMsg({ isError: true, message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG })

@@ -5,7 +5,9 @@ import InnerLoader from "../Loaders/InnerLoader"
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom"
 import { ToggleButtonGroup, ToggleButton, Tooltip, Alert, Button } from "@mui/material";
-
+import SessionController from "../../utils/SessionController";
+import ResponseMessage from "../../utils/ResponsesMessage";
+axios.defaults.withCredentials = true;
 export default function UserTasks() {
 
     const location = useLocation()
@@ -42,7 +44,14 @@ export default function UserTasks() {
                     setErrorMsg({ message: 'Unable to connect to server' })
                 }
                 else if (error.response.status === 401) {
-                    navigate('/signin', { state: { message: "Access Denied" } })
+                    const refreshError = await SessionController.refreshToken()
+                    if (refreshError instanceof Error) {
+                        localStorage.removeItem('ACCESS_TOKEN')
+                        navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+                    }
+                    else {
+                        getAssignedTasks()
+                    }
                 }
                 else {
                     setErrorMsg({ message: 'Oops, an error occured during the process, please try again' })
@@ -58,16 +67,16 @@ export default function UserTasks() {
 
     const handleChange = (event, newAlignment) => {
         if (newAlignment !== null) {
-          setAlignment(newAlignment)
-      
-          if (newAlignment === 'My Tasks') {
-            setTasksToRender(assignedTasks)
-          } else {
-            setTasksToRender(sharedTasks)
-          }
+            setAlignment(newAlignment)
+
+            if (newAlignment === 'My Tasks') {
+                setTasksToRender(assignedTasks)
+            } else {
+                setTasksToRender(sharedTasks)
+            }
         }
-      };
-      
+    };
+
 
     return (
         <div className="p-1 ml-5">
