@@ -37,7 +37,7 @@ export default function UsersManagement({ users, notifyChanges }) {
 
     const deleteSelectedUsers = async (selected) => {
 
-        /**  */
+    /**  */
         if (selected.length === 0) return
         const body = { userIds: selected }
 
