@@ -34,26 +34,26 @@ export default function NotesView({ notes }) {
             <h1 className="text-[14px]">You have {notes.length} notes for {formattedGroupedNotes.length} annotations</h1>
             {
                 formattedGroupedNotes.map((note, index) => (
-                    <>
+                    <div key={index + 20} className="flex flex-col gap-2">
                         <div className="p-5 bg-gray-100" key={index}>
                             <h1 className="text-right text-[14px]" key={index + 1}>{note.sentenceText} </h1>
                         </div>
                         {
                             note.notes.map((noteDetail, idx) => (
-                                <div key={idx + 1}>
-                                    <div className="flex items-center gap-1">
+                                <div key={idx + 30}>
+                                    <div className="flex items-center gap-1" key={idx + 31}>
                                         <Avatar key={idx + 2} sx={{ width: '30px', height: '30px' }}>{noteDetail.notedBy.charAt(0)}</Avatar>
-                                        <h1 key={idx + 3} className="text-[14px]">{noteDetail.notedBy}</h1>
+                                        <h1 key={idx + 39} className="text-[14px]">{noteDetail.notedBy}</h1>
                                     </div>
-                                    <h1 key={idx + 4} className="text-[14px] text-right">{noteDetail.noteContent}</h1>
-                                    <h1 className="text-[12px] text-gray-500" >{formatDateToLong(noteDetail.createdAt)}</h1>
-                                    <Divider sx={{ mt: 1 }} />
+                                    <h1 key={idx + 40} className="text-[14px] text-right">{noteDetail.noteContent}</h1>
+                                    <h1 className="text-[12px] text-gray-500" key={idx+39}>{formatDateToLong(noteDetail.createdAt)}</h1>
+                                    <Divider sx={{ mt: 1 }} key={idx+0} />
                                 </div>
                             ))
                         }
 
 
-                    </>
+                    </div>
 
                 ))
             }

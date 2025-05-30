@@ -50,7 +50,7 @@ export default function UserTasks() {
                         navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
                     }
                     else {
-                        getAssignedTasks()
+                        await getAssignedTasks()
                     }
                 }
                 else {
@@ -80,8 +80,7 @@ export default function UserTasks() {
 
     return (
         <div className="p-1 ml-5">
-            {location.state && <Alert severity="info" sx={{ mt: 2, mb: 2 }}>{location.state.message}</Alert>}
-
+            {location.state && <Alert severity="info" sx={{ m:2, ml: 0 }}>{location.state.message}</Alert>}
             {loading ? <InnerLoader /> : <>
                 <div className="flex justify-between items-end mt-3">
                     <h1 className="text text-[18px] text-center">{alignment}</h1>

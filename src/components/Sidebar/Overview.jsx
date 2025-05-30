@@ -11,32 +11,45 @@ import SessionController from "../../utils/SessionController";
 
 export default function Overview() {
 
+
     const navigate = useNavigate()
     const [overviewDetails, setOverviewDetails] = useState(null)
     const [loading, setLoading] = useState(true)
     const [alertMsg, setAlertMsg] = useState({ isError: false, message: null })
 
     useEffect(() => {
+
         const url = `${import.meta.env.VITE_API_URL}/users/task-status`
-        const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
         const getOverviewDetails = async () => {
+
+            const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
+
             try {
                 axios.defaults.withCredentials = true
-                const details = (await axios.get(url, { headers: headers , withCredentials: true})).data.information
+                
+                const details = (await axios.get(url, { headers: headers })).data.information
                 setOverviewDetails(details)
+
+
             } catch (error) {
                 if (error.code == "ERR_NETWORK") {
                     setAlertMsg({ isError: true, message: "Unable to connect to server" })
                 }
                 else if (error.response.status == 401) {
+
                     const refreshError = await SessionController.refreshToken()
+
                     if (refreshError instanceof Error) {
+                        
                         localStorage.removeItem('ACCESS_TOKEN')
                         navigate('/signin', { state: { message: "Session Expired. Sign in to continue" } })
-                        return
+
                     }
-                    else { getOverviewDetails() }
+                    else {
+                        await getOverviewDetails()
+
+                    }
                 }
                 else {
                     setAlertMsg({ isError: true, message: "Oops! An error occured while connection with server. Try to refresh the page" })

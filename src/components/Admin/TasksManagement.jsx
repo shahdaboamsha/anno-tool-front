@@ -48,7 +48,7 @@ export default function TasksManagement({ tasks, notifyChanges }) {
 
     tasks = useMemo(() => {
         return tasks.map(task => {
-            if (task.Owner.email === userData.email){
+            if (task.Owner.email === userData.email) {
                 return {
                     ...task,
                     created_by: task.created_by + " (You)"
@@ -57,17 +57,24 @@ export default function TasksManagement({ tasks, notifyChanges }) {
             return task
         })
     }, [userData.email, tasks])
-    const deleteSelectedUsers = async (selected) => {
-            if (selected.length === 0) return
-            const config = {
-                headers: { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` },
-                data: { taskIds: selected }
-            }
-            const url = 'http://localhost:3000/admin/deletetasks'
-        
-            swals.deleteTaskssSwal(url, config, notifyChanges)
-    
-        }
+
+    const deleteSelectedTasks = async (selected) => {
+
+        if (selected.length === 0) return
+        const body = { taskIds: selected }
+
+        await swals.confirmationSwal(
+            'delete',
+            `${import.meta.env.VITE_API_URL}/admin/deletetasks`,
+            "Are you sure you want to delete selected tasks?",
+            "Tasks deleted",
+            "Error with deleting tasks. Try again",
+            body,
+            () => { }, // nextUrl: do not redirect
+            notifyChanges
+        )
+    }
+
     return (
         <div>
             <div className="p-5 flex justify-start gap-5 flex-wrap">
@@ -78,9 +85,9 @@ export default function TasksManagement({ tasks, notifyChanges }) {
             <DataTable
                 rows={tasks}
                 columns={columns}
-                deleteSelected={deleteSelectedUsers}
+                deleteSelected={deleteSelectedTasks}
                 getRowId={(row) => row.task_id}
-                
+
             />
         </div>
     )

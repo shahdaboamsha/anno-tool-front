@@ -11,6 +11,7 @@ import InnerLoader from '../../components/Loaders/InnerLoader'
 import { useNavigate } from 'react-router-dom';
 import { useOutletContext } from 'react-router-dom';
 import SessionController from '../../utils/SessionController';
+
 function CustomTabPanel(props) {
 
     const { children, value, index, ...other } = props;
@@ -46,8 +47,10 @@ export default function AdminDashboard() {
     const navigate = useNavigate()
 
     const [data, setData] = useState({ tasks: [], users: [] })
-    const [usersDeleted, setUsersDeleted] = useState(false)
-    const notifyChanges = () => setUsersDeleted(prev => !prev)
+
+    const [isDataChanged, setIsDataChanged] = useState(false)
+    const notifyChanges = () => setIsDataChanged(prev => !prev)
+
     const [loading, setLoading] = useState(true)
 
     const { userData } = useOutletContext();
@@ -59,7 +62,10 @@ export default function AdminDashboard() {
             navigate('/dashboard/overview')
             return
         }
+
         const fetchAllData = async () => {
+
+            
             const url = `${import.meta.env.VITE_API_URL}/admin/data`
             const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
             try {
@@ -68,13 +74,14 @@ export default function AdminDashboard() {
                 setData(fetchedData.data)
 
             } catch (error) {
+                
                 if (error.response && error.response.status === 401) {
                     const refreshError = await SessionController.refreshToken()
                     if (refreshError instanceof Error) {
                         localStorage.removeItem('ACCESS_TOKEN')
                         navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
                     } else {
-                        fetchAllData()
+                        await fetchAllData()
                     }
                 }
                 else {
@@ -86,7 +93,7 @@ export default function AdminDashboard() {
 
         }
         fetchAllData()
-    }, [usersDeleted])
+    }, [isDataChanged])
 
     const [value, setValue] = useState(0);
 

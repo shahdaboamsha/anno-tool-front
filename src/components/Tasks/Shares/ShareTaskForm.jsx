@@ -27,7 +27,7 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
 
         const getUsersWithAccess = async () => {
             try {
-                
+
                 setSharedUsersLoading(true)
                 const url = `${import.meta.env.VITE_API_URL}/tasks/${taskId}/collaborators`
                 const token = localStorage.getItem('ACCESS_TOKEN')
@@ -37,7 +37,8 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
                 setUsersWithAccess(result.people_with_access)
 
             } catch (error) {
-                console.log(error)
+
+
                 if (error.code == "ERR_NETWORK") {
                     setAlertMsg(ResponseMessage.ERR_NETWORK_MSG)
                 }
@@ -48,7 +49,7 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
                         navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
                     }
                     else {
-                        getUsersWithAccess()
+                        await getUsersWithAccess()
                     }
                 }
                 else {
@@ -57,7 +58,7 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
             } finally {
                 setSharedUsersLoading(false)
             }
-            
+
         }
         getUsersWithAccess()
 
@@ -70,6 +71,7 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
     const search = async (e) => {
         try {
             setSearchLoading(true)
+            
             const query = `query=${e.target.value}&&task_id=${taskId}`
             const url = `${import.meta.env.VITE_API_URL}/tasks/search?${query}`
             const token = localStorage.getItem('ACCESS_TOKEN')
@@ -84,21 +86,32 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
             )
 
             setSearchResult(filteredResult)
+            setAlertMsg(null)
 
         } catch (error) {
 
             if (error.code == "ERR_NETWORK") {
                 setAlertMsg('Unable to connect to server')
             }
-            else if (error.response.status === 401) {
-                navigate('/signin', { state: { message: "Access Denied" } })
+            else if (error.status === 401) {
+                
+                const refreshError = await SessionController.refreshToken()
+
+                if (refreshError instanceof Error) {
+                    localStorage.removeItem('ACCESS_TOKEN')
+                    navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+                }
+                else {
+                    await search(e)
+                }
             }
-            else if (error.response.status === 400) return
-            else {
-                setAlertMsg('Oops, an error occured during the process, please try again')
+            else if (error.status === 500) {
+                setAlertMsg("Oops! An error occurred while searching for users. Try again")  
             }
+
+        } finally {
+            setSearchLoading(false)
         }
-        setSearchLoading(false)
     }
 
     const sendShareRequest = async () => {
@@ -136,8 +149,14 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
                 setAlertMsg("Unable to connect to server")
             }
             else if (error.status === 401) {
-                localStorage.removeItem('ACCESS_TOKEN')
-                navigate('/signin', { state: { message: "Access Denied" } })
+                const refreshError = await SessionController.refreshToken()
+                if (refreshError instanceof Error) {
+                    localStorage.removeItem('ACCESS_TOKEN')
+                    navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
+                }
+                else {
+                    await sendShareRequest()
+                }
             }
             else if (error.status === 500) {
                 setAlertMsg("Oops! An error occurred while submitting the sharing request. Try again")
@@ -192,7 +211,7 @@ export default function ShareTaskForm({ taskName, nextState, taskId }) {
             {
                 usersWithAccess.length != 0 &&
                 <div className="border border-gray-200 overflow-y-auto" style={{ maxHeight: window.innerWidth > 500 ? '300px' : 'none' }}>
-                    <SharedUsersList taskId={taskId} sharedUsers={usersWithAccess}/>
+                    <SharedUsersList taskId={taskId} sharedUsers={usersWithAccess} />
                 </div>
             }
 

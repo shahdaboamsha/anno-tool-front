@@ -36,16 +36,22 @@ const columns = [
 export default function UsersManagement({ users, notifyChanges }) {
 
     const deleteSelectedUsers = async (selected) => {
-        if (selected.length === 0) return
-        const config = {
-            headers: { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` },
-            data: { userIds: selected }
-        }
-        const url = 'http://localhost:3000/admin/deleteusers'
-    
-        swals.deleteUsersSwal(url, config, notifyChanges)
 
+        if (selected.length === 0) return
+        const body = { userIds: selected }
+
+        await swals.confirmationSwal(
+            'delete',
+            `${import.meta.env.VITE_API_URL}/admin/deleteusers`,
+            "Are you sure you want to delete selected users?",
+            "Users deleted",
+            "Error with deleting users. Try again",
+            body,
+            () => { },
+            notifyChanges
+        )
     }
+
     return (
         <div>
             <div className="p-5 flex justify-start gap-5 flex-wrap">

@@ -43,7 +43,7 @@ export default function UpdateAnnotation({ sentence, task, notifyChanges, closeD
                     navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: `viewtask?task_id=${task.task_id}` } })
                 }
                 else {
-                    UpdateAnnotation()
+                    await UpdateAnnotation()
                 }
             }
             else {

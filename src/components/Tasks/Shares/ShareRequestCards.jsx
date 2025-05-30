@@ -44,7 +44,7 @@ export default function ShareRequestCards({ shareRequests, loading, setShareRequ
                     localStorage.removeItem('ACCESS_TOKEN')
                     navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: 'share' } })
                 } else {
-                    handleRequest(request, action)
+                    await handleRequest(request, action)
                 }
             }
         } finally {

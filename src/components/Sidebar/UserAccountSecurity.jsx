@@ -85,7 +85,7 @@ export default function UserAccountSecurity() {
 
                 }
                 else {
-                    changePassword()
+                    await changePassword()
                 }
 
             }
@@ -103,8 +103,21 @@ export default function UserAccountSecurity() {
         setLoading(false)
     }
 
-    const deleteAccount = () => {
-        swalls.deleteAccoutSwal()
+    const deleteAccount = async () => {
+
+        await swalls.confirmationSwal(
+            "post",
+            `${import.meta.env.VITE_API_URL}/users/deleteAccount`,
+            `Are you sure you want to delete your account?`,
+            `Your account has been deleted permanently and you will lose all your data. You will be logged out.`,
+            "An error occured while deleting your account",
+            {},
+            () => {
+                navigate('/signin')
+                localStorage.removeItem('ACCESS_TOKEN')
+             }
+        )
+
     }
 
     return (

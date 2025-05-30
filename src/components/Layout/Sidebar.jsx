@@ -45,7 +45,7 @@ export default function Sidebar({ isOpen, toggleSidebar, role = "admin" }) {
             localStorage.removeItem('ACCESS_TOKEN')
             navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
           }
-          getAssignedTasks();
+          await getAssignedTasks();
         }
       }
     };
@@ -74,7 +74,7 @@ export default function Sidebar({ isOpen, toggleSidebar, role = "admin" }) {
         width: 240,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
-          width: 240,
+          width: "300px",
           boxSizing: 'border-box',
         },
       }}

@@ -17,11 +17,10 @@ const capitailizeFirstLetterOfArray = (str) => {
 
 export default function TaskDetails({ task, taskFiles }) {
 
-    console.log("TaskDetails", task)
+    task = useMemo(() => task, [])
     const { userData } = useOutletContext()
-
-
-    const isCollab = task?.collaborators.find(collab => collab.email !== userData.email)
+    
+    const isCollab = task?.collaborators.find(collab => collab.email === userData.email)
     const [editDialogState, setEditDialogState] = useState(false)
     const setOpenState = () => setEditDialogState(!editDialogState)
 
@@ -106,7 +105,7 @@ export default function TaskDetails({ task, taskFiles }) {
 
                     </div>
 
-                    {isCollab &&
+                    {!isCollab &&
                         <Tooltip title='Edit this task' >
                             <IconButton size='small' sx={{
                                 position: 'absolute',

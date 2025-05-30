@@ -92,7 +92,7 @@ export default function EditTask({ initialData }) {
                     navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: `viewtask?task_id=${initialData.task_id}` } })
                 }
                 else {
-                    editTask()
+                    await editTask()
                 }
             }
             else {

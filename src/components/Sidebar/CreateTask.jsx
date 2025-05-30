@@ -179,7 +179,7 @@ export default function CreateTask() {
                     localStorage.removeItem('ACCESS_TOKEN')
                     navigate('/signin', { state: { message: "Session expired, please sign in again" } })
                 }
-                else uploadTask()
+                else await uploadTask()
             }
             else if (error.status === 400) {
                 setAlertMsg({ isError: true, message: error.response.data.message })

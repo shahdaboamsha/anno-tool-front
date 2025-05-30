@@ -57,7 +57,7 @@ export default function AnnotateForm({ task }) {
                         navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: `viewtask?task_id=${task.task_id}` } })
                     }
                     else {
-                        getSentenceToAnnotate()
+                        await getSentenceToAnnotate()
                     }
                 }
                 else {
@@ -115,7 +115,7 @@ export default function AnnotateForm({ task }) {
                     navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: `viewtask?task_id=${task.task_id}` } })
                 }
                 else {
-                    annotate(process)
+                    await annotate(process)
                 }
             }
             else {
@@ -156,7 +156,7 @@ export default function AnnotateForm({ task }) {
                                         {usersAnnotations.length > 0 ? (
                                             <tbody>
                                                 {usersAnnotations.map((annotation, index) => (
-                                                    <tr key={index} className="">
+                                                    <tr key={index} className="text-[14px]">
                                                         <th className="text-left p-2 font-semibold border border-gray-300" >{annotation.userName}</th>
                                                         <td className="p-2 border border-gray-300">{annotation.annotation}</td>
                                                     </tr>

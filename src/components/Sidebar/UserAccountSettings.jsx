@@ -74,8 +74,10 @@ export default function UserAccountSettings() {
             const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
             await axios.post(url, data, { headers: headers })
-            swals.updateAccountInfoSwal("Your information has been updated successfully")
+            swals.swalDialog("success", "Profile updated successfully")
+            
             notifyEditingUser()
+
         } catch (error) {
             if (error.code == "ERR_NETWORK") {
                 setAlertMsg({ severity: 'error', message: ResponseMessage.ERR_NETWORK_MSG })
@@ -87,7 +89,7 @@ export default function UserAccountSettings() {
                     navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
                 }
                 else {
-                    editMyData()
+                    await editMyData()
                 }
             }
             else if (error.status == 404) {

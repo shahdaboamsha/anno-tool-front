@@ -16,7 +16,7 @@ function SigninPage() {
         const isLoggedIn = () => {
             return localStorage.getItem('ACCESS_TOKEN') != null
         }
-        isLoggedIn() ? navigate('/dashboard') : setPageLoading(false)
+        isLoggedIn() ? navigate('/dashboard/overview') : setPageLoading(false)
     }, [])
 
     document.title = "Sign in"

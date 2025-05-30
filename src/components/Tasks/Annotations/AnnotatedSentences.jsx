@@ -137,7 +137,7 @@ export default function AnnotatedSentences({ task }) {
                         navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
                     }
                     else {
-                        getAllAnnotations()
+                        await getAllAnnotations()
                     }
                 }
                 else {
@@ -198,6 +198,7 @@ export default function AnnotatedSentences({ task }) {
                                             {sentence.label}
                                         </td>
                                         <td className="text-center px-2 py-1 border-l border-gray-300 w-30">
+                                            <div>
 
                                             {
                                                 userData.userName === sentence.annotated_by.name ?
@@ -211,6 +212,7 @@ export default function AnnotatedSentences({ task }) {
                                                     > Add note
                                                     </h1>
                                             }
+                                            </div>
 
                                         </td>
                                     </tr>

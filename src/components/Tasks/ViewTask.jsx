@@ -19,6 +19,7 @@ export default function ViewTask() {
 
     const location = useLocation()
     const navigate = useNavigate()
+
     const [taskDetails, setTaskDetails] = useState()
     const [taskFiles, setTaskFiles] = useState([])
     const [taskSentences, setTaskSentences] = useState([])
@@ -33,6 +34,7 @@ export default function ViewTask() {
     const openAnnotatedDialog = () => { setAnnotatedDialogState(!AnnotatedDialogState) }
 
     useEffect(() => {
+
 
         if (!taskIdAsParam) {
             navigate('/dashboard/taskslist', { state: { message: "Task does not exist" } })
@@ -51,14 +53,12 @@ export default function ViewTask() {
                 const taskFiles = (await axios.get(url2, { headers })).data.files
                 const taskSentences = (await axios.get(url3, { headers })).data
 
-                setTaskFiles(taskFiles)
-                setTaskDetails(taskDetails)
-                setTaskSentences(taskSentences)
-
-                
+                setTaskFiles(() => taskFiles)
+                setTaskDetails(() => taskDetails)
+                setTaskSentences(() => taskSentences)
 
             } catch (error) {
-                console.log(error)
+
                 if (error.code == "ERR_NETWORK") {
                     navigate('/dashboard/taskslist', { state: { message: ResponseMessage.ERR_NETWORK_MSG } })
                 }
@@ -69,7 +69,7 @@ export default function ViewTask() {
                         navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG, nextUrl: `viewtask?task_id=${taskIdAsParam}` } })
                     }
                     else {
-                        fetchTaskDetails()
+                        await fetchTaskDetails()
                     }
                 }
                 else {

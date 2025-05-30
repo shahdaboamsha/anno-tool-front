@@ -1,4 +1,6 @@
 import axios from "axios";
+import path from 'path'
+import fs from 'fs'
 
 class SessionController {
 
@@ -10,14 +12,18 @@ class SessionController {
   static async refreshToken() {
 
     try {
+
+      axios.defaults.withCredentials = true
       const headers = this.getAuthorization()
-      const newToken = await axios.get(`${import.meta.env.VITE_API_URL}/auth/refreshToken`, { headers })
-      localStorage.setItem("ACCESS_TOKEN", newToken.data.token)
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/auth/refreshToken`, { headers })
+      
+      localStorage.clear()
+      localStorage.setItem("ACCESS_TOKEN", data.token)
       
       return ""
+      
     } catch (error) {
-      console.error("Error refreshing token:", error)
-      return error
+      return new Error()
     }
   }
 }

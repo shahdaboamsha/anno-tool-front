@@ -43,13 +43,14 @@ export default function Topbar({ toggleSidebar }) {
 
 
   useEffect(() => {
+
     const getRequests = async () => {
       try {
         const url = `${import.meta.env.VITE_API_URL}/tasks/getuserinvitation`
         const headers = {
           'Authorization': `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
         }
-        const requests = (await axios.get(url, { headers: headers , withCredentials:true})).data
+        const requests = (await axios.get(url, { headers: headers, withCredentials: true })).data
         setShareRequests(requests.invitations)
         if (requests.invitations.length != 0) {
           notificationRef.current.classList.toggle('notification-icon')
@@ -65,7 +66,11 @@ export default function Topbar({ toggleSidebar }) {
             localStorage.removeItem('ACCESS_TOKEN')
             navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
           }
-          getRequests()
+          await getRequests()
+        }
+        else {
+          localStorage.removeItem("ACCESS_TOKEN")
+          navigate('/signin', { state: { message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG } })
         }
 
       } finally {

@@ -36,35 +36,17 @@ export default function AssignedTasks({ assignedTasks = [], state, notifyChanges
   }
 
   const deleteTask = async () => {
-    try {
-      const api = `tasks/${selectedTask.task_id}`
-      const operationDescription = `Delete ${selectedTask.task_name}?`
-      const successMsg = 'Task deleted'
 
-      await swals.deleteSwal(api, operationDescription, successMsg)
-    }
-    catch (error) {
+    await swals.confirmationSwal(
+      'delete',
+      `${import.meta.env.VITE_API_URL}/tasks/${selectedTask.task_id}`,
+      `Are you sure you want to Delete "${selectedTask.task_name}" task?`,
+      'Task deleted',
+      'Error with deleting task. Try again',
+      {},
+      () => { },
+    )
 
-      if (error.code == "ERR_NETWORK") {
-        setAlertMsg({ isError: true, message: ResponseMessage.ERR_NETWORK_MSG });
-      }
-      else if (error.response.status === 401) {
-        const refreshError = await SessionController.refreshToken()
-        if (refreshError instanceof Error) {
-          localStorage.removeItem('ACCESS_TOKEN')
-          navigate('/signin', { state: { message: ResponseMessage.UN_AUTHORIZED_MSG } })
-        }
-        else {
-          deleteTask()
-        }
-      }
-      else {
-        setAlertMsg({
-          isError: true,
-          message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG,
-        })
-      }
-    }
   }
 
   return (
