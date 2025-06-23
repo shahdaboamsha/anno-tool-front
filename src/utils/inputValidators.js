@@ -189,6 +189,13 @@ const validateTaskFormBeforeSubmit = (fileFormData, setFileFormData) => {
     return isReadyForSubmit
 
 }
+const validateDeadline = (deadline) => {
+    
+    if (Number(deadline) < 1){
+        return "Please enter a valid days number"
+    }
+    return "VALID"
+}
 const validate = (fieldName, value, config) => {
     if (fieldName == "userName") {
         return validateName(value)
@@ -219,6 +226,9 @@ const validate = (fieldName, value, config) => {
     }
     else if (fieldName === "task_description") {
         return "VALID"
+    }
+    else if (fieldName === "deadline"){
+        return validateDeadline(value)
     }
 }
 

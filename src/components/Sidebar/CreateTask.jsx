@@ -47,10 +47,29 @@ export default function CreateTask() {
                 lines: null
             },
             errorMsg: ""
+        },
+        deadline: {
+            value: 10,
+            errorMsg: ""
         }
     })
 
+    const calculateDeadlineDate = (deadline) => {
 
+        if (isNaN(deadline) || deadline === '') return ''
+
+        const today = new Date()
+        const newDate = new Date(today)
+        newDate.setDate(today.getDate() + parseInt(deadline))
+
+        const day = String(newDate.getDate()).padStart(2, '0')
+        const month = String(newDate.getMonth() + 1).padStart(2, '0')
+        const year = newDate.getFullYear()
+
+        return `${day}/${month}/${year}`
+    }
+
+    const [deadlineMsg, setDeadlineMsg] = useState(`This task will expired on ${calculateDeadlineDate(formData.deadline.value)}`)
     const [loading, setLoading] = useState(false)
     const [fileChangedAtLeastOnce, setFileChangedAtLeastOnce] = useState(false)
     const [alertMsg, setAlertMsg] = useState({ isError: false, message: null })
@@ -78,6 +97,13 @@ export default function CreateTask() {
         }
 
         const validation = validateInput(event)
+        if (name === "deadline") {
+            if (value == "") {
+                setDeadlineMsg("")
+            }
+            else setDeadlineMsg(`This task will expired on ${calculateDeadlineDate(value)}`)
+        }
+
         const errorMsg = validation != 'VALID' ? validation : null
 
         setFormData({ ...formData, [name]: { value: value, errorMsg: errorMsg } })
@@ -154,6 +180,8 @@ export default function CreateTask() {
         return dataToSend
     }
 
+
+
     const uploadTask = async () => {
 
         if (!inputValidators.validateTaskFormBeforeSubmit(formData, setFormData))
@@ -161,7 +189,7 @@ export default function CreateTask() {
 
         setLoading(true)
         try {
-            
+
             const url = `${import.meta.env.VITE_API_URL}/file/upload`
             const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
             const data = prepareDataBeforeSubmit()
@@ -221,6 +249,17 @@ export default function CreateTask() {
                         changeHandler={changeHandler}
                     />
 
+
+
+                    <InputText required type='number' title="Deadline" name="deadline" id="description"
+                        placeholder='Enter number of days'
+                        value={formData.deadline.value}
+                        validation_error={formData.deadline.errorMsg}
+                        changeHandler={changeHandler}
+                        widthDetection={false}
+                    />
+                    <h1 className='text-[14px]'>{deadlineMsg}</h1>
+
                     <InputText type='text' title="Description" name="task_description" id="description"
                         placeholder='Description (optional)'
                         value={formData.task_description.value}
@@ -228,7 +267,6 @@ export default function CreateTask() {
                         changeHandler={changeHandler}
                         widthDetection={false}
                     />
-
                     <h1 className='text-[18px] mt-4 text-left'>{<DatasetIcon sx={{ mr: 1 }} />}Task dataset</h1>
                     <div style={{ display: fileChangedAtLeastOnce ? 'none' : 'block' }}>
                         <h1 className='text-gray-500 text-[14px]'>Please upload a file in CSV or XLSX format</h1>

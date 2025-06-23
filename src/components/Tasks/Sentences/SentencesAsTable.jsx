@@ -33,7 +33,7 @@ export default function SentencesAsTable({ sentences = [] }) {
                         {visibleSentences.map((sentence) => (
                             <tr key={sentence.sentence_id} className="border-b border-gray-300 text-[14px]">
                                 <td className="text-center px-2 py-1 border-r border-gray-300 w-20">{sentence.sentence_id}</td>
-                                <td className="text-center px-2 py-1">{sentence.sentence_text}</td>
+                                <td className="text-center px-2 py-1 arabic">{sentence.sentence_text}</td>
                             </tr>
                         ))}
                     </tbody>

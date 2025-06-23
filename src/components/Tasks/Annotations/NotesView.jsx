@@ -59,7 +59,7 @@ export default function NotesView({ notes }) {
             }
             {
                 formattedGroupedNotes.length === 0 && (
-                    <h1 className="text-left text-[14px]">No notes available</h1>
+                    <h1 className="text-left text-[14px]">No notes sent to you</h1>
                 )
             }
 

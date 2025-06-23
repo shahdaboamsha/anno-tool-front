@@ -28,7 +28,6 @@ export default function TaskDetails({ task, taskFiles }) {
         <>
             {
                 task != null &&
-
                 <div className='relative'>
                     <div>
                         <h1 className="text-[20px] font-medium p-2 w-full">About This Task</h1>
@@ -37,6 +36,10 @@ export default function TaskDetails({ task, taskFiles }) {
                                 <tr>
                                     <th className="text-left p-2 font-semibold">Task ID</th>
                                     <td className="p-2">{task.task_id}</td>
+                                </tr>
+                                <tr>
+                                    <th className="text-left p-2 font-semibold">Deadline</th>
+                                    <td className="p-2">{task.deadline || "-"}</td>
                                 </tr>
                                 <tr>
                                     <th className="text-left p-2 font-semibold">Task name</th>

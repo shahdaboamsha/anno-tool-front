@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 import Loader from '../../Loaders/Loader'
-import { Button, TablePagination, Alert, IconButton, Tooltip, Badge } from "@mui/material";
+import { Button, TablePagination, Alert, IconButton, Tooltip, Badge, Divider } from "@mui/material";
 import { sentencesFilter } from '../../../utils/appData.json'
 import Filter from "./Filter"
 import NoteForm from "./NoteForm"
@@ -13,20 +13,23 @@ import ResponseMessage from "../../../utils/ResponsesMessage";
 import QuestionAnswerOutlinedIcon from '@mui/icons-material/QuestionAnswerOutlined';
 import NotesView from "./NotesView";
 import SessionController from "../../../utils/SessionController";
-axios.defaults.withCredentials = true;
-const formatDateToLong = (dateString) => {
+import InputSelect from "../../Inputs/InputSelect";
 
+axios.defaults.withCredentials = true;
+
+const formatDateToLong = (dateString) => {
     const date = new Date(dateString)
     const options = { day: 'numeric', month: 'long', year: 'numeric' }
     return new Intl.DateTimeFormat('en-GB', options).format(date)
-
 }
 
+const capitalizeFirstLetter = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+}
 export default function AnnotatedSentences({ task }) {
 
     const navigate = useNavigate()
     const { userData } = useOutletContext()
-
     const [loading, setLoading] = useState(true)
 
     const [page, setPage] = useState(0)
@@ -40,6 +43,8 @@ export default function AnnotatedSentences({ task }) {
     const [UpdateDialogState, setOpenUpdateDialogState] = useState(false)
     const [viewNotesDialogState, setOpenViewNotesDialogState] = useState(false)
 
+    const [selectedAnnotatorId, setSelectedAnnotatorId] = useState("")
+
     const [anyChanges, setAnyChanges] = useState(1)
     const [alertMsg, setAlertMsg] = useState({
         isError: false, message: null
@@ -49,49 +54,18 @@ export default function AnnotatedSentences({ task }) {
         setAlertMsg(feedback)
     }
 
-    const openUpdateDialog = (event, sentence) => {
+    const [selectedAnnotation, setSelectedAnnotation] = useState(null)
 
-        setSentenceToUpdate(sentence)
+    const openUpdateDialog = () => {
         setOpenUpdateDialogState(prev => !prev)
-
     }
 
-
-    const [senetenceToUpdate, setSentenceToUpdate] = useState()
-
-    const [note, setNote] = useState({
-        text: "",
-        userId: "",
-        userName: "",
-        sentenceId: "",
-        sentenceText: "",
-        label: ""
-    })
-
-
-    const openNoteDialog = (event, annotation) => {
-
-        const { user_id, name } = annotation.annotated_by
-        const { sentence_id, text, label } = annotation
-
-        setNote({
-            ...note,
-            userId: user_id,
-            sentenceId: sentence_id,
-            userName: name,
-            sentenceText: text,
-            label
-        })
+    const openNoteDialog = () => {
         setOpenNoteDialg(prev => !prev)
-
     }
 
     const openNViewNotesDialog = () => {
         setOpenViewNotesDialogState(prev => !prev)
-    }
-
-    const handleNoteChange = (event) => {
-        setNote({ ...note, text: event.target.value })
     }
 
     const handleChangePage = (event, newPage) => {
@@ -113,7 +87,7 @@ export default function AnnotatedSentences({ task }) {
         const getAllAnnotations = async () => {
 
             setLoading(true)
-            const url1 = `${import.meta.env.VITE_API_URL}/annotation/${task.task_id}/viewannotatedsentences`
+            const url1 = `${import.meta.env.VITE_API_URL}/assignsample/${task.task_id}/sample-annotations`
             const url2 = `${import.meta.env.VITE_API_URL}/notes/${task.task_id}/getallnotes`
             const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
@@ -125,7 +99,7 @@ export default function AnnotatedSentences({ task }) {
                 setAnnos(annotations.data)
                 setFilteredAnnos(annotations.data)
                 setNotes(notes.data.notes)
-
+                console.log(notes.data)
             } catch (error) {
                 if (error.code == "ERR_NETWORK") {
                     setAlertMsg({ isError: true, message: ResponseMessage.ERR_NETWORK_MSG })
@@ -141,6 +115,7 @@ export default function AnnotatedSentences({ task }) {
                     }
                 }
                 else {
+                    console.log(error.response.data)
                     setAlertMsg({ isError: true, message: ResponseMessage.INTERNAL_SERVER_ERROR_MSG })
                 }
             } finally {
@@ -151,15 +126,51 @@ export default function AnnotatedSentences({ task }) {
         getAllAnnotations()
     }, [anyChanges])
 
+    const getAllAnnotatorsNames = () => {
+        const annotatorsNames = []
+        annos.forEach(annotation => {
+            annotation.annotations.forEach(annotator => annotatorsNames.push(annotator.user_name))
+        })
+        return Array.from(new Set(annotatorsNames))
+    }
+
+    const handleAnnotatorSelection = (e) => {
+        setSelectedAnnotatorId(e.target.value)
+        setFilteredAnnos(findAnnotationsByUserId(e.target.value))
+    }
+
+    const findAnnotationsByUserId = (selectedAnnotatorId) => {
+
+        if (!selectedAnnotatorId) return annos
+
+        setSelectedAnnotatorId(selectedAnnotatorId)
+        const filtered = annos
+            .filter(sentence =>
+                sentence.annotations?.some(annotation => annotation.user_name === selectedAnnotatorId)
+            )
+            .map(sentence => {
+                const filteredAnnotation = sentence.annotations.find(
+                    annotation => annotation.user_name === selectedAnnotatorId
+                )
+
+                return {
+                    ...sentence,
+                    annotations: [filteredAnnotation]
+                }
+            })
+
+        return filtered
+    }
+
 
     return (
         <>
             {loading ? <Loader /> :
-                <div className="w-[800px]">
-
-                    <div className="mt-3 flex justify-end text-[14px] pr-3">
+                <div className="p-3">
+                    <h1 className="text-[20px] font-medium w-full">Annotations</h1>
+                    <div className="flex justify-end text-[14px]">
                         <Tooltip title="Show notes">
-                            <Badge color="secondary" badgeContent={notes.length} showZero>
+                            <Badge color="secondary" badgeContent={notes.length}>
                                 <IconButton onClick={openNViewNotesDialog}>
                                     <QuestionAnswerOutlinedIcon fontSize="small" sx={{ color: 'red' }} />
                                 </IconButton>
@@ -167,9 +178,16 @@ export default function AnnotatedSentences({ task }) {
                         </Tooltip>
                     </div>
 
-                    <div id="filter">
-                        <h1 className="mb-2">Filter</h1>
-                        <Filter filterData={sentencesFilter} data={annos} setSearchResult={setFilteredAnnos} />
+                    <div className="w-100">
+                        <h1 className="mb-3 text-[15px]">Filter annotations by annotator name</h1>
+                        <InputSelect required
+                            name='selectedAnnotatorId'
+                            title="Select annotator"
+                            value={selectedAnnotatorId}
+                            menuItems={getAllAnnotatorsNames()}
+                            changeHandler={handleAnnotatorSelection}
+                            withDetection={false}
+                        />
                     </div>
 
                     <div className="mt-2">
@@ -181,39 +199,53 @@ export default function AnnotatedSentences({ task }) {
                         <table className="min-w-full h-[450px] border border-gray-300 relative" style={{ padding: '10px' }}>
                             <thead className="text-[15px] bg-gray-100">
                                 <tr>
-                                    <th scope="col" className="text-center px-2 py-3 border-r border-gray-300">Annotated by</th>
-                                    <th scope="col" className="text-center px-2 py-3">Text</th>
-                                    <th scope="col" className="text-center px-2 py-3 border-l border-gray-300">Annotated at</th>
-                                    <th scope="col" className="text-center px-2 py-3 border-l border-gray-300">Label</th>
-                                    <th scope="col" className="text-center px-2 py-3 border-l border-gray-300">Actions</th>
+                                    <th scope="col" className="text-center px-2 py-3 border-r border-gray-300 w-30">Sentence ID</th>
+                                    <th scope="col" className="text-center px-2 py-3 w-100">Text</th>
+                                    <th scope="col" className="text-center px-2 py-3 border-l border-gray-300">AI label</th>
+                                    <th scope="col" className="text-center px-2 py-3 border-l border-gray-300">Users labels</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {visibleSentences.map((sentence, index) => (
                                     <tr key={`${sentence.sentence_id}${index}`} className="border-b border-gray-300 text-[14px]">
-                                        <td className="text-center px-2 py-1 border-r border-gray-300 w-40">{sentence.annotated_by.name}</td>
-                                        <td className="text-center px-2 py-1">{sentence.text}</td>
-                                        <td className="text-center px-2 py-1 border-l border-gray-300 w-30">{formatDateToLong(sentence.created_at)}</td>
-                                        <td className="text-center px-2 py-1 border-l border-gray-300 w-30">
-                                            {sentence.label}
+                                        <td className="text-center px-2 py-1">{sentence.sentence_id}</td>
+                                        <td className="text-center px-2 py-1 border-l border-gray-300 arabic w-100">
+                                            {sentence.sentence_text}
                                         </td>
                                         <td className="text-center px-2 py-1 border-l border-gray-300 w-30">
-                                            <div>
+                                            {capitalizeFirstLetter(sentence.ai_label)}
+                                        </td>
+                                        <td className="text-center px-2 py-1 border-l border-gray-300 w-30">
 
-                                            {
-                                                userData.userName === sentence.annotated_by.name ?
-                                                    <h1 style={{ cursor: 'pointer' }} className="text-blue-400 hover:text-blue-800"
-                                                        onClick={(event) => openUpdateDialog(event, sentence)}
-                                                    > Edit
-                                                    </h1>
-                                                    :
-                                                    <h1 style={{ cursor: 'pointer' }} className="text-blue-400 hover:text-blue-800"
-                                                        onClick={(event) => openNoteDialog(event, sentence)}
-                                                    > Add note
-                                                    </h1>
-                                            }
-                                            </div>
+                                            <table className="table-fixed w-full text-left">
+                                                <tbody>
+                                                    {sentence.annotations.map((annotator, index) => (
+                                                        <tr key={index} className="align-top">
+                                                            <td className="text-[14px]">
+                                                                {annotator.label}:
+                                                            </td>
+                                                            <Tooltip placement="right" title={annotator.user_name != userData.userName? `Details` : ''}>
+                                                                <td
+                                                                    className="text-[14px] text-center text-blue-500 hover:text-blue-700 cursor-pointer"
+                                                                    onClick={() => {
+                                                                        setSelectedAnnotation({ ...sentence, ...annotator })
+                                                                        if (userData.userName !== annotator.user_name) {
+                                                                            openNoteDialog()
+                                                                        }
+                                                                        else {
+                                                                            openUpdateDialog()
+                                                                        }
+                                                                    }}
+                                                                >
+                                                                    {userData.userName !== annotator.user_name ? capitalizeFirstLetter(annotator.user_name) : "Edit"}
 
+                                                                </td>
+                                                            </Tooltip>
+
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
                                         </td>
                                     </tr>
                                 ))}
@@ -230,8 +262,7 @@ export default function AnnotatedSentences({ task }) {
                         setOpenState={() => setOpenNoteDialg(prev => !prev)}
                         component={
                             <NoteForm
-                                handleChange={handleNoteChange}
-                                note={note}
+                                annotationDetails={selectedAnnotation}
                                 notifyChanges={notifyChanges}
                                 closeDialog={() => setOpenNoteDialg(false)}
                             />
@@ -244,7 +275,7 @@ export default function AnnotatedSentences({ task }) {
                         component={
                             <UpdateAnnotation
                                 task={task}
-                                sentence={senetenceToUpdate}
+                                annotationDetails={selectedAnnotation}
                                 notifyChanges={notifyChanges}
                                 closeDialog={() => setOpenUpdateDialogState(false)}
                             />}
@@ -253,10 +284,8 @@ export default function AnnotatedSentences({ task }) {
                     <QuickDialog
                         openState={viewNotesDialogState}
                         setOpenState={openNViewNotesDialog}
-                        component={ <NotesView notes={notes} />}
+                        component={<NotesView notes={notes} />}
                     />
-
-
                     <div className="flex justify-center bg-gray-100 mt-2">
                         <TablePagination
                             component="div"

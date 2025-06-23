@@ -8,6 +8,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import ResponseMessage from "../../../utils/ResponsesMessage"
 import SessionController from "../../../utils/SessionController"
+import SliderCertainity from "../../Inputs/SliderCertainity"
 axios.defaults.withCredentials = true;
 export default function AnnotateForm({ task }) {
 
@@ -19,11 +20,15 @@ export default function AnnotateForm({ task }) {
     })
 
     const [sentenceToAnnotate, setSentenceToAnnotate] = useState(null)
+    const [certainity, setCertainity] = useState(20)
+
     const [usersAnnotations, setUsersAnnotations] = useState([])
     const [loading, setLoading] = useState(true)
     const [submittingLoading, setSubmittingLoading] = useState(false)
     const [getNext, setGetNext] = useState(0)
     const [annotateMsg, setAnnotateMsg] = useState(null)
+
+    const [aiAnnotation, setAIAnnotation] = useState({})
 
     const [numOfAnnotatedSentences, setNumOfAnnotatedSentences] = useState(task.annotatedCount)
     const [numOfSkippedSentences, setNumOfSkippedSentences] = useState(task.skippedCount)
@@ -35,15 +40,25 @@ export default function AnnotateForm({ task }) {
             setSelectedLabel(null)
             setAlertMsg({ isError: false, message: null })
             setLoading(true)
-
+            // localhost:3000/assignSample/9/Ai-human-agreement
             try {
-                const url = `${import.meta.env.VITE_API_URL}/tasks/${task.task_id}/sentences/unannotated`
+                const url = `${import.meta.env.VITE_API_URL}/assignsample/${task.task_id}/next`
                 const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
                 const nextSentence = (await axios.get(url, { headers: headers })).data
+                setSentenceToAnnotate(nextSentence)
+                console.log(nextSentence)
+                //setUsersAnnotations(nextSentence.usersAnnotations)
+                if (nextSentence.message) {
+                   
+                        const { agreement_percentage, message } = (await axios.get(`${import.meta.env.VITE_API_URL}/assignSample/${task.task_id}/Ai-human-agreement`, { headers})).data
+                        console.log(agreement_percentage, message)
+                        setAIAnnotation({
+                            agreement_percentage,
+                            message
+                        })
 
-                setSentenceToAnnotate(nextSentence.sentenceToAnnotate)
-                setUsersAnnotations(nextSentence.usersAnnotations)
+                }
                 setAnnotateMsg(nextSentence.message)
 
             } catch (error) {
@@ -74,7 +89,7 @@ export default function AnnotateForm({ task }) {
 
     const [selectedLabel, setSelectedLabel] = useState(null)
     const handleLabelSelection = (selection) => setSelectedLabel(selection)
-
+    const handleCertainitySelection = (cert) => setCertainity(cert)
     const annotate = async (process) => {
 
         if (!selectedLabel && process !== 0) {
@@ -92,13 +107,14 @@ export default function AnnotateForm({ task }) {
         setSubmittingLoading(true)
         try {
 
-            const url = `${import.meta.env.VITE_API_URL}/annotation/${task.task_id}/annotate`
+            const url = `${import.meta.env.VITE_API_URL}/assignsample/${task.task_id}/annotation`
             const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
             const sentence_id = sentenceToAnnotate.sentence_id
             const label = process === 0 ? 'none' : selectedLabel
+            console.log(sentence_id, label, certainity)
+            const annotatedCount = await axios.post(url, { sentence_id, label, certainty: certainity }, { headers: headers })
 
-            const annotatedCount = await axios.post(url, { sentence_id, label }, { headers: headers })
 
             setNumOfAnnotatedSentences(annotatedCount.data.annotatedCount)
             setNumOfSkippedSentences(annotatedCount.data.skippedCount)
@@ -134,43 +150,54 @@ export default function AnnotateForm({ task }) {
                     <h1 className="text-center text-[18px]">Annotation Task: {task.task_name} - {task.annotation_type}</h1>
                     <Divider variant='fullWidth' />
 
-                    <div className="mt-1 mb-1">
+                    <div className="mt-5 mb-1">
                         {
                             annotateMsg && <Alert severity="info">{!sentenceToAnnotate ? "Completed" : annotateMsg}</Alert>
                         }
                     </div>
-                    <div className="w-full flex flex-row justify-center flex-wrap gap-2 mt-10">
+                    <div>
+                        {
+                            aiAnnotation.message &&
+                            <div className="mt-3">
+                                <h1>Final result</h1>
+                                <h1 className="text-[14px] text-green-800">Agreement percentage: {aiAnnotation.agreement_percentage}</h1>
+                                <h1 className="text-[14px] text-green-800">{aiAnnotation.message}</h1>
+                            </div>
+                        }
+                    </div>
+                    <div className="w-full flex flex-row justify-center flex-wrap gap-2 mt-5">
                         <div className="w-full text-left text-[14px] grow flex items-center p-2 border border-gray-200 rounded-sm">Annotated <h1 className="text-right w-full">{numOfAnnotatedSentences}</h1></div>
                         <div className="w-full text-left text-[14px] grow flex items-center p-2 border border-gray-200 rounded-sm">Skipped <h1 className="text-right w-full">{numOfSkippedSentences}</h1></div>
                     </div>
 
-                    {sentenceToAnnotate ?
+                    {sentenceToAnnotate && !annotateMsg ?
                         <>
                             <div className="p-5 bg-gray-100 mt-3">
                                 <h1 className="text-right text-[14px]">{sentenceToAnnotate.sentence_text}</h1>
                             </div>
                             {
-                                <div className="p-5 bg-gray-100 mt-3">
-                                    <h1 className="text-[14px] font-bold">Collaborators annotations</h1>
-                                    <table className="  border-gray-300 w-full">
-                                        {usersAnnotations.length > 0 ? (
-                                            <tbody>
-                                                {usersAnnotations.map((annotation, index) => (
-                                                    <tr key={index} className="text-[14px]">
-                                                        <th className="text-left p-2 font-semibold border border-gray-300" >{annotation.userName}</th>
-                                                        <td className="p-2 border border-gray-300">{annotation.annotation}</td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        ) : <h1 className="text-[14px]">Not annotated by any collaborator yet</h1>}
-                                    </table>
-                                </div>
+                                /* <div className="p-5 bg-gray-100 mt-3">
+                                     <h1 className="text-[14px] font-bold">Collaborators annotations</h1>
+                                     <table className="  border-gray-300 w-full">
+                                         {usersAnnotations.length > 0 ? (
+                                             <tbody>
+                                                 {usersAnnotations.map((annotation, index) => (
+                                                     <tr key={index} className="text-[14px]">
+                                                         <th className="text-left p-2 font-semibold border border-gray-300" >{annotation.userName}</th>
+                                                         <td className="p-2 border border-gray-300">{annotation.annotation}</td>
+                                                     </tr>
+                                                 ))}
+                                             </tbody>
+                                         ) : <h1 className="text-[14px]">Not annotated by any collaborator yet</h1>}
+                                     </table>
+                                 </div>*/
                             }
 
                             {alertMsg.isError && <Alert sx={{ mt: 2 }} color="error" severity="error">{alertMsg.message}</Alert>}
                             <h1 className="text-[16px] mt-2">Select label:</h1>
                             <RadioButtonGroup labels={task.labels.toLocaleString().split(";")} handleLabelSelection={handleLabelSelection} />
-
+                            <h1 className="text-[16px] mt-2">Enter certainity:</h1>
+                            <SliderCertainity certainity={certainity} setCertainity={handleCertainitySelection} />
                             <div className="mt-5 flex justify-center gap-2">
                                 <Button endIcon={<ArrowForwardIosIcon />}
                                     loading={submittingLoading}

@@ -91,21 +91,7 @@ export default function ViewTask() {
                 <TaskDetailsInformation task={taskDetails} taskFiles={taskFiles} />
                 <Divider variant='middle' sx={{ mt: 2 }} />
 
-                <div style={{ margin: 'auto', width: 'fit-content' }}>
-                    <Button variant="contained" color="success" onClick={openAnnotatedDialog}
-                        sx={{ textTransform: 'none', width: '250px', m: 1 }}>
-                        View Annotations
-                    </Button>
-                    <QuickDialog
-                        component={<AnnotatedSentences  task={taskDetails} />}
-                        openState={AnnotatedDialogState}
-                        setOpenState={openAnnotatedDialog} />
-                </div>
-
-                <Divider variant='middle' sx={{ mt: 0 }} />
-                <Divider variant='middle' sx={{ mt: 0 }} />
-
-                <div className="sticky top-0 bg-white z-10 p-2 text-right">
+                <div className="mb-5 bg-white p-2 text-right right-50">
                     <AnimatedButton onClick={() => setAnnotationDialogState(true)} />
                     <QuickDialog
                         component={<AnnotateForm task={taskDetails} />}
@@ -114,6 +100,8 @@ export default function ViewTask() {
                         fullScreen={true}
                     />
                 </div>
+                <AnnotatedSentences task={taskDetails} />
+                <Divider variant='middle' sx={{ mt: 0 }} />
 
                 <h1 className="text-[20px] font-medium p-2">All Sentences</h1>
                 <TaskSentences taskSentences={taskSentences} />

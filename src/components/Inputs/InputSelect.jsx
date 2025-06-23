@@ -64,7 +64,7 @@ function InputSelect({
                                 },
                             }}
                         >
-                            <MenuItem value="" defaultChecked>
+                            <MenuItem value="">
                                 Select annotation type
                             </MenuItem>
                             {menuItems.map((item) => (
