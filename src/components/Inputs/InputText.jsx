@@ -23,10 +23,10 @@ const borderFocusStyleProps = {
 
         '& .MuiOutlinedInput-root': {
             '&.Mui-focused fieldset': {
-                borderColor: widthDetection ? (value.trim() === "" ? 'var(--dark-bg)' : (validation_error  ? 'red' : 'green')) : "",
+                borderColor: widthDetection ? ( value.toLocaleString().trim() === "" ? 'var(--dark-bg)' : (validation_error  ? 'red' : 'green')) : "",
             },
             '& fieldset': {
-                borderColor: widthDetection? (value.trim() === ""? 'rgba(0, 0, 0, 0.23)' : (validation_error ? 'red' : 'green')) : ""
+                borderColor: widthDetection? (value.toLocaleString().trim() === ""? 'rgba(0, 0, 0, 0.23)' : (validation_error ? 'red' : 'green')) : ""
             }
         },
         '& .MuiInputLabel-root.Mui-focused': {

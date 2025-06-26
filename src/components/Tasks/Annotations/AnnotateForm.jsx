@@ -9,8 +9,10 @@ import SkipNextIcon from '@mui/icons-material/SkipNext';
 import ResponseMessage from "../../../utils/ResponsesMessage"
 import SessionController from "../../../utils/SessionController"
 import SliderCertainity from "../../Inputs/SliderCertainity"
+import { set } from "lodash"
 axios.defaults.withCredentials = true;
-export default function AnnotateForm({ task }) {
+
+export default function AnnotateForm({ task, updateData }) {
 
     const navigate = useNavigate()
 
@@ -22,16 +24,50 @@ export default function AnnotateForm({ task }) {
     const [sentenceToAnnotate, setSentenceToAnnotate] = useState(null)
     const [certainity, setCertainity] = useState(20)
 
-    const [usersAnnotations, setUsersAnnotations] = useState([])
     const [loading, setLoading] = useState(true)
     const [submittingLoading, setSubmittingLoading] = useState(false)
     const [getNext, setGetNext] = useState(0)
     const [annotateMsg, setAnnotateMsg] = useState(null)
 
-    const [aiAnnotation, setAIAnnotation] = useState({})
+    const [aggreementResult, setAgreementResult] = useState({})
+    const [AIAgreement, setAIAgreement] = useState(null)
 
-    const [numOfAnnotatedSentences, setNumOfAnnotatedSentences] = useState(task.annotatedCount)
-    const [numOfSkippedSentences, setNumOfSkippedSentences] = useState(task.skippedCount)
+    const [resultAction, setResultAction] = useState(null)
+
+    const startResolvingDisagreements = async () => {
+
+        const headers = {
+            Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
+        }
+        const url = `${import.meta.env.VITE_API_URL}/assignsample/${task.task_id}/start-resolving`
+        await axios.post(
+            url,
+            { disagreements: sentenceToAnnotate.flaskResponse.disagreements },
+            { headers }
+        )
+
+
+        setResultAction(null)
+        setGetNext(prev => prev + 1)
+        setAgreementResult({})
+    }
+
+    const getAIAggreement = async () => {
+        const headers = {
+            Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}`
+        }
+        const url = `${import.meta.env.VITE_API_URL}/assignsample/${task.task_id}/Ai-human-agreement`
+
+        const aiAggreement = (await axios.get(url, { headers })).data
+        console.log("AI Agreement:", aiAggreement)
+        setAIAgreement(aiAggreement)
+    }
+
+    const actionsFns = {
+        "Start Resolving Disagreements": startResolvingDisagreements,
+        "Calculate Agreement with AI": getAIAggreement,
+    }
+
 
     useEffect(() => {
 
@@ -40,26 +76,30 @@ export default function AnnotateForm({ task }) {
             setSelectedLabel(null)
             setAlertMsg({ isError: false, message: null })
             setLoading(true)
-            // localhost:3000/assignSample/9/Ai-human-agreement
+
             try {
                 const url = `${import.meta.env.VITE_API_URL}/assignsample/${task.task_id}/next`
                 const headers = { Authorization: `Bearer ${localStorage.getItem('ACCESS_TOKEN')}` }
 
                 const nextSentence = (await axios.get(url, { headers: headers })).data
                 setSentenceToAnnotate(nextSentence)
-                console.log(nextSentence)
-                //setUsersAnnotations(nextSentence.usersAnnotations)
+
                 if (nextSentence.message) {
-                   
-                        const { agreement_percentage, message } = (await axios.get(`${import.meta.env.VITE_API_URL}/assignSample/${task.task_id}/Ai-human-agreement`, { headers})).data
-                        console.log(agreement_percentage, message)
-                        setAIAnnotation({
-                            agreement_percentage,
-                            message
+                    setAnnotateMsg(nextSentence.message)
+                    if (nextSentence.taskFinished) {
+                        setAgreementResult({
+                            message: nextSentence.flaskResponse.message,
+                            agreement_percentage: nextSentence.flaskResponse.kappa
                         })
+                    }
+                    if (nextSentence.flaskResponse.disagreements) {
+                        setResultAction("Start Resolving Disagreements")
+                    }
+                    else {
+                        setResultAction("Calculate Agreement with AI")
+                    }
 
                 }
-                setAnnotateMsg(nextSentence.message)
 
             } catch (error) {
                 if (error.code == "ERR_NETWORK") {
@@ -112,13 +152,11 @@ export default function AnnotateForm({ task }) {
 
             const sentence_id = sentenceToAnnotate.sentence_id
             const label = process === 0 ? 'none' : selectedLabel
-            console.log(sentence_id, label, certainity)
             const annotatedCount = await axios.post(url, { sentence_id, label, certainty: certainity }, { headers: headers })
+            console.log(annotatedCount.data)
 
-
-            setNumOfAnnotatedSentences(annotatedCount.data.annotatedCount)
-            setNumOfSkippedSentences(annotatedCount.data.skippedCount)
             setGetNext(prev => prev + 1)
+            updateData()
 
         } catch (error) {
             if (error.code === "ERR_NETWORK") {
@@ -157,41 +195,45 @@ export default function AnnotateForm({ task }) {
                     </div>
                     <div>
                         {
-                            aiAnnotation.message &&
+                            aggreementResult.message &&
                             <div className="mt-3">
-                                <h1>Final result</h1>
-                                <h1 className="text-[14px] text-green-800">Agreement percentage: {aiAnnotation.agreement_percentage}</h1>
-                                <h1 className="text-[14px] text-green-800">{aiAnnotation.message}</h1>
+                                <h1>Aggreement between annotators</h1>
+                                <h1 className="text-[14px] text-green-800">Agreement percentage: {aggreementResult.agreement_percentage}</h1>
+                                <h1 className="text-[14px] text-green-800">{aggreementResult.message}</h1>
+                            </div>
+                        }
+                        {
+                            AIAgreement && AIAgreement.message &&
+                            <div className="mt-3">
+                                <h1>Aggreement between annotators and AI</h1>
+                                <h1 className="text-[14px] text-green-800">Agreement percentage: {AIAgreement.agreement_percentage}</h1>
+                                <h1 className="text-[14px] text-green-800">{AIAgreement.message}</h1>
                             </div>
                         }
                     </div>
                     <div className="w-full flex flex-row justify-center flex-wrap gap-2 mt-5">
-                        <div className="w-full text-left text-[14px] grow flex items-center p-2 border border-gray-200 rounded-sm">Annotated <h1 className="text-right w-full">{numOfAnnotatedSentences}</h1></div>
-                        <div className="w-full text-left text-[14px] grow flex items-center p-2 border border-gray-200 rounded-sm">Skipped <h1 className="text-right w-full">{numOfSkippedSentences}</h1></div>
+                        <div className="w-full text-left text-[14px] grow flex items-center p-2 border border-gray-200 rounded-sm">Annotated <h1 className="text-right w-full">{task.annotatedCount}</h1></div>
+                        <div className="w-full text-left text-[14px] grow flex items-center p-2 border border-gray-200 rounded-sm">Skipped <h1 className="text-right w-full">{task.skippedCount}</h1></div>
                     </div>
 
-                    {sentenceToAnnotate && !annotateMsg ?
+                    {
+                        resultAction &&
+                        <Button
+                            loading={submittingLoading}
+                            onClick={actionsFns[resultAction]}
+                            fullWidth
+                            variant='contained'
+                            color="success"
+                            sx={{ color: 'white', textTransform: 'none', flexGrow: 1, mt: 2 }}>
+                            {resultAction}
+                        </Button>
+                    }
+
+                    {sentenceToAnnotate && sentenceToAnnotate.sentence_id ?
                         <>
                             <div className="p-5 bg-gray-100 mt-3">
-                                <h1 className="text-right text-[14px]">{sentenceToAnnotate.sentence_text}</h1>
+                                <h1 className="text-right text-[14px] arabic">{sentenceToAnnotate.sentence_text}</h1>
                             </div>
-                            {
-                                /* <div className="p-5 bg-gray-100 mt-3">
-                                     <h1 className="text-[14px] font-bold">Collaborators annotations</h1>
-                                     <table className="  border-gray-300 w-full">
-                                         {usersAnnotations.length > 0 ? (
-                                             <tbody>
-                                                 {usersAnnotations.map((annotation, index) => (
-                                                     <tr key={index} className="text-[14px]">
-                                                         <th className="text-left p-2 font-semibold border border-gray-300" >{annotation.userName}</th>
-                                                         <td className="p-2 border border-gray-300">{annotation.annotation}</td>
-                                                     </tr>
-                                                 ))}
-                                             </tbody>
-                                         ) : <h1 className="text-[14px]">Not annotated by any collaborator yet</h1>}
-                                     </table>
-                                 </div>*/
-                            }
 
                             {alertMsg.isError && <Alert sx={{ mt: 2 }} color="error" severity="error">{alertMsg.message}</Alert>}
                             <h1 className="text-[16px] mt-2">Select label:</h1>
@@ -214,6 +256,7 @@ export default function AnnotateForm({ task }) {
                             </div>
                         </> : ""
                     }
+
 
                 </div >
         }

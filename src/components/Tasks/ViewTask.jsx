@@ -28,19 +28,21 @@ export default function ViewTask() {
     const taskIdAsParam = new URLSearchParams(document.location.search).get('task_id')
 
     const [AnnotationDialogState, setAnnotationDialogState] = useState(location.state ? location.state.openDialog : false)
-    const [AnnotatedDialogState, setAnnotatedDialogState] = useState(false)
+
+    const [isChanges, setIsChanged] = useState(false)
+    const updateData = () => setIsChanged(!isChanges)
 
     const openAnnotateDialog = () => { setAnnotationDialogState(!AnnotationDialogState) }
-    const openAnnotatedDialog = () => { setAnnotatedDialogState(!AnnotatedDialogState) }
+    
 
     useEffect(() => {
-
 
         if (!taskIdAsParam) {
             navigate('/dashboard/taskslist', { state: { message: "Task does not exist" } })
         }
 
         const fetchTaskDetails = async () => {
+
             try {
 
                 const url1 = `${import.meta.env.VITE_API_URL}/tasks/${taskIdAsParam}/details`
@@ -81,7 +83,7 @@ export default function ViewTask() {
 
         }
         fetchTaskDetails()
-    }, [])
+    }, [isChanges])
 
     return (
         <div className="text-[14px] p-3 relative">
@@ -94,7 +96,7 @@ export default function ViewTask() {
                 <div className="mb-5 bg-white p-2 text-right right-50">
                     <AnimatedButton onClick={() => setAnnotationDialogState(true)} />
                     <QuickDialog
-                        component={<AnnotateForm task={taskDetails} />}
+                        component={<AnnotateForm task={taskDetails} updateData={updateData} />}
                         openState={AnnotationDialogState}
                         setOpenState={openAnnotateDialog}
                         fullScreen={true}

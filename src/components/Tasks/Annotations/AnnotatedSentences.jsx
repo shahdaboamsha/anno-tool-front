@@ -99,7 +99,7 @@ export default function AnnotatedSentences({ task }) {
                 setAnnos(annotations.data)
                 setFilteredAnnos(annotations.data)
                 setNotes(notes.data.notes)
-                console.log(notes.data)
+                
             } catch (error) {
                 if (error.code == "ERR_NETWORK") {
                     setAlertMsg({ isError: true, message: ResponseMessage.ERR_NETWORK_MSG })

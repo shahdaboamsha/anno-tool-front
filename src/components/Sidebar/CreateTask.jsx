@@ -256,7 +256,7 @@ export default function CreateTask() {
                         value={formData.deadline.value}
                         validation_error={formData.deadline.errorMsg}
                         changeHandler={changeHandler}
-                        widthDetection={false}
+                        widthDetection={true}
                     />
                     <h1 className='text-[14px]'>{deadlineMsg}</h1>
 

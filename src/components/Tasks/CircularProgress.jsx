@@ -1,17 +1,18 @@
 import { Flat, Heat, Nested } from '@alptugidin/react-circular-progress-bar'
+import { useMemo } from 'react'
 
 export default function CircularProgress({progress, total, label}) {
 
     return (
         <div className='w-30 mb-2'>
             <Flat
-                progress={((progress/total)*100).toFixed(2)}
+                progress={Math.ceil(progress/total*10)*100}
                 range={{ from: 0, to: 100 }}
                 sign={{ value: '%', position: 'end' }}
                 showMiniCircle={true}
                 showValue={true}
                 sx={{
-                    strokeColor: 'blue',
+                    strokeColor: 'green',
                     barWidth: 3,
                     bgStrokeColor: '#ffffff',
                     bgColor: { value: '#000000', transparency: '20' },
@@ -26,7 +27,7 @@ export default function CircularProgress({progress, total, label}) {
                     textColor: '#000000',
                     textFamily: 'Trebuchet MS',
                     loadingTime: 1000,
-                    miniCircleColor: 'blue',
+                    miniCircleColor: 'green',
                     miniCircleSize: 5,
                     valueAnimation: true,
                     intersectionEnabled: true

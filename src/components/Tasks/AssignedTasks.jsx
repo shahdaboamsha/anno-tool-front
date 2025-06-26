@@ -44,7 +44,7 @@ export default function AssignedTasks({ assignedTasks = [], state, notifyChanges
       'Task deleted',
       'Error with deleting task. Try again',
       {},
-      () => { },
+      notifyChanges,
     )
 
   }

@@ -9,6 +9,7 @@ import ResponseMessage from "../../../utils/ResponsesMessage";
 import SessionController from "../../../utils/SessionController";
 axios.defaults.withCredentials = true;
 export default function EditTask({ initialData }) {
+   
 
     const navigate = useNavigate()
     const [formData, setFormData] = useState({
@@ -27,12 +28,32 @@ export default function EditTask({ initialData }) {
         task_description: {
             value: initialData.task_description,
             errorMsg: ""
+        },
+        deadline: {
+            value: initialData.deadline,
+            errorMsg: ""
         }
     })
     const [alertMsg, setAlertMsg] = useState({
         isError: false,
         message: null
     })
+
+    const calculateDeadlineDate = (deadline) => {
+
+        if (isNaN(deadline) || deadline === '') return ''
+
+        const today = new Date()
+        const newDate = new Date(today)
+        newDate.setDate(today.getDate() + parseInt(deadline))
+
+        const day = String(newDate.getDate()).padStart(2, '0')
+        const month = String(newDate.getMonth() + 1).padStart(2, '0')
+        const year = newDate.getFullYear()
+
+        return `${day}/${month}/${year}`
+    }
+    const [deadlineMsg, setDeadlineMsg] = useState(`This task will expired on ${calculateDeadlineDate(formData.deadline.value)}`)
 
     const validateInput = (event) => {
 
@@ -43,12 +64,20 @@ export default function EditTask({ initialData }) {
         return inputValidators.validate(name, value)
     }
 
+
     // on each change on the input fields, update the value of its corresponding object in the form data
     const changeHandler = (event) => {
         const { name, value } = event.target
 
         const validation = validateInput(event)
         const errorMsg = validation != 'VALID' ? validation : null
+
+        if (name === "deadline") {
+            if (value == "") {
+                setDeadlineMsg("")
+            }
+            else setDeadlineMsg(`This task will expired on ${calculateDeadlineDate(value)}`)
+        }
 
         setFormData({ ...formData, [name]: { value: value, errorMsg: errorMsg } })
     }
@@ -103,6 +132,7 @@ export default function EditTask({ initialData }) {
         }
 
     }
+
     return (
         <div className="flex flex-col w-[400px] gap-1">
             <h1 className='text-[18px] mt-3'>Edit your task metadata</h1>
@@ -130,6 +160,14 @@ export default function EditTask({ initialData }) {
                 validation_error={formData.labels.errorMsg}
                 changeHandler={changeHandler}
             />
+            <InputText required type='number' title="Deadline" name="deadline" id="description"
+                placeholder='Enter number of days'
+                value={formData.deadline.value}
+                validation_error={formData.deadline.errorMsg}
+                changeHandler={changeHandler}
+                widthDetection={true}
+            />
+            <h1 className='text-[14px]'>{deadlineMsg}</h1>
             <InputText type='text' title="Description" name="task_description" id="description"
                 placeholder='Description (optional)'
                 value={formData.task_description.value}

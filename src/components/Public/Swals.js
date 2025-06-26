@@ -66,7 +66,7 @@ const confirmationSwal = async (
             Swal.fire({ text: successMsg, icon: "success" })
             nextUrl()
             notifyChanges()
-            
+
           } catch (error) {
             if (error.code === "ERR_NETWORK") {
               Swal.fire({ text: ResponseMessage.INTERNAL_SERVER_ERROR_MSG, icon: "error" })
@@ -92,7 +92,34 @@ const confirmationSwal = async (
     })
 }
 
+const optionSwal = async(title, text, options) => {
+  // تحويل مصفوفة options إلى كائن { value: label }
+  // مثلاً ['Apple', 'Banana'] => { apple: 'Apple', banana: 'Banana' }
+  const inputOptions = Array.isArray(options)
+    ? options.reduce((obj, item) => {
+        obj[item.toLowerCase()] = item;
+        return obj;
+      }, {})
+    : options;
+
+  return Swal.fire({
+    title: title,
+    text: text,
+    input: "select",
+    inputOptions: inputOptions,
+    inputPlaceholder: "Select an option",
+    showCancelButton: true,
+    confirmButtonText: "Submit",
+    cancelButtonText: "Cancel",
+  }).then((result) => {
+    if (result.isConfirmed && result.value) {
+      return result.value.toLowerCase(); // ترجع الخيار كـ string صغيرة
+    }
+    return null; // في حال ألغى المستخدم
+  });
+}
 export {
   swalDialog,
+  optionSwal,
   confirmationSwal
 }

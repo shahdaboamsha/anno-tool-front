@@ -152,7 +152,7 @@
 }
 
 .home-img-container {
-    background-image: url('https://images.hdqwalls.com/wallpapers/abstract-constellation-4f.jpg');
+    background-image: url('../../../public/home-page.png');
     background-size: cover;
     background-repeat: no-repeat;
     background-blend-mode: multiply;

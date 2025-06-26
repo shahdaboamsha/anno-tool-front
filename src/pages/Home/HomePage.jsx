@@ -14,9 +14,9 @@ import shahd from '../../assets/our/shahd.png'
 import nagham from '../../assets/our/nagham.png'
 import mais from '../../assets/our/mais.png'
 import Footer from "./Footer";
+import clsx from "clsx";
 
 const quickActionButtonProps = {
-    margin: 2,
     borderRadius: '0px',
     textTransform: 'none',
     padding: 1,
@@ -35,39 +35,43 @@ export default function HomePage() {
     const [component, setComponent] = useState(<SigninForm />)
 
     // handle Get Started button -> open the form of the task creation or go to the dashboard
-    const getStarted = () => localStorage.getItem('ACCESS_TOKEN')? navigate('/dashboard/overview') :  setDialogOpenState(true)
-    
+    const getStarted = () => localStorage.getItem('ACCESS_TOKEN') ? navigate('/dashboard/overview') : setDialogOpenState(true)
+
     return (
         <div>
-            <div className='text-white flex flex-centered-items flex-column-items white-text center-text home-img-container'
-                style={{ height: `${isWideScreen ? '90vh' : '70vh'}`,  position: 'relative' }} >
-               
-                <div style={{ position: 'absolute', top: '0px',  width: '100%' }}>
+            <div className={`text-white flex flex-col justify-center ${isWideScreen ? "items-start" : "items-center"} white-text home-img-container`}
+                style={{ height: `${isWideScreen ? '90vh' : '70vh'}`, position: 'relative' }} >
+
+                <div style={{ position: 'absolute', top: '0px', width: '100%' }}>
                     <NavigationBar />
                 </div>
+                <div className={`text-white flex flex-col justify-center ${isWideScreen ? "items-start pt-5 w-[700px]" : "items-center text-center"} p-5 white-text gap-3`}>
 
-                <Typography fontWeight={700} variant={isWideScreen ? 'h2' : 'h4'} sx={{color: 'white'}} >
-                    Streamline Your Data with Our Text Annotation Tool
-                </Typography>
+                    <Typography fontWeight={700} variant={isWideScreen ? 'h4' : 'h4'} sx={{ color: 'white' }} >
+                        Streamline Your Data with Our Text Annotation Tool
+                    </Typography>
 
-                <Typography variant={isWideScreen ? 'h6' : 'body2'}  marginTop={1} sx={{color: 'white'}}  >
-                    Easily upload your files and classify words with precision
-                </Typography>
-                
-                <Typography variant={isWideScreen ? 'h6' : 'body2'}  sx={{color: 'white'}} >
-                    Our intuitive tool simplifies annotation, helping you organize and analyze text effortlessly. Start streamlining your data today!
-                </Typography>
-                
-                <div>
-                    <Button id="quick-action-button" variant="contained" sx={{ ...quickActionButtonProps }} onClick={getStarted}
-                        endIcon={ <ArrowForwardIcon className="arrow-icon" fontSize='large' /> }>
-                        Get started
-                    </Button>
-                    <QuickDialog 
-                        openState={dialogOpenState}
-                        setOpenState={setDialogOpenState}
-                        component={component} />
+                    <Typography variant={isWideScreen ? 'subtitle1' : 'body2'} marginTop={1} sx={{ color: 'white' }}  >
+                        Easily upload your files and classify words with precision.
+                    </Typography>
+
+                    <Typography variant={isWideScreen ? 'subtitle1' : 'body2'} sx={{ color: 'white' }} >
+                        Our intuitive tool simplifies annotation, helping you organize and analyze text effortlessly. Start streamlining your data today!
+                    </Typography>
+
+                    <div>
+                        <Button id="quick-action-button" variant="contained" sx={{ ...quickActionButtonProps }} onClick={getStarted}
+                            endIcon={<ArrowForwardIcon className="arrow-icon" fontSize='large' />}>
+                            Get started
+                        </Button>
+                        <QuickDialog
+                            openState={dialogOpenState}
+                            setOpenState={setDialogOpenState}
+                            component={component} />
+                    </div>
                 </div>
+
+
             </div>
 
             <div className="p-5 pt-20 pb-20 ">
@@ -108,7 +112,7 @@ export default function HomePage() {
 
             <div className="p-2 pt-15 pb-20 flex flex-col justify-center items-center gap-3 ptuk-bg animation-view">
                 <h1 className="text-[42px] text-center font-extrabold mt-3 text-white animation-view"> About US </h1>
-                
+
                 <div className="flex flex-col items-center justify-center animation-view developer-images-box">
                     <div className="flex justify-center items-center flex-wrap ">
                         <div className="max-w-[500px] developer-img ">
@@ -118,7 +122,7 @@ export default function HomePage() {
                             <img src={mais} alt="" loading="lazy" />
                         </div>
                         <div className="max-w-[500px] developer-img">
-                            <img src={nagham} alt=""  loading="lazy"/>
+                            <img src={nagham} alt="" loading="lazy" />
                         </div>
                     </div>
                     <p className="animation-view text-[18px] max-w-[900px] text-white ">
