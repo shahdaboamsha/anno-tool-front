@@ -165,9 +165,9 @@
 #quick-action-button {
     border-radius: 30px;
     background-color: inherit;
-    border: solid 2px rgb(160, 189, 56);
+    border: solid 2px rgb(182, 181, 181);
     backdrop-filter: blur(10px);
-    color: rgb(160, 189, 56);
+    color: rgb(182, 181, 181);
     padding: 10px 20px;
     font-weight: 600;
     cursor: pointer;
@@ -180,7 +180,7 @@
 }
 
 #quick-action-button:hover {
-    color: rgb(160, 189, 56);
+    color: rgb(182, 181, 181);
     box-shadow:
         0 0 10px rgb(160, 189, 56),
         0 0 30px rgb(160, 189, 56),
