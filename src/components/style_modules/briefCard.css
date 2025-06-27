@@ -2,8 +2,8 @@
 
 .brcard {
     --bg: #f7f7f8;
-    --hover-bg: #ffe5f4;
-    --hover-text: #e50087;
+    --hover-bg: #ced4da;
+    --hover-text: black;
     text-align: center;
     border-radius: 5px;
     position: relative;
