@@ -102,8 +102,8 @@ export default function HomePage() {
                 <h1 className="text-[42px] text-center font-extrabold animation-view"> Classify with Artifical Intelligence </h1>
                 <div className="flex justify-center items-center gap-5 flex-wrap-reverse">
                     <p className="text-[18px] max-w-[500px] animation-view">
-                        Our platform now features an  AI-powered annotation tool that automatically annotates the sentences in your uploaded files. As soon as you upload a task, the AI quickly processes and provides initial annotations, helping you save time and effort. You can then review, adjust, and finalize the annotations with ease, making the overall workflow faster, smarter, and more efficient.
-                    </p>
+                        TexAI is a smart platform for annotating Arabic text using the power of both AI and human collaboration.
+                        Create tasks, assign annotators, and watch your data get labeled accurately and efficiently.                    </p>
                     <div className="max-w-[350px] animation-view">
                         <img className="animation-view" src="https://static.vecteezy.com/system/resources/previews/051/135/280/non_2x/ai-robot-typing-on-ipad-isolated-on-transparent-background-free-png.png" alt="" loading="lazy" />
                     </div>
@@ -125,9 +125,6 @@ export default function HomePage() {
                             <img src={nagham} alt="" loading="lazy" />
                         </div>
                     </div>
-                    <p className="animation-view text-[18px] max-w-[900px] text-white ">
-                        Our platform now features an  AI-powered annotation tool that automatically annotates the sentences in your uploaded files. As soon as you upload a task, the AI quickly processes and provides initial annotations, helping you save time and effort. You can then review, adjust, and finalize the annotations with ease, making the overall workflow faster, smarter, and more efficient.
-                    </p>
                 </div>
 
             </div>
