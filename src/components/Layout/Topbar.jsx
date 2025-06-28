@@ -81,10 +81,10 @@ export default function Topbar({ toggleSidebar }) {
 
     }
     getRequests()
-    /* const getRequsestsInterval = setInterval(() => {
+     const getRequsestsInterval = setInterval(() => {
        getRequests()
      }, 5000);
-     return () => clearInterval(getRequsestsInterval)*/
+     return () => clearInterval(getRequsestsInterval)
 
   }, [])
 
