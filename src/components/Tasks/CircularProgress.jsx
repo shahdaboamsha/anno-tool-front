@@ -6,7 +6,7 @@ export default function CircularProgress({progress, total, label}) {
     return (
         <div className='w-30 mb-2'>
             <Flat
-                progress={Math.ceil(progress/total*10)*100}
+                progress={Math.ceil(progress/(total*0.1)*100)}
                 range={{ from: 0, to: 100 }}
                 sign={{ value: '%', position: 'end' }}
                 showMiniCircle={true}
